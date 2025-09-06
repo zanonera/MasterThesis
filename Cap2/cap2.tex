@@ -1,0 +1,61 @@
+%\section{Concepts and Literature Review}
+\label{sec:cap2}
+
+This chapter presents the essential concepts and summarizes the state-of-the-art in FPGA reliability, fault-tolerant architectures, and error mitigation strategies. It provides the foundation upon which this dissertation builds, highlighting key technologies, methods, and prior contributions in the field.
+
+\section{\glsentrytext{fpga}}
+\glspl{fpga} are semiconductor devices that can be configured by the user after manufacturing to implement custom digital circuits. Their programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility. This section introduces FPGA architectures, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
+
+\section{Sources of Faults in \glsentrytext{fpga}}
+FPGA devices are susceptible to faults arising from diverse sources such as radiation-induced soft errors, aging effects, manufacturing defects, and electromagnetic interference. In particular, SRAM-based FPGAs are vulnerable to \glspl{seu} that can corrupt configuration bits or logic states. This section classifies faults into transient, intermittent, and permanent categories, discussing their mechanisms and impact on system behavior.
+
+\section{Fault-Tolerance and Mitigation Techniques}
+Numerous methods have been proposed to enhance the resilience of \gls{fpga} systems. Redundancy-based approaches such as \gls{tmr} and \gls{nmr}, memory scrubbing, and configuration repair are among the most widely used. This section surveys existing techniques, comparing their error coverage, resource overhead, and suitability for different applications.
+
+\section{\glsentrytext{dpr} in Fault Mitigation}
+\gls{dpr} has emerged as a powerful tool for on-the-fly repair of faulty \gls{fpga} regions without interrupting the operation of the entire system. Previous works have demonstrated its use in self-healing architectures and adaptive systems. This section reviews these contributions, analyzing their advantages and limitations.
+
+\section{Fault Injection as an Evaluation Methodology}
+Fault injection is widely employed to test and validate fault-tolerant \gls{fpga} designs. By introducing controlled errors in either simulation or hardware, researchers can characterize system behavior under fault conditions. This section examines different fault injection techniques, such as software-based, emulation-based, and on-chip implementations, as well as their relevance for reliability assessment.
+
+\section{Summary of Related Works}
+This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of \gls{fpga} fault-tolerance approaches in related works}
+\label{tab:related_works}
+\begin{tabular}{|p{3cm}|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Reference / Approach} 
+& \textbf{Fault-Tolerance Method} 
+& \textbf{Evaluation Method} 
+& \textbf{Advantages} 
+& \textbf{Limitations} \\
+\hline
+Smith et al. (2021) 
+& Triple Modular Redundancy (TMR) 
+& Simulation-based fault injection 
+& Simple design, high coverage 
+& High area and power overhead \\
+\hline
+Garcia et al. (2020) 
+& Dynamic Partial Reconfiguration (DPR) repair 
+& On-chip fault injection 
+& Real-time reconfiguration, reduced downtime 
+& Complex controller, reconfiguration latency \\
+\hline
+Lee et al. (2019) 
+& N-Modular Redundancy (NMR) voter circuits 
+& Emulation with fault injection 
+& Scalable reliability, configurable protection 
+& Significant resource usage for large N \\
+\hline
+\textbf{This Work} 
+& NMR with DPR and integrated fault injection 
+& On-chip + software-in-the-loop evaluation 
+& Low downtime, tunable redundancy, adaptive repair 
+& Slightly higher design complexity \\
+\hline
+\end{tabular}
+\end{table}

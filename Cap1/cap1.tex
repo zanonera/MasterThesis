@@ -1,0 +1,71 @@
+%\section{Introduction}
+\label{sec:cap1}
+
+\glspl{fpga} are commonly used in low-volume electronic devices due to their flexibility, high performance, and short development cycles. These components consists of a large array of configurable logic blocks and interconnections, allowing it to be customized for various applications and allowing easy reprogramming of its configuration.
+
+The most common \gls{fpga} stores its configuration in an external flash memory that is read during boot into a \gls{sram}-based memory, called \gls{cram}. However, \gls{sram} are inherently susceptible to transient faults caused by radiation, electromagnetic interference, or aging effects, which can corrupt the bits stored in the \gls{cram} or logic states, leading to unexpected behavior, performance degradation, or even complete system failure.
+
+To allow the use of \gls{fpga} in space applications, two options are available, the use of space-grade components, that are engineered for radiation tolerance or \gls{cots} \glspl{fpga} that are not engineered to withstand harsh environments, but could offer advantages in cost and performance \cite{Barbosa2021}. Advances in error mitigation techniques, such as redundancy and error correction, have made it possible to consider COTS devices for space applications \cite{10207287}. 
+
+\gls{cots} \glspl{fpga} are often preferred over space-grade \glspl{fpga} in modern aerospace applications for mainly two reasons. Firstly, COTS FPGAs offer significantly lower costs, making them more accessible for a wider range of missions, especially in the context of small satellites and constellations, where budget constraints are critical. Secondly, COTS FPGAs benefit from the rapid advances of the commercial electronics market, providing higher performance, greater logic density, and more up-to-date features compared to their space-grade counterparts, which typically lag behind in technology nodes due to extended qualification processes.
+
+As presented by \citeauthor{9298818}, the New Space paradigm is based on the use of components \gls{cots} to lower costs and to present faster development cycles in software applications. \gls{cots} \glspl{fpga} are easier and faster to acquire, reducing lead times and facilitating rapid prototyping and testing. While space-grade FPGAs offer improved radiation tolerance and reliability by design, advances in fault mitigation techniques have made it possible to use \gls{cots} devices effectively in many space environments, further tipping the balance in favor of \gls{cots} solutions for a broad range of missions.
+
+Traditional fault-tolerant techniques, such as static redundancy or periodic device reprogramming, are often insufficient or inefficient in these scenarios. They may incur high area overhead, disrupt system operation during recovery, or fail to respond rapidly to localized failures. \gls{nmr} provides a robust mechanism to mask faults at runtime through majority voting, but its static nature cannot repair defective modules, leading to gradual resource degradation.
+
+\gls{dpr} and memory scrubbing emerges as a powerful complement to redundancy techniques by allowing the selective repair of faulty modules without interrupting system functionality. When combined with systematic fault injection, researchers can accurately evaluate the resilience of FPGA-based systems and validate mitigation strategies under realistic conditions. 
+
+In top of that, to address the high demand for computation power, while maintaining high design flexibility, \gls{soc} solutions have gained significant traction. \glspl{soc} integrate, within a single component, an FPGA fabric, one or more processor cores, multiple communication buses, and a wide variety of peripherals for data input and output. This integration enables efficient implementation of complex, reconfigurable systems that can be upgraded or repurposed even after deployment in the field.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Motivation}
+
+Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission and safety-critical applications it is important to apply erro mitigation strategies to increase the reliability, specially in unmanned devices. While static \gls{nmr} can mask faults, periodic full or partial reprogramming or scrubbing can repair them, these approaches achieve better results when applied in conjunction, increasing the tolerance to error, and achieving some degree of self-recovery.
+
+Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to performance degradation or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation—enabling FPGA-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
+
+By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injection in a unified study, this thesis aims to demonstrate a practical methodology for improving system availability, reducing downtime, and extending the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in duacl core processor \gls{soc}, in safety-critical environments.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scope and Objectives}
+\subsection{Scope}
+This work focuses on enhancing the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and memory scrubbing for runtime repair. Additionally, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
+
+\subsection{Objectives}
+The main objectives of this work are:
+\begin{itemize}
+    \item Develop and implement an \gls{nmr} architecture capable of masking faults in real time.
+    \item Integrate \gls{dpr} techniques to selectively repair faulty modules without interrupting system operation.
+    \item Apply memory scrubbing to maintain the integrity of configuration data in \gls{fpga} \gls{cram}.
+    \item Design and execute a fault injection campaign to evaluate system reliability and fault coverage.
+    \item Assess the performance, resource utilization, and fault tolerance trade-offs of the proposed solution in \gls{soc} platforms.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Work Contribution}
+The main contributions of this work can be summarized as follows:
+    \begin{itemize}
+        \item {A fault-tolerant FPGA design methodology integrating NMR, DPR, and fault injection for reliability evaluation;}
+        \item {A practical test framework using a benchmark circuit (e.g., a modular RISC-V processor core) to validate the approach under realistic fault scenarios;}
+        \item {Experimental data and analysis quantifying the trade-offs between redundancy overhead, reconfiguration time, and system availability;}
+        \item {Design guidelines for developing resilient FPGA architectures in mission- and safety-critical applications.}
+    \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Text Organization}
+This dissertation is structured into six chapters, organized to guide the reader from fundamental concepts to experimental results and conclusions:
+
+\begin{itemize}
+    \item \hyperref[sec:cap1]{\textbf{Chapter 1 – Introduction:}} Presents the background, motivation, scope, and objectives of the work. It introduces \glspl{fpga} and \glspl{soc}, highlights their susceptibility to transient faults, and outlines the relevance of combining \gls{nmr}, \gls{dpr}, and fault injection techniques for enhancing system reliability.
+    
+    \item \hyperref[sec:cap2]{\textbf{Chapter 2 – Concepts and Literature Review:}} Reviews the state-of-the-art in fault-tolerant FPGA design, including redundancy schemes, memory scrubbing, partial dynamic reconfiguration, and fault injection methodologies. This chapter provides a foundation for understanding the theoretical and practical aspects of reliability in SRAM-based FPGA systems.
+    
+    \item \hyperref[sec:cap3]{\textbf{Chapter 3 – Theoretical Introduction:}} Presents the theoretical background underpinning the proposed methods. Topics include the principles of \gls{nmr}, fault modeling, reconfiguration mechanisms, and reliability metrics.
+    
+    \item \hyperref[sec:cap4]{\textbf{Chapter 4 – Development Methodology:}} Describes the design and implementation methodology of the proposed system, including benchmark selection, FPGA architecture design, integration of \gls{nmr} and \gls{dpr}, and the setup of the fault injection framework.
+    
+    \item \hyperref[sec:cap5]{\textbf{Chapter 5 – Results and Analysis:}} Presents the experimental results obtained from the fault injection campaigns and runtime reconfiguration tests. The chapter includes analysis of fault coverage, system performance, resource utilization, and the effectiveness of the proposed mitigation strategies.
+    
+    \item \hyperref[sec:cap6]{\textbf{Chapter 6 – Conclusions:}} Summarizes the main findings of the dissertation, discusses the contributions to the field, identifies limitations, and proposes directions for future work.
+\end{itemize}
+

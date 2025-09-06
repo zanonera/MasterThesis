@@ -1,0 +1,67 @@
+%\section{Supporting Scripts and Tools}
+
+\section{Example Makefile for FPGA Build and Programming}
+\begin{adjustbox}{max width=\textwidth}
+\begin{lstlisting}[language=make, caption={Sample Makefile targets for building and programming FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
+# Target: Build the FPGA bitstream
+bitstream:
+	vivado -mode batch -source build_fpga.tcl
+
+# Target: Program the FPGA
+program:
+	vivado -mode batch -source program_fpga.tcl
+
+# Target: Clean generated files
+clean:
+	rm -rf *.log *.jou *.bit *.bin build/
+\end{lstlisting}
+\end{adjustbox}
+
+\section{Python Fault-Injection Script}
+\begin{adjustbox}{max width=\textwidth}
+\begin{lstlisting}[language=Python, caption={Python outline for automated fault injection with FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
+import serial
+import random
+import time
+
+# Open UART or JTAG connection to FPGA
+fpga = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, timeout=1)
+
+def inject_fault(address, bit):
+    command = f"INJECT {address} {bit}\n"
+    fpga.write(command.encode())
+    response = fpga.readline().decode()
+    print("FPGA:", response.strip())
+
+def monitor_response():
+    status = fpga.readline().decode()
+    return status.strip()
+
+# Main injection loop
+for i in range(1000):
+    addr = random.randint(0, 0xFFFF)
+    bit  = random.randint(0, 31)
+    inject_fault(addr, bit)
+    time.sleep(0.05)
+    log = monitor_response()
+    print(f"Iteration {i}: Fault at {addr:#06x}, bit {bit}, status: {log}")
+
+fpga.close()
+\end{lstlisting}
+\end{adjustbox}
+
+\section{Example Partial Bitstream Load Script (Python)}
+\begin{adjustbox}{max width=\textwidth}
+\begin{lstlisting}[language=Python, caption={Python script to trigger partial dynamic reconfiguration on FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
+import subprocess
+
+def load_partial_bitstream(bitstream_path):
+    # Example using Vivado hardware manager Tcl batch
+    tcl_cmd = f"open_hw; connect_hw_server; open_hw_target; current_hw_device [lindex [get_hw_devices] 0]; "
+    tcl_cmd += f"program_hw_devices {bitstream_path}; exit"
+    subprocess.run(["vivado", "-mode", "batch", "-source", tcl_cmd])
+
+# Load faulty module repair
+load_partial_bitstream("reconfig_partition.bit")
+\end{lstlisting}
+\end{adjustbox}

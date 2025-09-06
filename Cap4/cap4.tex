@@ -1,0 +1,55 @@
+%\section{Development Methodology}
+\label{sec:cap4}
+
+This chapter details the methodology adopted to design, implement, and validate the proposed fault-tolerance approach. It explains the workflow, design tools, experimental setup, and evaluation strategies applied throughout the development.
+
+For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested stand alone and finnaly all mitigation were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
+
+\section{Design Workflow}
+The design workflow defines the sequence of steps taken to develop the hardware and software components. It includes the specification of system requirements, architecture selection, hardware description, simulation, and synthesis flow. The workflow was structured to ensure iterative refinement and early detection of design flaws before FPGA implementation.
+
+\section{FPGA Platform and Toolchain}
+This section presents the selected FPGA device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
+
+\begin{table}[ht]
+\centering
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Tool} & \textbf{Description} \\
+\hline
+\href{https://www.xilinx.com/products/design-tools/vivado.html}{Vivado 2018.3} &
+Xilinx FPGA design suite used for HDL synthesis, implementation, and bitstream generation. Provides Tcl scripting support for automation. \\
+\hline
+\href{https://www.python.org/}{Python} &
+High-level programming language for automation, scripting, and testbench development. Widely used to coordinate FPGA workflows and fault injection experiments. \\
+\hline
+\href{https://github.com/riscv-collab/riscv-gnu-toolchain}{RISC-V Toolchain} &
+Open-source GNU toolchain supporting the RISC-V ISA, enabling firmware compilation and debugging for soft-core processors like PicoRV32. \\
+\hline
+\href{https://github.com/cliffordwolf/picorv32}{PicoRV32} &
+Compact and configurable RISC-V soft processor core optimized for FPGA, often used for embedded control, monitoring, and fault injection control logic. \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\caption{Software and hardware development tools used in this work.}
+\label{tab:tools}
+\end{table}
+
+\section{Implementation of N-Modular Redundancy}
+Here, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the chosen parameters for $N>3$.
+
+\section{Fault Injection Strategy}
+This subsection describes how faults were emulated in the FPGA to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the FPGA fabric. The methodology ensures repeatability and coverage of critical failure modes.
+
+\section{Partial Dynamic Reconfiguration Flow}
+The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the reconfiguration controller design, and performance metrics such as reconfiguration latency and system recovery time.
+
+\section{Integration with Processing System (PS)}
+This section discusses how the ARM processing system in the SoC was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance workload and reduce logic overhead in the programmable fabric.
+
+\section{Verification and Validation Methodology}
+The testing strategy is presented to demonstrate how the design was verified at simulation level, emulation level, and on the physical FPGA hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
+
+\section{Summary}
+This section summarizes the methodology chapter, highlighting the major design decisions and how they lay the groundwork for the results presented in the next chapter.
