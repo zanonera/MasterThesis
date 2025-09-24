@@ -6,8 +6,14 @@ This chapter presents the essential concepts and summarizes the state-of-the-art
 \section{\glsentrytext{fpga}}
 \glspl{fpga} are semiconductor devices that can be configured by the user after manufacturing to implement custom digital circuits. Their programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility. This section introduces FPGA architectures, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{Cap2/fpga-structure.png}
+\caption{FPGA Structure.}\label{fpga-arch}
+\end{figure}
+
 \section{Sources of Faults in \glsentrytext{fpga}}
-FPGA devices are susceptible to faults arising from diverse sources such as radiation-induced soft errors, aging effects, manufacturing defects, and electromagnetic interference. In particular, SRAM-based FPGAs are vulnerable to \glspl{seu} that can corrupt configuration bits or logic states. This section classifies faults into transient, intermittent, and permanent categories, discussing their mechanisms and impact on system behavior.
+FPGA devices are susceptible to faults that arise from various sources, such as radiation-induced soft errors, aging effects, manufacturing defects, and electromagnetic interference. In particular, SRAM-based FPGAs are vulnerable to \glspl{seu} that can corrupt configuration bits or logic states. This section classifies faults into transient, intermittent, and permanent categories, discussing their mechanisms and impact on system behavior.
 
 \section{Fault-Tolerance and Mitigation Techniques}
 Numerous methods have been proposed to enhance the resilience of \gls{fpga} systems. Redundancy-based approaches such as \gls{tmr} and \gls{nmr}, memory scrubbing, and configuration repair are among the most widely used. This section surveys existing techniques, comparing their error coverage, resource overhead, and suitability for different applications.
