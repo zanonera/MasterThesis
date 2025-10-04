@@ -39,6 +39,13 @@ Compact and configurable RISC-V soft processor core optimized for FPGA, often us
 \section{Implementation of N-Modular Redundancy}
 Here, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the chosen parameters for $N>3$.
 
+\begin{landscape}
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.5\textwidth]{Cap4/tmr-vivado.png}
+    \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the RISC-V instructions (firmware), in the red square (center) the triplicated RISC-V cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
+\end{figure}\end{landscape}
+
 \section{Fault Injection Strategy}
 This subsection describes how faults were emulated in the FPGA to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the FPGA fabric. The methodology ensures repeatability and coverage of critical failure modes.
 
