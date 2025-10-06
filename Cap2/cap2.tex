@@ -4,12 +4,17 @@
 This chapter presents the essential concepts and summarizes the state-of-the-art in FPGA reliability, fault-tolerant architectures, and error mitigation strategies. It provides the foundation upon which this dissertation builds, highlighting key technologies, methods, and prior contributions in the field.
 
 \section{\glsentrytext{fpga}}
+A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely used for the implementation of digital systems.
+
 \glspl{fpga} are semiconductor devices that can be configured by the user after manufacturing to implement custom digital circuits. Their programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility. This section introduces FPGA architectures, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
+
+\glspl{fpga} are successful platforms because they combine the flexibility of software with the speed of hardware, providing customizable computation cores and high throughput processing of data streams. They are particularly attractive compared to \glspl{asic} due to their lower development time and costs, and the ability to be reconfigured \citeauthor{8524728}.
+
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap2/fpga-structure.png}
-\caption{FPGA Structure. Adapted from \cite{Marioli2010}}\label{fpga-arch}
+\caption{FPGA Structure. Adapted from \citeauthor{Marioli2010}}\label{fpga-arch}
 \end{figure}
 
 \section{Sources of Faults in \glsentrytext{fpga}}
@@ -39,7 +44,7 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & \textbf{Advantages} 
 & \textbf{Limitations} \\
 \hline
-Smith et al. (2021) 
+\cite{Barbosa2021}
 & Triple Modular Redundancy (TMR) 
 & Simulation-based fault injection 
 & Simple design, high coverage 

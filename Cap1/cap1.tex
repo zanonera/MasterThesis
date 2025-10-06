@@ -20,25 +20,27 @@ In top of that, to address the high demand for computation power, while maintain
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motivation}
 
-Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission and safety-critical applications it is important to apply error mitigation strategies to increase the reliability, specially in unmanned devices. While static \gls{nmr} can mask faults, periodic full, \gls{dpr} and scrubbing can repair them. These approaches achieve better results when applied in conjunction, increasing the tolerance to error, and achieving some degree of self-recovery.
+Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission-critical and safety-critical applications, especially in the aerospace \cite{9298818}, it is important to apply error mitigation strategies to increase reliability, especially in unmanned devices. While static \gls{nmr} can mask faults, periodic full, \gls{dpr} and scrubbing can repair them. These approaches achieve better results when applied in conjunction, increasing tolerance to error, and achieving some degree of self-recovery.
 
-Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to performance degradation or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation—enabling FPGA-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
+Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to degradation in performance or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation, enabling FPGA-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
 
-By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injection in a unified study, this thesis aims to demonstrate a practical methodology for improving system availability, reducing downtime, and extending the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in duacl core processor \gls{soc}, in safety-critical environments.
+By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injection into a unified study, this thesis aims to demonstrate a practical methodology for improving system availability, reducing downtime, and extending the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in dual core processor \gls{soc}, in safety-critical environments.
+
+This work is based on the idea presented by \citeauthor{8541452}, extending its reconfigurable platform with the necessary error mitigation, fault injection and analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scope and Objectives}
 \subsection{Scope}
-This work focuses on enhancing the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and memory scrubbing for runtime repair. Additionally, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
+This work focuses on improving the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and memory scrubbing for runtime repair. In addition, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
 
 \subsection{Objectives}
 The main objectives of this work are:
 \begin{itemize}
-    \item Develop and implement an \gls{nmr} architecture capable of masking faults in real time.
+    \item Develop and implement a \gls{nmr} architecture capable of masking faults in real time.
     \item Integrate \gls{dpr} techniques to selectively repair faulty modules without interrupting system operation.
-    \item Apply memory scrubbing to maintain the integrity of configuration data in \gls{fpga} \gls{cram}.
+    \item Apply memory scrubbing to maintain the integrity of the configuration data in \gls{fpga} \gls{cram}.
     \item Design and execute a fault injection campaign to evaluate system reliability and fault coverage.
-    \item Assess the performance, resource utilization, and fault tolerance trade-offs of the proposed solution in \gls{soc} platforms.
+    \item Assess the performance, resource utilization, and fault tolerance trade-offs of the proposed solution on \gls{soc} platforms.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
