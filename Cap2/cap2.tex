@@ -6,10 +6,37 @@ This chapter presents the essential concepts and summarizes the state-of-the-art
 \section{\glsentrytext{fpga}}
 A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely used for the implementation of digital systems.
 
-\glspl{fpga} are semiconductor devices that can be configured by the user after manufacturing to implement custom digital circuits. Their programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility. This section introduces FPGA architectures, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
+\glspl{fpga} are semiconductor devices that can be configured by the user, even after deployment, to implement custom digital circuits. Their programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility. This section introduces FPGA architectures, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
 
-\glspl{fpga} are successful platforms because they combine the flexibility of software with the speed of hardware, providing customizable computation cores and high throughput processing of data streams. They are particularly attractive compared to \glspl{asic} due to their lower development time and costs, and the ability to be reconfigured \citeauthor{8524728}.
+\glspl{fpga} are successful platforms because they combine the flexibility of software with the speed of hardware, providing adaptable computing cores and high-throughput processing of data streams. They are particularly attractive compared to \glspl{asic} due to their shorter development time and costs, and their ability to be reconfigured \citeauthor{8524728}.
 
+\subsection{Core Structure and Components}
+
+An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of interconnected configurable elements:
+
+\subsection{Configurable Logic Blocks}
+These are the elementary logic blocks used to implement the desired logic functions. \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks) perform simple combinational and sequential logic.
+\begin{itemize}
+    \item They typically comprise \glspl{lut}, which perform logical operations; \glspl{ff}, which serve as storage elements for sequential logic; and carry logic.
+    \item The \glspl{lut} function as small memories that serve as a truth table for logic functions.
+\end{itemize}
+
+\subsection{Routing and Interconnect Resources}
+These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks, and embedded resources to implement complex systems.
+
+\subsection{Input/Output Blocks (IOBs)}
+These blocks are positioned around the logic core to interface the internal logic with the external environment, handling data input and output.
+
+\subsection{Specialized Heterogeneous Resources}
+Modern FPGAs also include various specialized resources beyond the basic structure, such as:
+\begin{itemize}
+    \item \textbf{Embedded Memories}, such as \glspl{bram}.
+    \item \textbf{Arithmetic Resources}, such as \gls{dsp} units.
+    \item \textbf{Processing Resources}, which can be hard cores (e.g., ARM Cortex processors in Xilinx Zynq-7000 All Programmable System-on-Chip (APSoC)) or soft processors implemented using programmable logic.
+    \item \textbf{Clock-management resources}.
+\end{itemize}
+
+As shown in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of configurable logic blocks, routing resources, and \gls{io} blocks.
 
 \begin{figure}[ht]
 \centering
@@ -17,8 +44,46 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 \caption{FPGA Structure. Adapted from \citeauthor{Marioli2010}}\label{fpga-arch}
 \end{figure}
 
+\subsection{Configuration and Reprogrammability}
+
+FPGAs are programmable devices whose behavior is defined by a \textit{bitstream}. This bitstream contains all the information needed to configure the circuit in the FPGA architecture, mapping the user-defined \gls{hdl} design to the available logic and routing elements.
+
+The type of \gls{cram} used dictates the device's characteristics:
+
+\begin{itemize}
+    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial FPGAs due to their high reconfiguration flexibility, capability for integrating complex systems, and competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration. This technology allows FPGAs to be reprogrammed an infinite number of cycles and, crucially, permits \textit{\gls{dpr}}, meaning parts of the configuration can be changed during runtime. A significant drawback is that the \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu}, \cite{Adria2023}.
+
+    \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to SRAM devices \cite{Wubs2023}.
+
+    \item \textbf{Antifuse \glspl{fpga}:} These are One-Time Programmable (OTP) devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020}.
+\end{itemize}
+
 \section{Sources of Faults in \glsentrytext{fpga}}
 FPGA devices are susceptible to faults that arise from various sources, such as radiation-induced soft errors, aging effects, manufacturing defects, and electromagnetic interference. In particular, SRAM-based FPGAs are vulnerable to \glspl{seu} that can corrupt configuration bits or logic states. This section classifies faults into transient, intermittent, and permanent categories, discussing their mechanisms and impact on system behavior.
+
+\subsection{Single Event Upsets (SEUs) and Failure Modes}
+
+The majority of modern, high-density FPGAs rely on \gls{sram} cells to store their configuration bitstream. 
+This \gls{cram} defines the functionality of logic blocks (\glspl{lut} and \glspl{ff}) and all internal interconnections. 
+Unfortunately, this reliance on volatile SRAM renders FPGAs highly susceptible to soft errors induced by high-energy ionizing radiation, 
+a phenomenon particularly severe in environments such as space.
+
+\subsubsection{Single Event Upsets (SEUs)}
+The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike 
+flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently
+change the implemented logic and routing, leading to persistent malfunctions.
+
+\subsubsection{System Failure Types}
+These faults manifest as two major system failure types:
+
+\begin{enumerate}
+    \item \textbf{Silent Data Corruptions (SDCs):} Incorrect computations leading to incorrect application output.
+    \item \textbf{Single Event Functional Interrupts (SEFIs):} Non-destructive disruptions often caused by upsets in critical control logic (such as clock or reset), leading to processor crashes, hangs, or loss of functionality.
+\end{enumerate}
+
+\subsubsection{Reliability Concept}
+The concept of reliability relies on addressing the chain of events: 
+a \textit{fault} (abnormal condition) leads to an \textit{error} (discrepancy in value), which, if propagated, causes a \textit{system failure} (inability to perform the required function).
 
 \section{Fault-Tolerance and Mitigation Techniques}
 Numerous methods have been proposed to enhance the resilience of \gls{fpga} systems. Redundancy-based approaches such as \gls{tmr} and \gls{nmr}, memory scrubbing, and configuration repair are among the most widely used. This section surveys existing techniques, comparing their error coverage, resource overhead, and suitability for different applications.
@@ -31,6 +96,8 @@ Fault injection is widely employed to test and validate fault-tolerant \gls{fpga
 
 \section{Summary of Related Works}
 This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.
+
+%%TODO:: Separar 10 papers nesta tabela!!
 
 \begin{table}[htbp]
 \centering
@@ -50,7 +117,7 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & Simple design, high coverage 
 & High area and power overhead \\
 \hline
-Garcia et al. (2020) 
+\cite{Adria2023} 
 & Dynamic Partial Reconfiguration (DPR) repair 
 & On-chip fault injection 
 & Real-time reconfiguration, reduced downtime 

@@ -3,10 +3,7 @@
 
 This chapter details the methodology adopted to design, implement, and validate the proposed fault-tolerance approach. It explains the workflow, design tools, experimental setup, and evaluation strategies applied throughout the development.
 
-For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested stand alone and finnaly all mitigation were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
-
-\section{Design Workflow}
-The design workflow defines the sequence of steps taken to develop the hardware and software components. It includes the specification of system requirements, architecture selection, hardware description, simulation, and synthesis flow. The workflow was structured to ensure iterative refinement and early detection of design flaws before FPGA implementation.
+For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested stand alone, and ultimately all mitigations were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
 
 \section{FPGA Platform and Toolchain}
 This section presents the selected FPGA device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
@@ -25,9 +22,9 @@ Xilinx FPGA design suite used for HDL synthesis, implementation, and bitstream g
 High-level programming language for automation, scripting, and testbench development. Widely used to coordinate FPGA workflows and fault injection experiments. \\
 \hline
 \href{https://github.com/riscv-collab/riscv-gnu-toolchain}{RISC-V Toolchain} &
-Open-source GNU toolchain supporting the RISC-V ISA, enabling firmware compilation and debugging for soft-core processors like PicoRV32. \\
+Open-source GNU toolchain supporting the RISC-V ISA, enabling firmware compilation and debugging for soft-core processors like PicoRV32 \cite{PICORV32I}. \\
 \hline
-\href{https://github.com/cliffordwolf/picorv32}{PicoRV32} &
+\href{https://github.com/YosysHQ/picorv32/}{PicoRV32} &
 Compact and configurable RISC-V soft processor core optimized for FPGA, often used for embedded control, monitoring, and fault injection control logic. \\
 \hline
 \end{tabular}
@@ -58,6 +55,22 @@ It is widely used for bridging USB connections to various serial and parallel pr
 \label{tab:hw-tools}
 \end{table}
 
+\section{Design Workflow}
+The design workflow defines the sequence of steps taken to develop the hardware and software components. It includes the specification of system requirements, architecture selection, hardware description, simulation, and synthesis flow. The workflow was structured to ensure iterative refinement and early detection of design flaws before FPGA implementation.
+
+In order to evaluate all necessary knowledge to implement the final solution, the first step was to develop an initial architecture with the needed components.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{Cap4/architecture.png}
+    \caption{Block diagram representation of the proposed platform.}
+    \label{zynq-paper-arch}
+\end{figure}
+
+As shown in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die. This architecture was used as the base design to implement \gls{dpr} and to mitigate errors through memory scrubbing.
+
+These capabilities make the platform suitable for deployment in harsh environments, particularly for non-critical instrumentation and communication systems, as \gls{sram}-based \glspl{fpga} provide a cost- and area-efficient solution \cite{Brosser2014}.
+
 \section{Implementation of N-Modular Redundancy}
 Here, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the chosen parameters for $N>3$.
 
@@ -73,6 +86,28 @@ This subsection describes how faults were emulated in the FPGA to validate syste
 
 \section{Partial Dynamic Reconfiguration Flow}
 The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the reconfiguration controller design, and performance metrics such as reconfiguration latency and system recovery time.
+
+\gls{dpr} flow is supported by Vivado, but it is not yet fully integrated with the GUI-based project flow~\cite{vipin2018dpr}. 
+The designs are implemented using the Vivado Tcl-based command flow or a combination of Tcl commands and the GUI. 
+To facilitate the reproduction of the results and provide a base configuration for other studies using this architecture, a set of scripts was developed to create a project with two PR modules, implementing the following steps:
+
+\begin{enumerate}
+    \item Create the project and block design.
+    \begin{enumerate}
+        \item The block design should contain the ARM processing system instance.
+        \item The reconfigurable items should have only the interface definitions declared in this step.
+    \end{enumerate}
+    \item Synthesize the design, generating all the design checkpoints (DCP) for the static region and blocks of logic.
+    \item Load the DCP for the static region and one of the reconfigurable partitions (RP).
+    \item Define RP properties.
+    \item Run Design Rule Checker (DRC).
+    \item Create and implement the first configuration.
+    \item Create all other configurations.
+    \item Verify all configurations using the \texttt{PR\_verify} command.
+    \item Generate bitstreams.
+\end{enumerate}
+
+The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s DDR memory, after which a DMA transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
 
 \section{Integration with Processing System (PS)}
 This section discusses how the ARM processing system in the SoC was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance workload and reduce logic overhead in the programmable fabric.
