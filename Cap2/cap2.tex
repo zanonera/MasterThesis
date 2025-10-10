@@ -69,12 +69,11 @@ Unfortunately, this reliance on volatile SRAM renders FPGAs highly susceptible t
 a phenomenon particularly severe in environments such as space.
 
 \subsubsection{Single Event Upsets (SEUs)}
-The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike 
-flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently
+The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently
 change the implemented logic and routing, leading to persistent malfunctions.
 
 \subsubsection{System Failure Types}
-These faults manifest as two major system failure types:
+These faults manifest themselves as two major types of system failures:
 
 \begin{enumerate}
     \item \textbf{Silent Data Corruptions (SDCs):} Incorrect computations leading to incorrect application output.
@@ -88,11 +87,74 @@ a \textit{fault} (abnormal condition) leads to an \textit{error} (discrepancy in
 \section{Fault-Tolerance and Mitigation Techniques}
 Numerous methods have been proposed to enhance the resilience of \gls{fpga} systems. Redundancy-based approaches such as \gls{tmr} and \gls{nmr}, memory scrubbing, and configuration repair are among the most widely used. This section surveys existing techniques, comparing their error coverage, resource overhead, and suitability for different applications.
 
-\section{\glsentrytext{dpr} in Fault Mitigation}
-\gls{dpr} has emerged as a powerful tool for on-the-fly repair of faulty \gls{fpga} regions without interrupting the operation of the entire system. Previous works have demonstrated its use in self-healing architectures and adaptive systems. This section reviews these contributions, analyzing their advantages and limitations.
+\subsection{\glsentrytext{dpr} in Fault Mitigation}
 
-\section{Fault Injection as an Evaluation Methodology}
+\gls{dpr} allows \textit{run-time} modification of specific regions of the FPGA without interrupting the operation of the application layer. 
+
+However, this technique alone cannot detect configuration errors and therefore must be combined with other fault detection mechanisms, such as those based on redundancy. 
+These error correction methods take advantage of the subdivision of \gls{cram} into \textit{frames}, each containing information related to the configuration of specific portions of the hardware design \cite{vipin2018dpr}.
+
+\subsection{Fault Injection as an Evaluation Methodology}
 Fault injection is widely employed to test and validate fault-tolerant \gls{fpga} designs. By introducing controlled errors in either simulation or hardware, researchers can characterize system behavior under fault conditions. This section examines different fault injection techniques, such as software-based, emulation-based, and on-chip implementations, as well as their relevance for reliability assessment.
+
+Fault Injection (FI) is an established experimental method defined as the deliberate introduction of faults within a system, aiming primarily to evaluate its dependability, reliability, and to validate fault-tolerance mechanisms (FTMs). 
+This methodology allows designers to systematically analyze the system’s behavior in the presence of anomalies, 
+estimate its failure rate, and determine whether the implemented FTMs fulfill design specifications. 
+FI is crucial for qualifying systems, particularly those designed for safety-critical applications such as aerospace, 
+where components are susceptible to \textit{Single Event Effects (SEEs)}.
+
+A complete fault injection methodology is comprehensively characterized by four key components:
+\begin{enumerate}
+    \item The adopted \textbf{fault model};
+    \item The \textbf{activation patterns} (stimuli or workload) used to test the design;
+    \item The \textbf{readout values} collected during the experiment;
+    \item The derived \textbf{metrics}, such as error or failure rate.
+\end{enumerate}
+
+Fault models typically represent malfunctions such as transient or permanent faults, 
+often modeling \textit{Single Event Upsets (SEUs)} as bit-flips in memory elements. 
+To evaluate correctness, the system output is compared against the expected output of a fault-free version, 
+commonly referred to as the \textit{golden system} or \textit{golden run}. 
+The results collected enable the classification of fault effects into categories such as:
+\begin{itemize}
+    \item \textbf{Failure} – the system produces incorrect or unexpected behavior;
+    \item \textbf{Latent error} – the fault does not immediately affect functionality but may propagate later;
+    \item \textbf{Non-effective (benign) fault} – the fault produces no observable effect.
+\end{itemize}
+
+\subsubsection{Fault Injection Techniques}
+
+Fault injection techniques are typically classified into three major categories: 
+\textbf{physical}, \textbf{simulation-based}, and \textbf{emulation-based} methods.
+
+\begin{enumerate}
+    \item \textbf{Physical Fault Injection:}
+    This method (e.g., heavy-ion or proton testing) disturbs the actual hardware using environmental factors. 
+    It provides high accuracy for real faults but suffers from high cost, limited controllability, 
+    and restricted access to internal nodes.
+
+    \item \textbf{Simulation-based Fault Injection:}
+    This approach employs high-level models, often described in Hardware Description Languages (HDLs) such as VHDL or Verilog, 
+    to reproduce faults in a software environment. 
+    It is invaluable during early design phases because it provides high observability and controllability. 
+    Common techniques include:
+    \begin{itemize}
+        \item \textit{Simulator commands}, 
+        \item \textit{Saboteurs} – additional components that intercept and alter signals,
+        \item \textit{Mutants} – modified versions of existing components.
+    \end{itemize}
+    However, simulation can become prohibitively slow when evaluating complex systems or conducting large fault campaigns.
+
+    \item \textbf{Emulation-based Fault Injection:}
+    This method leverages reconfigurable devices, primarily SRAM-based FPGAs, 
+    to perform rapid prototyping and fault injection at run-time. 
+    It often involves manipulating the configuration memory (CRAM) 
+    through mechanisms such as \textit{Dynamic Partial Reconfiguration (DPR)} 
+    or by accessing internal configuration ports (e.g., \textit{ICAP} or \textit{JTAG}) to emulate SEUs. 
+    Emulation offers significantly faster evaluation—potentially orders of magnitude faster than simulation—while maintaining 
+    greater control than physical testing, making it a preferable choice for high-volume fault injection campaigns 
+    aimed at achieving comprehensive fault coverage efficiently.
+\end{enumerate}
 
 \section{Summary of Related Works}
 This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.

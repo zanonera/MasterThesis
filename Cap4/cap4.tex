@@ -1,9 +1,9 @@
 %\section{Development Methodology}
 \label{sec:cap4}
 
-This chapter details the methodology adopted to design, implement, and validate the proposed fault-tolerance approach. It explains the workflow, design tools, experimental setup, and evaluation strategies applied throughout the development.
+This chapter details the methodology adopted to design, implement and validate the proposed fault-tolerance approach. Describes the workflow, design tools, experimental setup, and evaluation strategies applied throughout development.
 
-For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested stand alone, and ultimately all mitigations were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
+For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested independently and, ultimately, all mitigations were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
 
 \section{FPGA Platform and Toolchain}
 This section presents the selected FPGA device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
@@ -55,10 +55,21 @@ It is widely used for bridging USB connections to various serial and parallel pr
 \label{tab:hw-tools}
 \end{table}
 
-\section{Design Workflow}
-The design workflow defines the sequence of steps taken to develop the hardware and software components. It includes the specification of system requirements, architecture selection, hardware description, simulation, and synthesis flow. The workflow was structured to ensure iterative refinement and early detection of design flaws before FPGA implementation.
-
+\section{Reference Design Architecture}
 In order to evaluate all necessary knowledge to implement the final solution, the first step was to develop an initial architecture with the needed components.
+
+The requirements for this architecture were established on the basis of the following key assumptions:
+
+\begin{itemize}
+    \item \textbf{Configuration Memory Scrubbing (CRAM Scrubbing):}  
+    Periodic correction of configuration memory upsets to maintain system integrity and prevent fault accumulation.
+
+    \item \textbf{Dynamic Partial Reconfiguration (DPR):}  
+    Ability to reconfigure specific regions of the FPGA at runtime without interrupting the operation of the static logic.
+
+    \item \textbf{Fault Injection Capability:}  
+    Implementation of controlled fault injection mechanisms to evaluate the system’s fault tolerance and recovery strategies.
+\end{itemize}
 
 \begin{figure}[ht]
     \centering
@@ -67,12 +78,47 @@ In order to evaluate all necessary knowledge to implement the final solution, th
     \label{zynq-paper-arch}
 \end{figure}
 
-As shown in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die. This architecture was used as the base design to implement \gls{dpr} and to mitigate errors through memory scrubbing.
+As shown in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
-These capabilities make the platform suitable for deployment in harsh environments, particularly for non-critical instrumentation and communication systems, as \gls{sram}-based \glspl{fpga} provide a cost- and area-efficient solution \cite{Brosser2014}.
+\subsection{Soft Error Mitigation}
+To protect \gls{sram}-based FPGA, Xilinx’s \gls{sem} \gls{ip}, \cite{amd2023sem} is being used on this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
+It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use an external PC with a script to inject error and check how the platform behaves.
+
+\subsection{Dynamic Partial Reconfiguration}
+Dynamic partial reconfiguration is performed through the ARM´s PCAP port.
+The full or partial bitstream is loaded to the processor DDR, then using DMA, the file is transferred to the configuration memory of the PL using the PCAP port.
+
+The main idea of the \gls{dpr} region, denoted by the "HW Accel." in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application and to be able to reprogram this function accordingly to the one necessary for that specify computation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Cap4/dpr-partial-bit.png}
+    \caption{Representation of the "Partial" Bitstreams, responsible for only a small change in FPGAconfiguration.}
+    \label{dpr-partial-diagram}
+\end{figure}
+
+As shown in Figure~\ref{dpr-full-diagram},
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Cap4/dpr-full-bit.png}
+    \caption{Representation of the "Full" Bitstream, responsible for the entire FPGA configuration.}
+    \label{dpr-full-diagram}
+\end{figure}
+
+As shown in Figure~\ref{dpr-full-diagram},
 
 \section{Implementation of N-Modular Redundancy}
 Here, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the chosen parameters for $N>3$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{Cap4/riscv-tmr-diagram.png}
+    \caption{Block diagram representation of the proposed Triplicated PicoRV32I.}
+    \label{riscv-tmr-diagram}
+\end{figure}
+
+As shown in Figure~\ref{riscv-tmr-diagram},
 
 \begin{landscape}
     \begin{figure}[ht]
@@ -81,13 +127,45 @@ Here, the integration of the NMR scheme is detailed. The voter architecture, mod
     \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the RISC-V instructions (firmware), in the red square (center) the triplicated RISC-V cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
 \end{figure}\end{landscape}
 
-\section{Fault Injection Strategy}
-This subsection describes how faults were emulated in the FPGA to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the FPGA fabric. The methodology ensures repeatability and coverage of critical failure modes.
+It is essential, when designing systems based on modular redundancy, to carefully analyze the synthesis and implementation logs generated by the design tool---in this work, Vivado---to ensure that redundant modules are not optimized away.
+
+Since modular redundancy typically employs multiple identical instances of a module operating in parallel and receiving identical input signals, as illustrated in Figure~\ref{riscv-tmr-diagram}, the synthesis tool can infer functional equivalence between them. Consequently, as these modules generate the same output, the tool might remove one or more instances during optimization.
+
+In Vivado, one message that may indicate such an optimization is the following:
+
+\begin{verbatim}
+[Synth 8-223] decloning instance <name> to <name>
+\end{verbatim}
+
+This message indicates that the tool has merged or eliminated redundant module instances (``clones''), which may compromise the intended fault-tolerant behavior of the design.
+
+As presented by \citeauthor{acmeTuto}, one possible solution to this issue is the inclusion of the attribute \texttt{dont\_touch} in the design. This attribute is recognized by the synthesis tool and propagated to the place-and-route stages, ensuring that the specified object is preserved and not subject to optimization \cite{AMD:KEEP_DONT_TOUCH}.
+
+The following examples illustrate how to apply this attribute in different design description contexts:
+
+\begin{itemize}
+    \item \textbf{\gls{tcl} Script (Vivado Constraint):}
+    \begin{verbatim}
+    set_property DONT_TOUCH true [get_cells <module_name>]
+    \end{verbatim}
+
+    \item \textbf{Verilog:}
+    \begin{verbatim}
+    (* DONT_TOUCH = "true" *) module <module_name> (...);
+    endmodule
+    \end{verbatim}
+
+    \item \textbf{\gls{vhdl}:}
+    \begin{verbatim}
+    attribute DONT_TOUCH : string;
+    attribute DONT_TOUCH of <entity_name> : entity is "true";
+    \end{verbatim}
+\end{itemize}
 
 \section{Partial Dynamic Reconfiguration Flow}
-The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the reconfiguration controller design, and performance metrics such as reconfiguration latency and system recovery time.
+The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the design of the reconfiguration controller, and performance metrics such as reconfiguration latency and system recovery time.
 
-\gls{dpr} flow is supported by Vivado, but it is not yet fully integrated with the GUI-based project flow~\cite{vipin2018dpr}. 
+\gls{dpr} flow is supported by Vivado, but is not yet fully integrated with the GUI-based project flow~\cite{vipin2018dpr}. 
 The designs are implemented using the Vivado Tcl-based command flow or a combination of Tcl commands and the GUI. 
 To facilitate the reproduction of the results and provide a base configuration for other studies using this architecture, a set of scripts was developed to create a project with two PR modules, implementing the following steps:
 
@@ -112,8 +190,22 @@ The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initi
 \section{Integration with Processing System (PS)}
 This section discusses how the ARM processing system in the SoC was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance workload and reduce logic overhead in the programmable fabric.
 
+\section{Fault Injection Strategy}
+This subsection describes how faults were emulated in the FPGA to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the FPGA fabric. The methodology ensures repeatability and coverage of critical failure modes.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{Cap4/error_injection.png}
+    \caption{Block diagram representation the error injection campaign and setup.}
+    \label{error-injection-diagram}
+\end{figure}
+
+As shown in Figure~\ref{error-injection-diagram},
+
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at simulation level, emulation level, and on the physical FPGA hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
 
 \section{Summary}
 This section summarizes the methodology chapter, highlighting the major design decisions and how they lay the groundwork for the results presented in the next chapter.
+
+These added capabilities make the platform suitable for deployment in harsh environments, particularly for non-critical instrumentation and communication systems, as \gls{sram}-based \glspl{fpga} provide a cost- and area-efficient solution \cite{Brosser2014}.
