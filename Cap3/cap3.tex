@@ -1,7 +1,7 @@
 %\section{Theoretical Introduction}
 \label{sec:cap3}
 
-This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of FPGAs based on \gls{sram}, examines fault-tolerance techniques such as N-Modular Redundancy (NMR) and Dynamic Partial Reconfiguration (DPR), discusses memory scrubbing mechanisms, and outlines the principles of fault injection for resilience evaluation. 
+This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of \glspl{fpga} based on \gls{sram}, examines fault-tolerance techniques such as N-Modular Redundancy (NMR) and Dynamic Partial Reconfiguration (DPR), discusses memory scrubbing mechanisms, and outlines the principles of fault injection for resilience evaluation. 
 
 \section{\glsentrytext{fpga}}
 This section introduces the \gls{fpga} architecture, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
@@ -90,9 +90,9 @@ The change could affect any of the configurable elements of \gls{fpga}, such as 
 
 Figure~\ref{fpga-seu-and}(a) illustrates one scenario in which a 2-input \gls{lut} is configured by the \gls{cram} bits to describe an $AND$ gate and the \gls{clb} inputs are connected to the inputs $A$ and $B$ by an interconnection switch.
 
-From Table~\ref{tab:logic_gates}, it is evident that the implemented circuit acts as an $AND$ gate, exhibiting the exact behavior described for the values of its inputs.
+From Table~\ref{tab:logic_gates}, it is evident that the implemented circuit acts as a $AND$ gate, exhibiting the exact behavior described for the values of its inputs.
 
-Then in Figure~\ref{fpga-seu-and}(b), a \gls{seu} is represented, changing the first value of the 2-input \gls{lut} from $0$ to $1$. Now, the behavior of the circuit changes, as shown in Table~\ref{tab:logic_gates}, from a gate $AND$ to a gate $XNOR$.
+Then in Figure~\ref{fpga-seu-and}(b), a \gls{seu} is represented, changing the first value of the 2-input \gls{lut} from $0$ to $1$. Now, the behavior of the circuit changes, as shown in Table~\ref{tab:logic_gates}, from a $AND$ gate to an $XNOR$ gate.
 
 Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an interconnection switch is hit by a \gls{seu}, disconnecting the $A$ input from the \gls{lut}. As the input is left floating, the output result is unpredictable. The unconnected input might drift between high or low logic values, depending on nearby static fields. In the worst case, it drifts to an intermediate voltage and only partially switches the output, leading to excess heating of the gate. Or, the output could oscillate between high and low logic values.
 
