@@ -20,19 +20,21 @@ Although this work has demonstrated the feasibility and effectiveness of combini
     \end{itemize}
 
     \item \textbf{Mitigation Strategies in the Processing System (PS):}
-    Extending fault-tolerant techniques to the embedded processing system (e.g., ARM cores in \gls{soc} \gls{fpga} could enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components.
+    Extending fault-tolerant techniques to the embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} could enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400}, \cite{7948063}.
 
     \item \textbf{Evaluation Across Multiple \gls{fpga} Vendors:}
-    While this research has focused on a Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
+    While this research has focused on a Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU}, \cite{Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
 
     \item \textbf{Scalability and Resource Optimization:}
     As the \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work could explore automated design-space exploration to optimize the balance between fault coverage, resource consumption and system performance.
 
     \item \textbf{In-Field Deployment and Long-Term Testing:}
-    Extending the methodology to real operational environments, such as radiation test facilities or mission-critical field deployments, would allow validation of laboratory results under practical conditions.
+    Extending the methodology to real operational environments, such as radiation test facilities \cite{Wilson2019Neutron} or mission-critical field deployments, would allow validation of laboratory results under practical conditions \cite{Adria2023}.
 \end{itemize}
 
 \section{Publications}
+
+From the results of this research, the following publications were developed:
 
 \begin{itemize}
  \item ZANONE R.; SAOTOME O. \href{https://lcv.fee.unicamp.br/wp-content/images/BTSym23-Brasil/papers/BTSym2023_066.pdf}{A Base FPGA Platform for Safer Designs exposed to harsh radioactive environments.} In: \textbf{Brazilian Technology Symposium}. Campinas: BTSym 2023.
@@ -40,4 +42,10 @@ Although this work has demonstrated the feasibility and effectiveness of combini
 \end{itemize}
 
 \section{Data Availability}
-All data and software are available online at the author's \href{https://github.com/zanonera}{Github repository}.
+
+All datasets, source codes, and related materials developed in this research are publicly available 
+in the author's GitHub repository:
+
+\begin{itemize}
+    \item \href{https://github.com/zanonera}{\texttt{Author's GitHub Repository}}
+\end{itemize}

@@ -17,11 +17,33 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of interconnected configurable elements:
 
 \subsection{Configurable Logic Blocks}
-These are the elementary logic blocks used to implement the desired logic functions. \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks) perform simple combinational and sequential logic.
+These are the elementary logic blocks used to implement the desired logic functions. \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending of the \gls{fpga} manufacturer) perform simple combinational and sequential logic.
+
+In the Zynq 7000 \gls{soc}, the \gls{clb} contains a pair of slices, and each of the slices contains four 6-inputs \glspl{lut} and eight storage elements \cite{AMD_UG585}, in the following structure:
+
+These two slices do not have connections between them and are organized by columns, as illustrated in the Figure~\ref{fpga-arch-clb-slice-amd}, and have the following features:
+
 \begin{itemize}
-    \item They typically comprise \glspl{lut}, which perform logical operations; \glspl{ff}, which serve as storage elements for sequential logic; and carry logic.
-    \item The \glspl{lut} function as small memories that serve as a truth table for logic functions.
+    \item Can be configured as a single 6-input \gls{lut} or two 5-input \glspl{lut};
+    \item storage elements (memory capability);
+    \item Register (\gls{ff}) and shift register available.
 \end{itemize}
+
+A \gls{lut} with $m$ inputs can implement any logical function defined over those $m$ inputs. 
+In other words, a 6-input \gls{lut} is capable of performing any Boolean function of up to six variables \cite{Battezzati2010}, \cite{Mazzeo2019}.
+
+The \glspl{lut} could also be configured to other structures:
+
+\begin{itemize}
+    \item the so called distributed memory, where each SLICE could be configured as a 64-bit \gls{ram};
+    \item 32-bit shift register (SRL32) or two 16-bit (SRL16).
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
+\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \citeauthor{AMD_UG474}}\label{fpga-arch-clb-slice-amd}
+\end{figure}
 
 \subsection{Routing and Interconnect Resources}
 These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks, and embedded resources to implement complex systems.
@@ -43,7 +65,15 @@ As shown in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of conf
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{FPGA Structure. Adapted from \citeauthor{Marioli2010}}\label{fpga-arch}
+\caption{\gls{fpga} Structure. Adapted from \citeauthor{Marioli2010}}\label{fpga-arch}
+\end{figure}
+
+As shown in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
+\caption{\gls{fpga} Structure. Reproduced from \citeauthor{AMD_UG474}}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -118,6 +148,18 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \end{array}
 \]
 \end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{Cap3/seu-sb-mb.png}
+\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \citeauthor{Aguiar2025_SEE_Space_to_Accelerator}}\label{fpga-seu-and-sbu-mbu}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{Cap3/fncom-17-1268374-g0001.jpg}
+\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \citeauthor{Xie2023_HybridGrainedScrubbing}}\label{fpga-3upsets-cram}
+\end{figure}
 
 \section{Reliability Challenges in SRAM-based FPGAs}
 SRAM-based FPGAs are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults may alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical for developing effective mitigation strategies.
