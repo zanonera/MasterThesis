@@ -18,41 +18,92 @@ clean:
 \end{adjustbox}
 
 \section{Python Fault-Injection Script}
-\begin{adjustbox}{max width=\textwidth}
-\begin{lstlisting}[language=Python, caption={Python outline for automated fault injection with FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
+
+\begin{lstlisting}[language=Python, caption={Python outline for automated fault injection with FPGA.}]
+# -*- coding: utf-8 -*-
+"""
+Needs the following dependencies:
+    pip3 install pyserial
+    pip3 install tqdm
+
+Injects Frame Error in sem IP core using UART.
+The frames for injection where previously generated 
+with ACME (http://www.nebrija.es/aries/acme.htm)
+"""
 import serial
-import random
 import time
+from datetime import datetime
+import os
+from tqdm import tqdm
 
-# Open UART or JTAG connection to FPGA
-fpga = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, timeout=1)
+def timing(t):
+    t_new = time.mktime(time.localtime())
+    return t_new - t
 
-def inject_fault(address, bit):
-    command = f"INJECT {address} {bit}\n"
-    fpga.write(command.encode())
-    response = fpga.readline().decode()
-    print("FPGA:", response.strip())
+# SEM IP Core Connection    
+port = '/dev/ttyUSB0'
+baudrate = 115200
 
-def monitor_response():
-    status = fpga.readline().decode()
-    return status.strip()
+print('Conecting to SEM IP Core... \n',end='')
+sem = serial.Serial(port, baudrate, timeout=3)
+print('Connected')
 
-# Main injection loop
-for i in range(1000):
-    addr = random.randint(0, 0xFFFF)
-    bit  = random.randint(0, 31)
-    inject_fault(addr, bit)
-    time.sleep(0.05)
-    log = monitor_response()
-    print(f"Iteration {i}: Fault at {addr:#06x}, bit {bit}, status: {log}")
+# DUT Checker Connection    
+port = '/dev/ttyUSB3'
+baudrate = 115200
 
-fpga.close()
+print('Conecting to DUT Checker... \n',end='')
+dut = serial.Serial(port, baudrate, timeout=3)
+print('Connected')
+
+#frameRange = open('frameRange.txt')
+
+testReport = open("testReport.txt",mode="w+",encoding="utf-8")
+
+idle = 'I'
+observation = 'O'
+reset = 'R 00'
+result_dut = 'A'
+print('Partial ReConfigure as a Multiplier... \n')
+operation = '1' # Mult = 1 | Add = 2
+#dut.write(operation.encode())
+#time.sleep(1)
+#print('Reset SEM IP after Partial Reconfiguration... \n')
+#sem.write(reset.encode())
+
+print('Error Injection will start... \n')
+
+with tqdm(total=os.path.getsize('frameRange.txt')) as pbar:
+    with open('frameRange.txt') as frameRange:
+        for line in frameRange:
+            pbar.update(len(line.encode('utf-8')))
+            sem.write(idle.encode())
+            #print(idle.encode())
+            time.sleep(0.1)
+            injection = 'N' + ' ' + str(line)
+            #print(injection.encode())
+            sem.write(injection.encode())
+            time.sleep(0.1)
+            #print(result_dut.encode())
+            dut.write(result_dut.encode())
+            chk = dut.read()
+            chks = chk.decode('utf-8')
+            result = 'Frame: ' + str(line.rstrip()) + ' | ' + 'DUT Checker: ' + str(chks) + '\n'
+            testReport.write(result)
+            #print(observation.encode()) 
+            sem.write(observation.encode())
+
+print('Error Injection ended... \n')
+
+sem.close()
+dut.close()
+frameRange.close()
+testReport.close()
 \end{lstlisting}
-\end{adjustbox}
 
 \section{Example Partial Bitstream Load Script (Python)}
-\begin{adjustbox}{max width=\textwidth}
-\begin{lstlisting}[language=Python, caption={Python script to trigger partial dynamic reconfiguration on FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
+
+\begin{lstlisting}[language=Python, caption={Python script to trigger partial dynamic reconfiguration on FPGA.}]
 import subprocess
 
 def load_partial_bitstream(bitstream_path):
@@ -64,4 +115,3 @@ def load_partial_bitstream(bitstream_path):
 # Load faulty module repair
 load_partial_bitstream("reconfig_partition.bit")
 \end{lstlisting}
-\end{adjustbox}

@@ -78,13 +78,10 @@ Fault injection techniques are typically classified into three major categories:
 \section{Summary of Related Works}
 This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.
 
-%%TODO:: Separar 10 papers nesta tabela!!
+%%%============== Long Comparison Table =========================================================================
 
-\begin{table}[htbp]
-\centering
-\caption{Comparison of \gls{fpga} fault-tolerance approaches in related works}
-\label{tab:related_works}
-\begin{tabular}{|p{3cm}|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}|}
+\begin{longtable}{|p{3cm}|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}|}
+\caption{Comparison of \gls{fpga} fault-tolerance approaches in related works} \label{tab:related_works} \\
 \hline
 \textbf{Reference / Approach} 
 & \textbf{Fault-Tolerance Method} 
@@ -92,6 +89,25 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & \textbf{Advantages} 
 & \textbf{Limitations} \\
 \hline
+\endfirsthead
+
+\multicolumn{5}{c}%
+{\tablename\ \thetable\ -- \textit{continued from previous page}} \\
+\hline
+\textbf{Reference / Approach} 
+& \textbf{Fault-Tolerance Method} 
+& \textbf{Evaluation Method} 
+& \textbf{Advantages} 
+& \textbf{Limitations} \\
+\hline
+\endhead
+
+\hline \multicolumn{5}{r}{\textit{Continued on next page}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
 \cite{Barbosa2021}
 & Triple Modular Redundancy (TMR) 
 & Simulation-based fault injection 
@@ -140,6 +156,12 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
 \hline
+\cite{Wang2024_SoftErrorReview}
+& N-Modular Redundancy (NMR) voter circuits 
+& Emulation with fault injection 
+& Scalable reliability, configurable protection 
+& Significant resource usage for large N \\
+\hline
 \cite{Wilson2025}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
@@ -158,5 +180,5 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & Low downtime, tunable redundancy, adaptive repair 
 & Slightly higher design complexity \\
 \hline
-\end{tabular}
-\end{table}
+
+\end{longtable}

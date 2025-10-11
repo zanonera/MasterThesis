@@ -51,6 +51,7 @@
 \documentclass[msc, eng, dv]{ita}    % ITA.cls based on standard book.cls
 % Quando alterar a classe, por exemplo de [msc] para [msc, eng]) rode mais uma vez o botão BUILD OUTPUT caso haja erro
 %\usepackage{ae}
+\usepackage{float}
 \usepackage{lmodern}
 \usepackage{textcomp}
 \usepackage{graphicx}
@@ -74,6 +75,23 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usepackage{rotating}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,   % preserves spacing and helps wrapping
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  keepspaces=true,
+  showstringspaces=false,
+  captionpos=b,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  firstnumber=1
+}
 
 %HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 \addbibresource{Referencias/referencias.bib}
@@ -187,9 +205,9 @@
 \input{ApeA/apendiceA}
 
 % Anexos
-\annex
+\appendix
 \chapter{Exemplo de um Primeiro Anexo} %opcional
-\input{AneA/anexoA}
+\input{ApeB/apendiceB}
 
 % Glossario
 %\itaglossary
