@@ -17,11 +17,11 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of interconnected configurable elements:
 
 \subsection{Configurable Logic Blocks}
-These are the elementary logic blocks used to implement the desired logic functions. \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending of the \gls{fpga} manufacturer) perform simple combinational and sequential logic.
+These are the elementary logic blocks used to implement the desired logic functions. The \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending on the manufacturer \gls{fpga}) perform simple combinational and sequential logic.
 
-In the Zynq 7000 \gls{soc}, the \gls{clb} contains a pair of slices, and each of the slices contains four 6-inputs \glspl{lut} and eight storage elements \cite{AMD_UG585}, in the following structure:
+In the Zynq 7000 \gls{soc}, \gls{clb} contains a pair of slices, and each of the slices contains four 6-inputs \glspl{lut} and eight storage elements \cite{AMD_UG585}.
 
-These two slices do not have connections between them and are organized by columns, as illustrated in the Figure~\ref{fpga-arch-clb-slice-amd}, and have the following features:
+These two slices do not have connections between them and are organized by columns, as illustrated in Figure~\ref{fpga-arch-clb-slice-amd}, and have the following features:
 
 \begin{itemize}
     \item Can be configured as a single 6-input \gls{lut} or two 5-input \glspl{lut};
@@ -32,7 +32,7 @@ These two slices do not have connections between them and are organized by colum
 A \gls{lut} with $m$ inputs can implement any logical function defined over those $m$ inputs. 
 In other words, a 6-input \gls{lut} is capable of performing any Boolean function of up to six variables \cite{Battezzati2010}, \cite{Mazzeo2019}.
 
-The \glspl{lut} could also be configured to other structures:
+The \glspl{lut} could also be configured for other structures:
 
 \begin{itemize}
     \item the so called distributed memory, where each SLICE could be configured as a 64-bit \gls{ram};
