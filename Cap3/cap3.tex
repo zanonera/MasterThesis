@@ -90,29 +90,96 @@ The type of \gls{cram} used dictates the device's characteristics:
     \item \textbf{Antifuse \glspl{fpga}:} These are One-Time Programmable (OTP) devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020}.
 \end{itemize}
 
+\subsubsection{Bitstream}
+
+The bitstream represents the device's configuration for a specific application and is downloaded to the FPGA at startup. Its exact structure and semantics are proprietary and have become increasingly complex over the years.
+
+Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example is \cite{f4pga_prjxray}.
+
+Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where we have the header and footer, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{Cap3/simple-bitstream.png}
+\caption{Simple representation of the \gls{fpga} bitstream structure.}\label{fpga-simple-bitstream}
+\end{figure}
+
+A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \citeauthor{LeRoux2019}, \citeauthor{Aranda2019}, and \citeauthor{Xie2023_HybridGrainedScrubbing}.
+
+A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 words store configuration data and 1 word contains \gls{ecc} for error correction within the frame.
+
 \section{Sources of Faults in \glsentrytext{fpga}}
-FPGA devices are susceptible to faults that arise from various sources, such as radiation-induced soft errors, aging effects, manufacturing defects, and electromagnetic interference. In particular, SRAM-based FPGAs are vulnerable to \glspl{seu} that can corrupt configuration bits or logic states. This section classifies faults into transient, intermittent, and permanent categories, discussing their mechanisms and impact on system behavior.
+
+Integrated circuits operating in radiation environments are susceptible to transient and permanent faults caused by the interaction of ionizing particles with silicon. Ionizing radiation can generate electrical disturbances by depositing charge that alters transistor states. This deposition occurs either directly, when charged particles interact with the material, or indirectly, when neutral particles such as neutrons produce secondary charged particles (e.g., alpha particles, ions, or protons). The severity of the effect depends on the amount and location of the deposited charge within the semiconductor \cite{KastensmidtRech2016}.
+
+\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multi-Bit Upsets (MBUs) and Multi-Cell Upsets (MCUs) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011}.
+
+Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} phenomena and their respective subtypes.
+
+%%Types of Errors
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{block} = [rectangle, rounded corners, minimum width=4cm, minimum height=1cm, text centered, draw=black, fill=blue!20]
+\tikzstyle{subblock} = [rectangle, rounded corners, minimum width=3.5cm, minimum height=0.8cm, text centered, draw=black, fill=green!20]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}[ht]
+\centering
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}[node distance=1.5cm]
+
+% Top-level SEE
+\node (see) [block] {Single Event Effects (SEE)};
+
+% Soft SEE
+\node (soft) [subblock, below left of=see, xshift=-5cm, yshift=-1cm] {Soft SEE};
+\node (seu) [subblock, below of=soft, yshift=-0.5cm] {Single Event Upset (SEU)};
+\node (set) [subblock, below of=seu, yshift=-0.5cm] {Single Event Transient (SET)};
+\node (sefi_soft) [subblock, below of=set, yshift=-0.5cm] {Single Event Functional Interrupt (SEFI)};
+
+% Hard SEE
+\node (hard) [subblock, below right of=see, xshift=5cm, yshift=-1cm] {Hard SEE};
+\node (sel) [subblock, below of=hard, yshift=-0.5cm] {Single Event Latchup (SEL)};
+\node (sehe) [subblock, below of=sel, yshift=-0.5cm] {Single Event Hard Error (SEHE)};
+\node (segr) [subblock, below of=sehe, yshift=-0.5cm] {Single Event Gate Rupture (SEGR)};
+\node (seb) [subblock, below of=segr, yshift=-0.5cm] {Single Event Burnout (SEB)};
+
+% Arrows from SEE to Soft and Hard
+\draw [arrow] (see.south west) -- (soft.north);
+\draw [arrow] (see.south east) -- (hard.north);
+
+% Arrows within Soft SEE
+\draw [arrow] (soft.south) -- (seu.north);
+\draw [arrow] (seu.south) -- (set.north);
+\draw [arrow] (set.south) -- (sefi_soft.north);
+
+% Arrows within Hard SEE
+\draw [arrow] (hard.south) -- (sel.north);
+\draw [arrow] (sel.south) -- (sehe.north);
+\draw [arrow] (sehe.south) -- (segr.north);
+\draw [arrow] (segr.south) -- (seb.north);
+
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Classification of Single Event Effects (SEE) into Soft SEE and Hard SEE with their subtypes.}
+\label{fig:see_hard_soft}
+\end{figure}
+
+This research focuses exclusively on soft errors, while hard errors are beyond the scope of this study and will not be discussed further.
 
 \subsection{Single Event Upsets (SEUs) and Failure Modes}
 
 Most modern high-density FPGAs rely on \gls{sram} cells to store their configuration bitstream. 
+
 This \gls{cram} defines the functionality of logic blocks (\glspl{lut} and \glspl{ff}) and all internal interconnections. 
-Unfortunately, this reliance on volatile SRAM renders FPGAs highly susceptible to soft errors induced by high-energy ionizing radiation, 
-a phenomenon particularly severe in environments such as space.
+
+Unfortunately, this reliance on volatile SRAM renders FPGAs highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
 
 \subsubsection{Single Event Upsets (SEUs)}
-The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently
-change the implemented logic and routing, leading to persistent malfunctions.
 
-\subsubsection{System Failure Types}
-These faults manifest themselves as two major types of system failures:
+The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
 
-\begin{enumerate}
-    \item \textbf{Silent Data Corruptions (SDCs):} Incorrect computations leading to incorrect application output.
-    \item \textbf{Single Event Functional Interrupts (SEFIs):} Non-destructive disruptions often caused by upsets in critical control logic (such as clock or reset), leading to processor crashes, hangs, or loss of functionality.
-\end{enumerate}
-
-\subsubsection{Failure Types}
+\subsubsection{\glsentrytext{see} Induced System Failure Types}
 
 When a \gls{seu} hits an essential or critical bit from the \gls{cram} of the \gls{fpga}, it could change the implemented circuit, altering the expected behavior of the affected area.
 
@@ -162,55 +229,15 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \end{figure}
 
 \section{Reliability Challenges in SRAM-based FPGAs}
+
 SRAM-based FPGAs are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults can alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical to developing effective mitigation strategies.
 
-%%Types of Errors
-\usetikzlibrary{shapes.geometric, arrows}
-
-\tikzstyle{block} = [rectangle, rounded corners, minimum width=4cm, minimum height=1cm, text centered, draw=black, fill=blue!20]
-\tikzstyle{subblock} = [rectangle, rounded corners, minimum width=3.5cm, minimum height=0.8cm, text centered, draw=black, fill=green!20]
-\tikzstyle{arrow} = [thick,->,>=stealth]
+The concept of soft error criticality describes the potential of FPGA bits to cause design failures. Upsets in unused regions generally pose a lower risk, as these bits are not expected to affect functionality; however, soft errors could still impact the design if unused elements become inadvertently enabled. Bits configured for the implemented design, whether set to zero or one, are referred to as essential bits. Single-bit upsets in essential bits may be masked by the design, but multiple upsets can accumulate and overcome this inherent protection, potentially leading to errors. Critical bits are those whose flipping can directly cause a system failure, meaning that a single-bit upset in such a bit may compromise the design \cite{Adria2023}. Figure~\ref{fpga-bits-definition} illustrates the classification of the various types of FPGA bits.
 
 \begin{figure}[ht]
 \centering
-\begin{adjustbox}{max width=\textwidth}
-\begin{tikzpicture}[node distance=1.5cm]
-
-% Top-level SEE
-\node (see) [block] {Single Event Effects (SEE)};
-
-% Soft SEE
-\node (soft) [subblock, below left of=see, xshift=-5cm, yshift=-1cm] {Soft SEE};
-\node (seu) [subblock, below of=soft, yshift=-0.5cm] {Single Event Upset (SEU)};
-\node (set) [subblock, below of=seu, yshift=-0.5cm] {Single Event Transient (SET)};
-\node (sefi_soft) [subblock, below of=set, yshift=-0.5cm] {Single Event Functional Interrupt (SEFI)};
-
-% Hard SEE
-\node (hard) [subblock, below right of=see, xshift=5cm, yshift=-1cm] {Hard SEE};
-\node (sel) [subblock, below of=hard, yshift=-0.5cm] {Single Event Latchup (SEL)};
-\node (sehe) [subblock, below of=sel, yshift=-0.5cm] {Single Event Hard Error (SEHE)};
-\node (segr) [subblock, below of=sehe, yshift=-0.5cm] {Single Event Gate Rupture (SEGR)};
-\node (seb) [subblock, below of=segr, yshift=-0.5cm] {Single Event Burnout (SEB)};
-
-% Arrows from SEE to Soft and Hard
-\draw [arrow] (see.south west) -- (soft.north);
-\draw [arrow] (see.south east) -- (hard.north);
-
-% Arrows within Soft SEE
-\draw [arrow] (soft.south) -- (seu.north);
-\draw [arrow] (seu.south) -- (set.north);
-\draw [arrow] (set.south) -- (sefi_soft.north);
-
-% Arrows within Hard SEE
-\draw [arrow] (hard.south) -- (sel.north);
-\draw [arrow] (sel.south) -- (sehe.north);
-\draw [arrow] (sehe.south) -- (segr.north);
-\draw [arrow] (segr.south) -- (seb.north);
-
-\end{tikzpicture}
-\end{adjustbox}
-\caption{Classification of Single Event Effects (SEE) into Soft SEE and Hard SEE with their subtypes.}
-\label{fig:see_hard_soft}
+\includegraphics[width=0.75\textwidth]{Cap3/fpga-bits-definition.png}
+\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \citeauthor{Adria2023}}\label{fpga-bits-definition}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
