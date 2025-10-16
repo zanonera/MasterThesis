@@ -16,7 +16,7 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 
 An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of interconnected configurable elements:
 
-\subsection{Configurable Logic Blocks}
+\subsubsection{Configurable Logic Blocks}
 These are the elementary logic blocks used to implement the desired logic functions. The \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending on the manufacturer \gls{fpga}) perform simple combinational and sequential logic.
 
 In the Zynq 7000 \gls{soc}, \gls{clb} contains a pair of slices, and each of the slices contains four 6-inputs \glspl{lut} and eight storage elements \cite{AMD_UG585}.
@@ -45,13 +45,13 @@ The \glspl{lut} could also be configured for other structures:
 \caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \citeauthor{AMD_UG474}}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
-\subsection{Routing and Interconnect Resources}
+\subsubsection{Routing and Interconnect Resources}
 These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks, and embedded resources to implement complex systems.
 
-\subsection{Input/Output Blocks (IOBs)}
+\subsubsection{Input/Output Blocks (IOBs)}
 These blocks are positioned around the logic core to interface the internal logic with the external environment, handling data input and output.
 
-\subsection{Specialized Heterogeneous Resources}
+\subsubsection{Specialized Heterogeneous Resources}
 Modern FPGAs also include various specialized resources beyond the basic structure, such as:
 \begin{itemize}
     \item \textbf{Embedded Memories}, such as \glspl{bram}.
@@ -245,13 +245,129 @@ The concept of soft error criticality describes the potential of FPGA bits to ca
 \section{N-Modular Redundancy (NMR)}
 \gls{nmr} is a fault-masking technique where multiple identical modules operate in parallel, and a majority voter determines the correct output. While \gls{tmr} (Triple Modular Redundancy) is the most common case, extending to higher-order NMR provides increased fault tolerance at the expense of resource overhead. This section explains the mathematical basis of NMR, voter design considerations, fault coverage properties, and limitations regarding permanent resource degradation.
 
+\subsection{Voters}
+
+In \gls{nmr} architectures, the \emph{voter} is a fundamental component responsible for determining the system’s final output based on the responses of redundant modules. It mediates the outputs of multiple redundant units to produce a single, reliable system response, serving as the coupling element between redundancy and output. Voters are indispensable in both static and hybrid redundancy schemes.
+
+The main functions of voters include:
+
+\begin{enumerate}
+    \item \textbf{Generating Consensus:} Voters receive outputs from the redundant modules and compare them to determine a consensus result, typically based on a majority of matching outputs \cite{Yaman2022,7948063,Dorflinger2022}.
+    \item \textbf{Masking Errors:} In a \gls{tmr} configuration, the voter masks single faults by selecting the majority output from the correctly functioning modules, maintaining system reliability \cite{7948063,Yaman2022,Neves2009,OliveiraKastensmidt2023,Wilson2021_TMRVexRiscv}.
+    \item \textbf{Propagating the Correct Signal:} Once a consensus is established, the voter propagates the signal identified as correct to the subsequent system stage \cite{Romero2015}.
+    \item \textbf{Defining Output Conditions:} In an $N$-modular system, a consensus is achieved when at least $N/2 + 1$ modules produce matching outputs. If this condition is not met, the system is considered to have no valid consensus \cite{Neves2009}.
+\end{enumerate}
+
+\subsection{Voter Architectures and Vulnerabilities}
+\label{sec:voter_types}
+
+Voters play a central role in ensuring reliable outputs in \gls{nmr} systems by mediating between redundant modules. Different voter architectures have been proposed to address specific design constraints and reliability requirements:
+
+\begin{itemize}
+    \item \textbf{Majority or Bit-by-Bit Voters:} The majority voter implements the majority function using standard logic gates, such as AND-OR or NAND structures, to determine the final system output based on the majority of identical input values. In wide data buses, this logic can be applied on a bit-by-bit basis, comparing each bit of the outputs individually. Bit-by-bit majority voters are simple and efficient for small or low-throughput systems but may become less effective in high-bandwidth or complex designs due to the lack of word-level integrity verification.
+
+The Boolean equation for a three-input majority voter can be expressed as:
+    \begin{equation}
+        Q = AB + AC + BC
+        \label{eq:maj_voter}
+    \end{equation}
+    where $A$, $B$, and $C$ represent the outputs of the redundant modules, and $Q$ is the resulting voted output.
+    
+    For a general case with $N$ redundant modules, the majority function can be defined as:
+    \begin{equation}
+        Q =
+        \begin{cases}
+        1, & \text{if } \displaystyle \sum_{i=1}^{N} x_i \geq \frac{N}{2} + 1,\\[6pt]
+        0, & \text{otherwise,}
+        \end{cases}
+        \label{eq:n_input_majority}
+    \end{equation}
+    where $x_i$ represents the binary output of the $i$-th module, and $Q$ is asserted when the majority of inputs are logical ‘1’.
+    
+    \item \textbf{Word Voter:} Proposed by \cite{Mitra2000}, it is designed to overcome the limitations of bit-by-bit voters in wide memory buses, the word voter incorporates additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This mechanism enhances reliability by revealing inconsistencies that conventional voters may otherwise mask.
+
+   he operation of a three-input word voter can be expressed as:
+\begin{equation}
+\begin{aligned}
+W_{\text{out}} &=
+\begin{cases}
+W_1, & \text{if } (W_1 = W_2) \lor (W_1 = W_3), \\[4pt]
+W_2, & \text{if } (W_2 = W_3), \\[4pt]
+\text{undefined}, & \text{otherwise,}
+\end{cases} \\[6pt]
+E_{\text{flag}} &= 
+\begin{cases}
+1, & \text{if } (W_1 \neq W_2) \land (W_1 \neq W_3) \land (W_2 \neq W_3), \\[4pt]
+0, & \text{otherwise.}
+\end{cases}
+\end{aligned}
+\label{eq:word_voter_mitra}
+\end{equation}
+
+where $W_1$, $W_2$, and $W_3$ are the $m$-bit words from the three redundant modules, $W_{\text{out}}$ is the voted output word, and $E_{\text{flag}}$ indicates a mismatch among all module outputs.
+
+This approach enhances data integrity by enabling fault detection at the word level, allowing the system to identify inconsistencies that bit-by-bit voting may overlook.
+    
+    \item \textbf{Self-Adapted Voter (SAv):} Proposed by \cite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerates multiple accumulated faults. The SAv determines the output by considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
+\end{itemize}
+
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
+\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \citeauthor{Yaman2022}}
+\label{tab:voter_comparison} \\
+
+\toprule
+\textbf{Module} & 
+\textbf{0-Module Faulty} & 
+\textbf{1-Module Faulty} & 
+\textbf{2-Module Faulty} & 
+\textbf{3-Module Faulty} \\  
+\midrule
+\endfirsthead
+
+\multicolumn{5}{c}{\tablename\ \thetable{} -- \textit{continued from previous page}} \\ 
+\toprule
+\textbf{Module} & 
+\textbf{0-Module Faulty} & 
+\textbf{1-Module Faulty} & 
+\textbf{2-Module Faulty} & 
+\textbf{3-Module Faulty} \\ 
+\midrule
+\endhead
+
+\midrule
+\multicolumn{5}{r}{\textit{Continued on next page}} \\ 
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+A & 000 & 001 & 001 & 100 \\
+B & 000 & 000 & 010 & 001 \\
+C & 000 & 000 & 000 & 010 \\
+\textbf{Majority Voter} & 000 & 000 & 000 & 000 \\
+\textbf{Word Voter} & 000 & 000 & \textit{No majority} & \textit{No majority} \\
+
+\end{longtable}
+
+In Table~\ref{tab:voter_comparison}, the design and functionality of word and a bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
+
+\subsubsection{Voter Vulnerabilities and Mitigation}
+Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For instance, in a \gls{tmr} configuration, an upset in the voter logic renders the redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. Because the voter's reliability ($R_{\text{voter}}$) directly determines the overall system reliability, enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential for maintaining system dependability.
+
 \section{Dynamic Partial Reconfiguration (DPR)}
 \gls{dpr} enables the selective reprogramming of specific FPGA regions during runtime without disrupting the operation of unaffected modules. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing FPGA systems.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap3/dpr-xilinx.png}
+    \caption{Basic Principle of \gls{dpr}.Reproduced from \cite{Xilinx_UG702_PR}.}
+    \label{fig:dpr-xilinx}
+\end{figure}
 
 \section{Memory Scrubbing Techniques}
 Configuration memory scrubbing is a proactive approach that periodically reads and corrects the FPGA configuration to prevent error accumulation. This section discusses different scrubbing approaches, including blind scrubbing, readback-and-verify, and adaptive scrubbing. It also analyzes trade-offs between error coverage, bandwidth consumption, and system availability.
 
-\section{Scrubbing in SRAM-Based FPGAs}
+\subsection{Scrubbing in SRAM-Based FPGAs}
 
 According to \citeauthor{Wubs2023}, the primary method for correcting bit-flips in the configuration memory of \glspl{fpga} based on \gls{sram} technology is \emph{scrubbing}. This process consists of rewriting corrupted configuration frames using a radiation-protected reference. Faults are identified either through continuous comparison between the current configuration memory and the reference, or by employing \glspl{ecc} mechanisms.
 
@@ -277,7 +393,7 @@ While scrubbing plays a crucial role in preventing the accumulation of faults in
 \section{Fault Injection Principles}
 Fault injection is an essential method for evaluating the robustness of fault-tolerant FPGA designs. By deliberately introducing controlled errors into the system, researchers can analyze failure modes, verify mitigation strategies, and quantify reliability metrics. This section explains fault injection models (bit-flip, stuck-at), implementation techniques (simulation-based, emulation-based, on-chip), and evaluation criteria.
 
-\section{Fault Injection in FPGA-Based Systems}
+\subsection{Fault Injection in FPGA-Based Systems}
 
 According to \citeauthor{Adria2023}, \gls{fi} is an experimental technique used to deliberately introduce faults into a system to reproduce radiation-induced effects and evaluate the dependability of its design. It serves to identify vulnerable regions that require hardening and to validate the effectiveness of implemented fault-mitigation strategies. In radiation-tolerant applications, \gls{fi} is an essential step for characterizing failure mechanisms, validating recovery techniques, and assessing system-level robustness~\cite{Adria2023,leipnitz2015}.
 
