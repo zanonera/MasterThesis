@@ -355,7 +355,7 @@ In Table~\ref{tab:voter_comparison}, the design and functionality of word and a 
 Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For instance, in a \gls{tmr} configuration, an upset in the voter logic renders the redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. Because the voter's reliability ($R_{\text{voter}}$) directly determines the overall system reliability, enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential for maintaining system dependability.
 
 \section{Dynamic Partial Reconfiguration (DPR)}
-\gls{dpr} enables the selective reprogramming of specific FPGA regions during runtime without disrupting the operation of unaffected modules. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing FPGA systems.
+\gls{dpr} enables the selective reprogramming of specific FPGA regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing FPGA systems.
 
 \begin{figure}
     \centering
@@ -363,6 +363,37 @@ Voters are inherently critical components, as they introduce a \textit{single po
     \caption{Basic Principle of \gls{dpr}.Reproduced from \cite{Xilinx_UG702_PR}.}
     \label{fig:dpr-xilinx}
 \end{figure}
+
+\gls{dpr} is a powerful feature widely adopted in modern embedded systems and hardware prototyping, particularly in designs based on \glspl{sram}-based \glspl{fpga}. It enables the modification of hardware functionality at runtime without interrupting the operation of the remaining system components \cite{Ghaffari2014_FastSRAM_FI,ZanoneSaotome2023,Wilson2020_VideoPipelines}.
+
+\subsection{Definition and Mechanism}
+\gls{dpr} allows specific regions of the \gls{fpga} fabric to be reconfigured while other regions continue operating normally \cite{Bonna2021,ZanoneSaotome2023,Barbosa2021}. This capability makes it a cornerstone of runtime-reconfigurable embedded systems, enabling computing devices to modify their hardware architecture dynamically according to application demands.
+
+The main characteristics of \gls{dpr} include:
+\begin{itemize}
+    \item \textbf{Selective Modification:} Enables the reconfiguration of a defined region within the \gls{fpga} without interrupting the operation of the rest of the device \cite{Barbosa2021,Wilson2020_VideoPipelines}.
+    \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \citeauthor{Wilson2020_VideoPipelines}.
+    \item \textbf{Static and Dynamic Logic:} \gls{dpr} separates the design into static (fixed) logic and dynamic (reconfigurable) logic. The static logic remains constant, while the dynamic logic—implemented in \glspl{dpr} can be replaced or updated at runtime \cite{Wilson2020_VideoPipelines}.
+    \item \textbf{Partial Bitstreams:} Reconfiguration is performed through the loading of partial bitstreams, which contain only the configuration data for the reconfigurable partition, unlike full bitstreams that include both static and dynamic regions \cite{Yang2022_FaultInjectionUltrascale}.
+\end{itemize}
+
+Figure~\ref{fig:dpr-xilinx} illustrates the concept described above, where multiple partial bitstreams can coexist in external memory and dynamically loaded, one at a time, into the reconfigurable region of the \gls{dpr} setup.
+
+\subsection{Implementation in FPGA Platforms}
+Implementing \gls{dpr} requires dedicated configuration flows and access to the device’s configuration memory through specialized interfaces. The most common configuration interfaces include:
+
+\begin{enumerate}
+    \item \textbf{Internal Configuration Access Port (ICAP):}  
+    An internal hardware interface accessible through HDL primitives. The ICAP allows rapid reconfiguration directly from within the programmable logic and is often employed in fault injection or fast module updates.
+
+    \item \textbf{Processor Configuration Access Port (PCAP):}  
+    Available on Xilinx Zynq and UltraScale+ \glspl{fpga}, the PCAP is managed by software running on the embedded ARM processor. It facilitates bitstream transfer between the Processing System (PS) and the Programmable Logic (PL) via DMA, enabling efficient runtime reconfiguration.
+
+    \item \textbf{JTAG and SelectMAP:}  
+    External configuration interfaces commonly used for debugging, testing, or initial configuration. While JTAG offers flexibility for development and validation, SelectMAP provides higher bandwidth for bitstream loading during operation.
+\end{enumerate}
+
+Thus, \gls{dpr} provides a foundation for adaptive and fault-tolerant \gls{fpga} systems, enabling the replacement, recovery, or upgrade of hardware modules on demand without system downtime.
 
 \section{Memory Scrubbing Techniques}
 Configuration memory scrubbing is a proactive approach that periodically reads and corrects the FPGA configuration to prevent error accumulation. This section discusses different scrubbing approaches, including blind scrubbing, readback-and-verify, and adaptive scrubbing. It also analyzes trade-offs between error coverage, bandwidth consumption, and system availability.

@@ -225,6 +225,9 @@ To facilitate the reproduction of the results and provide a base configuration f
     \item Define RP properties.
     \item Run Design Rule Checker (DRC).
     \item Create and implement the first configuration.
+    \begin{enumerate}
+        \item  It is important that all the configurable resources (LUTs, FFs, BRAMs, DSPs) needed by the design must be available in the allocated space for the partial area.
+    \end{enumerate}
     \item Create all other configurations.
     \item Verify all configurations using the \texttt{PR\_verify} command.
     \item Generate bitstreams.
