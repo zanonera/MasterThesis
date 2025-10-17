@@ -32,12 +32,7 @@ These two slices do not have connections between them and are organized by colum
 A \gls{lut} with $m$ inputs can implement any logical function defined over those $m$ inputs. 
 In other words, a 6-input \gls{lut} is capable of performing any Boolean function of up to six variables \cite{Battezzati2010}, \cite{Mazzeo2019}.
 
-The \glspl{lut} could also be configured for other structures:
-
-\begin{itemize}
-    \item the so called distributed memory, where each SLICE could be configured as a 64-bit \gls{ram};
-    \item 32-bit shift register (SRL32) or two 16-bit (SRL16).
-\end{itemize}
+The \glspl{lut} could also be configured for other structures, including the so called distributed memory, where each SLICE could be configured as a 64-bit \gls{ram} and as a 32-bit shift register (SRL32) or two 16-bit (SRL16).
 
 \begin{figure}[ht]
 \centering
@@ -83,7 +78,7 @@ FPGAs are programmable devices whose behavior is defined by a \textit{bitstream}
 The type of \gls{cram} used dictates the device's characteristics:
 
 \begin{itemize}
-    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial FPGAs due to their high reconfiguration flexibility, capability for integrating complex systems, and competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration. This technology allows FPGAs to be reprogrammed an infinite number of cycles and, crucially, permits \textit{\gls{dpr}}, meaning parts of the configuration can be changed during runtime. A significant drawback is that the \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu}, \cite{Adria2023}.
+    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial FPGAs due to their high reconfiguration flexibility, capability for integrating complex systems, and competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration. This technology allows FPGAs to be reprogrammed an infinite number of cycles and, crucially, permits \textit{\gls{dpr}}, meaning parts of the configuration can be changed during runtime. A significant drawback is that the \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
 
     \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to SRAM devices \cite{Wubs2023}.
 
@@ -104,7 +99,7 @@ Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structu
 \caption{Simple representation of the \gls{fpga} bitstream structure.}\label{fpga-simple-bitstream}
 \end{figure}
 
-A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \citeauthor{LeRoux2019}, \citeauthor{Aranda2019}, and \citeauthor{Xie2023_HybridGrainedScrubbing}.
+A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \citeauthor{LeRoux2019,Aranda2019,Xie2023_HybridGrainedScrubbing}.
 
 A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 words store configuration data and 1 word contains \gls{ecc} for error correction within the frame.
 
@@ -112,7 +107,7 @@ A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 wor
 
 Integrated circuits operating in radiation environments are susceptible to transient and permanent faults caused by the interaction of ionizing particles with silicon. Ionizing radiation can generate electrical disturbances by depositing charge that alters transistor states. This deposition occurs either directly, when charged particles interact with the material, or indirectly, when neutral particles such as neutrons produce secondary charged particles (e.g., alpha particles, ions, or protons). The severity of the effect depends on the amount and location of the deposited charge within the semiconductor \cite{KastensmidtRech2016}.
 
-\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multi-Bit Upsets (MBUs) and Multi-Cell Upsets (MCUs) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011}.
+\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting \cite{GomezToro2014}. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multi-Bit Upsets (MBUs) and Multi-Cell Upsets (MCUs) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011}.
 
 Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} phenomena and their respective subtypes.
 
@@ -448,38 +443,34 @@ The temporal aspect of fault injection is also crucial. The timing of an injecte
 
 Among these methodologies, emulation-based \gls{fi} has become particularly valuable for evaluating \gls{fpga}-based systems. It allows for real-time fault-effect observation, short testing cycles, and validation of fault-tolerance strategies such as modular redundancy, scrubbing, and \gls{dpr}. In this work, \gls{fi} is employed as a key validation mechanism to characterize the fault tolerance of \gls{fpga}-based designs and to assess the reliability enhancements achieved through redundancy and \gls{dpr} techniques.
 
+\section{Physical Mitigation Techniques}
 
-\subsubsection{Bit-Flip Faults}
-Bit-flip faults simulate transient errors, such as single-event upsets, in memory cells or configuration bits. These faults are temporary and can occur randomly due to radiation or electromagnetic interference. Studying bit-flip faults helps evaluate the effectiveness of runtime error detection and correction mechanisms.
+Mitigation through physical protection can take several forms, including traditional physical barriers, technological fabrication improvements, and layout- or placement-level design strategies. These approaches aim to reduce the impact of radiation by either preventing particle interaction with sensitive regions or by hardening the device structure to withstand such interactions.
 
-\subsubsection{Stuck-At Faults}
-Stuck-at faults represent permanent logical errors where a signal line is stuck at a logical '0' or '1'. These faults can occur due to manufacturing defects or severe electrical stress. Injecting stuck-at faults allows assessment of system behavior under permanent defects and validates repair mechanisms such as partial dynamic reconfiguration.
+\subsection{Physical Barriers and Material-Based Hardening}
+Historically, physical protection through shielding was one of the first techniques used to mitigate \glspl{seu} in spacecraft, effectively reducing the incident particle flux. However, the efficiency of shielding depends strongly on the type of radiation involved:
+\begin{itemize}
+    \item Shielding is effective against alpha and beta particles but has limited effect against gamma rays, neutrons, or heavy ions \cite{Barbosa2021}.
+    \item Even with duplication or triplication of shielding layers, the reduction in proton-induced effects is often marginal \cite{Barbosa2021}..
+    \item Additional insulating and polymer-based materials have been explored to mitigate soft errors, though their effectiveness remains application-dependent \cite{Rogenmoser2023_HMR,Barbosa2021}.
+\end{itemize}
 
-\subsection{Implementation Techniques}
-This subsection presents the main approaches for performing fault injection in FPGA systems. Each technique has advantages and trade-offs regarding accuracy, speed, and realism.
+At the device manufacturing level, protection is achieved through \gls{rhbp}. These techniques mitigate \gls{tid} and \gls{sel} effects by modifying fabrication processes, such as using \gls{soi}, \gls{bicmos}, or other wide-bandgap technologies. \gls{rhbp} acts directly on oxide and interface charge-retention characteristics, while structural modifications like isolation wells or current-limiting transistors can prevent destructive latch-up events \cite{Barbosa2021}..
 
-\subsubsection{Simulation-Based Fault Injection}
-Simulation-based techniques introduce faults into software models of the system. This method allows early evaluation without physical hardware and can test a large number of scenarios quickly. However, it may not capture all hardware-specific effects.
+\subsection{Hardening by Physical Design and Layout}
+Another level of mitigation, known as \gls{rhbd}, focuses on the physical layout of the circuit to improve resilience against radiation effects \cite{Rogenmoser2023_HMR}:
+\begin{itemize}
+    \item \textbf{Layout Modification:} Increasing the spacing between sensitive nodes reduces charge sharing from particle strikes, while enlarging transistors in critical paths increases their critical charge ($Q_{\text{crit}}$), enhancing radiation tolerance \cite{Battezzati2010}.
+    \item \textbf{SEL Detection and Limitation:} External circuitry on the power rails can detect abnormal current spikes caused by latch-up and act as resettable fuses or current limiters \cite{Battezzati2010}.
+    \item \textbf{SET Mitigation:} Proper contact placement and signal routing can help cancel transient pulses generated by radiation events \cite{Sharma2020_IPFA_MBU}.
+\end{itemize}
 
-\subsubsection{Emulation-Based Fault Injection}
-Emulation-based fault injection uses a hardware-in-the-loop setup, often leveraging FPGA prototypes or development boards. This method provides a more accurate assessment than simulation and allows testing of real hardware timing and interactions.
+\subsection{SEU-Aware Placement}
+A modern design-flow-level mitigation approach, proposed by \citeauthor{Wilson2025}, is the \gls{seu}-aware placement, which applies physical placement constraints during the implementation phase:
+\begin{itemize}
+    \item This method improves fault tolerance without modifying the \gls{hdl}'s design source code.
+    \item Using \gls{xdc} or \gls{tcl} scripts, designers can control the placement of logic elements, registers, and routing paths to minimize sensitivity to \glspl{seu}.
+    \item It also enables \textit{domain striping}---the physical separation of redundant modules---and prevents optimization tools from merging triplicated elements such as global clock buffers, thereby maintaining redundancy integrity.
+\end{itemize}
 
-\subsubsection{On-Chip Fault Injection}
-On-chip fault injection directly manipulates configuration memory, logic cells, or peripheral interfaces in the FPGA. This approach provides the most realistic evaluation of system behavior under actual fault conditions but may require sophisticated instrumentation and careful safety measures.
-
-\subsection{Evaluation Criteria}
-Defining proper evaluation criteria is essential to measure the impact of injected faults and assess mitigation strategies.
-
-\subsubsection{Fault Coverage}
-Fault coverage quantifies the proportion of injected faults that are successfully detected or mitigated by the system. High coverage indicates a robust design capable of handling the expected fault rate.
-
-\subsubsection{Error Latency}
-Error latency measures the time between fault occurrence and detection or correction. Low latency is critical for systems requiring real-time reliability, such as aerospace or automotive applications.
-
-\subsubsection{Recovery Time}
-Recovery time indicates how quickly the system can return to normal operation after a fault. Techniques like NMR, DPR, and memory scrubbing aim to minimize recovery time to maintain continuous operation.
-
-
-\section{Reliability Metrics and Evaluation Methods}
-Assessing the effectiveness of fault-tolerance techniques requires quantitative metrics such as Mean Time Between Failures (MTBF), fault coverage, and error latency. This section introduces these metrics, outlines statistical approaches to evaluate system reliability, and highlights how they guide design trade-offs in FPGA-based systems.
-
+Physical protection and mitigation strategies, such as shielding and material hardening, are commonly employed to reduce radiation-induced effects at the device level by attenuating or blocking incident particles, thereby minimizing the probability of single-event phenomena. Although these techniques play an important role in enhancing device resilience, this research does not focus on such approaches. Mitigations based on external barriers or material hardening are beyond the scope of this work, which instead emphasizes architectural and logic-level strategies, particularly those involving \gls{nmr} and \gls{dpr}.

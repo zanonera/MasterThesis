@@ -25,12 +25,12 @@ FI is crucial for qualifying systems, particularly those designed for safety-cri
 where components are susceptible to \textit{Single Event Effects (SEEs)}.
 
 A complete fault injection methodology is comprehensively characterized by four key components:
-\begin{enumerate}
+\begin{itemize}
     \item The adopted \textbf{fault model};
-    \item The \textbf{activation patterns} (stimuli or workload) used to test the design;
-    \item The \textbf{readout values} collected during the experiment;
-    \item The derived \textbf{metrics}, such as error or failure rate.
-\end{enumerate}
+    \item The activation patterns (stimuli or workload) used to test the design;
+    \item The readout values collected during the experiment;
+    \item The derived metrics, such as error or failure rate.
+\end{itemize}
 
 Fault models typically represent malfunctions such as transient or permanent faults, 
 often modeling \textit{Single Event Upsets (SEUs)} as bit-flips in memory elements. 
@@ -38,9 +38,9 @@ To evaluate correctness, the system output is compared against the expected outp
 commonly referred to as the \textit{golden system} or \textit{golden run}. 
 The results collected enable the classification of fault effects into categories such as:
 \begin{itemize}
-    \item \textbf{Failure} – the system produces incorrect or unexpected behavior;
-    \item \textbf{Latent error} – the fault does not immediately affect functionality but may propagate later;
-    \item \textbf{Non-effective (benign) fault} – the fault produces no observable effect.
+    \item Failure: the system produces incorrect or unexpected behavior;
+    \item Latent error: the fault does not immediately affect functionality but may propagate later;
+    \item Non-effective (benign) fault: the fault produces no observable effect.
 \end{itemize}
 
 \subsubsection{Fault Injection Techniques}
@@ -48,7 +48,7 @@ The results collected enable the classification of fault effects into categories
 Fault injection techniques are typically classified into three major categories: 
 \textbf{physical}, \textbf{simulation-based}, and \textbf{emulation-based} methods.
 
-\begin{enumerate}
+\begin{itemize}
     \item \textbf{Physical Fault Injection:}
     This method (e.g., heavy-ion or proton testing) disturbs the actual hardware using environmental factors. 
     It provides high accuracy for real faults but suffers from high cost, limited controllability, 
@@ -60,9 +60,9 @@ Fault injection techniques are typically classified into three major categories:
     It is invaluable during early design phases because it provides high observability and controllability. 
     Common techniques include:
     \begin{itemize}
-        \item \textit{Simulator commands}, 
-        \item \textit{Saboteurs} – additional components that intercept and alter signals,
-        \item \textit{Mutants} – modified versions of existing components.
+        \item Simulator commands, 
+        \item Saboteurs: additional components that intercept and alter signals,
+        \item Mutants: modified versions of existing components.
     \end{itemize}
     However, simulation can become prohibitively slow when evaluating complex systems or conducting large fault campaigns.
 
@@ -75,7 +75,7 @@ Fault injection techniques are typically classified into three major categories:
     Emulation offers significantly faster evaluation—potentially orders of magnitude faster than simulation—while maintaining 
     greater control than physical testing, making it a preferable choice for high-volume fault injection campaigns 
     aimed at achieving comprehensive fault coverage efficiently.
-\end{enumerate}
+\end{itemize}
 
 \section{Summary of Related Works}
 This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.

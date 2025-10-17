@@ -6,7 +6,7 @@ and short development cycles. As discussed by \citeauthor{Garcia2020}, these dev
 
 As discussed in \citeauthor{Fibichi2019}, the most common \gls{fpga} stores its configuration in an external \gls{spi} flash memory that is read during boot into a \gls{sram}-based memory, called \gls{cram}. However, \gls{sram} are inherently susceptible to transient faults caused by radiation \cite{acmeTuto}, electromagnetic interference, or aging effects, which can corrupt the bits stored in the \gls{cram} or logic states, leading to unexpected behavior, performance degradation, or even complete system failure \cite{Wubs2023}.
 
-To allow the use of \gls{fpga} in applications where it will be subjected to harsh environments, as in space, two options are available. The use of space-grade components, that are engineered for radiation tolerance \cite{Battezzati2010,bates2016,DiMascio2019} or \gls{cots} \glspl{fpga} that are not engineered to withstand harsh environments, but could offer advantages in cost and performance \cite{Barbosa2021}. Advances in error mitigation techniques, such as redundancy and error correction, have made it possible to consider COTS devices for space applications \cite{10207287}, \cite{Brosser2014}. 
+To allow the use of \gls{fpga} in applications where it will be subjected to harsh environments, as in space, two options are available. The use of space-grade components, that are engineered for radiation tolerance \cite{Battezzati2010,bates2016,DiMascio2019} or \gls{cots} \glspl{fpga} that are not engineered to withstand harsh environments, but could offer advantages in cost and performance \cite{Barbosa2021}. Advances in error mitigation techniques, such as redundancy and error correction, have made it possible to consider COTS devices for space applications \cite{10207287,Brosser2014}. 
 
 \gls{cots} \glspl{fpga} are often preferred over space-grade \glspl{fpga} in modern aerospace applications for two reasons. Firstly, \gls{cots} \glspl{fpga} offer significantly lower costs, making them more accessible for a wider range of missions, especially in the context of small satellites and constellations \cite{Yaman2022}, where budget constraints are critical. Secondly, \gls{cots} \glspl{fpga} benefit from the rapid advances of the commercial electronics market, providing higher performance, higher logic density, and more up-to-date features compared to their space-grade counterparts, which typically lag behind in the technology nodes due to extended qualification processes \cite{Nguyen2017}.
 
@@ -21,7 +21,7 @@ In addition, to address the high demand for computing power, while maintaining h
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motivation}
 
-Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission-critical and safety-critical applications, especially in the aerospace \cite{9298818}, it is important to apply error mitigation strategies to increase reliability, especially in unmanned devices. While static \gls{nmr} can mask faults, periodic full, \gls{dpr} and scrubbing can repair them. These approaches achieve better results when applied in conjunction, increasing tolerance to error, and achieving some degree of self-healing, \cite{6880163} and \cite{Shaji2019}.
+Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission-critical and safety-critical applications, especially in the aerospace \cite{9298818}, it is important to apply error mitigation strategies to increase reliability, especially in unmanned devices. While static \gls{nmr} can mask faults, periodic full, \gls{dpr} and scrubbing can repair them. These approaches achieve better results when applied in conjunction, increasing tolerance to error, and achieving some degree of self-healing \cite{6880163,Shaji2019}.
 
 Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to degradation in performance or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation, enabling FPGA-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
 
@@ -31,6 +31,9 @@ By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injec
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scope and Objectives}
+
+This section defines the scope and primary objectives of the research, outlining the boundaries of the study and the specific goals pursued throughout its development. It establishes the foundation for the methodologies and contributions presented in the following chapters.
+
 \subsection{Scope}
 This work focuses on improving the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and memory scrubbing for runtime repair. In addition, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
 
