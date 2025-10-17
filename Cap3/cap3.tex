@@ -14,10 +14,10 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 
 \subsection{Core Structure and Components}
 
-An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of interconnected configurable elements:
+An \gls{fpga} is essentially a complex heterogeneous device implemented on a single chip. Its basic structure consists of an array or matrix of configurable interconnected elements, as illustrated in Figure~\ref{fpga-arch}.
 
 \subsubsection{Configurable Logic Blocks}
-These are the elementary logic blocks used to implement the desired logic functions. The \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending on the manufacturer \gls{fpga}) perform simple combinational and sequential logic.
+These are the elementary logic blocks used to implement the desired logic functions. The \glspl{clb} (sometimes called Logic Cells or Logic Array Blocks, depending on the \gls{fpga}'s manufacturer) perform simple combinational and sequential logic.
 
 In the Zynq 7000 \gls{soc}, \gls{clb} contains a pair of slices, and each of the slices contains four 6-inputs \glspl{lut} and eight storage elements \cite{AMD_UG585}.
 
@@ -29,8 +29,7 @@ These two slices do not have connections between them and are organized by colum
     \item Register (\gls{ff}) and shift register available.
 \end{itemize}
 
-A \gls{lut} with $m$ inputs can implement any logical function defined over those $m$ inputs. 
-In other words, a 6-input \gls{lut} is capable of performing any Boolean function of up to six variables \cite{Battezzati2010}, \cite{Mazzeo2019}.
+A \gls{lut} with $m$ inputs can implement any Boolean function defined over those $m$ variables. For example, a 6-input \gls{lut} can realize any six-variable Boolean function, two arbitrary five-variable functions if they share common inputs, or two independent Boolean functions of up to three and two inputs, respectively \cite{Battezzati2010, Mazzeo2019, AMD_UG585}.
 
 The \glspl{lut} could also be configured for other structures, including the so called distributed memory, where each SLICE could be configured as a 64-bit \gls{ram} and as a 32-bit shift register (SRL32) or two 16-bit (SRL16).
 
@@ -47,7 +46,7 @@ These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a netwo
 These blocks are positioned around the logic core to interface the internal logic with the external environment, handling data input and output.
 
 \subsubsection{Specialized Heterogeneous Resources}
-Modern FPGAs also include various specialized resources beyond the basic structure, such as:
+Modern \glspl{fpga} also include various specialized resources beyond the basic structure, such as:
 \begin{itemize}
     \item \textbf{Embedded Memories}, such as \glspl{bram}.
     \item \textbf{Arithmetic Resources}, such as \gls{dsp} units.
@@ -73,12 +72,12 @@ As shown in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has othe
 
 \subsection{Configuration and Reprogrammability}
 
-FPGAs are programmable devices whose behavior is defined by a \textit{bitstream}. This bitstream contains all the information needed to configure the circuit in the FPGA architecture, mapping the user-defined \gls{hdl} design to the available logic and routing elements.
+\glspl{fpga} are programmable devices whose behavior is defined by the \textit{bitstream} loaded to its \gls{cram}. This bitstream contains all the information needed to configure the blocks in the \gls{fpga} architecture, mapping the user-defined \gls{hdl} design to the available logic and routing elements.
 
 The type of \gls{cram} used dictates the device's characteristics:
 
 \begin{itemize}
-    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial FPGAs due to their high reconfiguration flexibility, capability for integrating complex systems, and competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration. This technology allows FPGAs to be reprogrammed an infinite number of cycles and, crucially, permits \textit{\gls{dpr}}, meaning parts of the configuration can be changed during runtime. A significant drawback is that the \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
+    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial \glspl{fpga} due to their high reconfiguration flexibility, the ability to integrate complex systems and their competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration of all internal \glspl{lut} and functions of the device. This technology allows \glspl{fpga} to be reprogrammed in an virtually infinite number of cycles and allows \textit{\gls{dpr}}, which means parts of the configuration can be changed during runtime. A significant drawback is that \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
 
     \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to SRAM devices \cite{Wubs2023}.
 
@@ -87,7 +86,7 @@ The type of \gls{cram} used dictates the device's characteristics:
 
 \subsubsection{Bitstream}
 
-The bitstream represents the device's configuration for a specific application and is downloaded to the FPGA at startup. Its exact structure and semantics are proprietary and have become increasingly complex over the years.
+The bitstream represents the device's configuration for a specific application and is downloaded to the \gls{fpga}'s \gls{cram} at startup. Its exact structure and semantics are proprietary and have become increasingly complex over the years.
 
 Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example is \cite{f4pga_prjxray}.
 
@@ -164,15 +163,15 @@ This research focuses exclusively on soft errors, while hard errors are beyond t
 
 \subsection{Single Event Upsets (SEUs) and Failure Modes}
 
-Most modern high-density FPGAs rely on \gls{sram} cells to store their configuration bitstream. 
+Most modern high-density \glspl{fpga} rely on \gls{sram} cells to store their configuration bitstream. 
 
 This \gls{cram} defines the functionality of logic blocks (\glspl{lut} and \glspl{ff}) and all internal interconnections. 
 
-Unfortunately, this reliance on volatile SRAM renders FPGAs highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
+Unfortunately, this reliance on volatile SRAM renders \glspl{fpga} highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
 
 \subsubsection{Single Event Upsets (SEUs)}
 
-The principal threat to FPGA reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based FPGAs, \glspl{seu} are a major concern because the altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
+The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because the altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
 
 \subsubsection{\glsentrytext{see} Induced System Failure Types}
 
@@ -191,7 +190,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{FPGA Structure. Adapted from \citeauthor{Mousavi2023_MTTR_FPGA_Scrubbing}}\label{fpga-seu-and}
+\caption{\gls{fpga} Structure. Adapted from \citeauthor{Mousavi2023_MTTR_FPGA_Scrubbing}}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
@@ -225,9 +224,9 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 
 \section{Reliability Challenges in SRAM-based FPGAs}
 
-SRAM-based FPGAs are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults can alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical to developing effective mitigation strategies.
+SRAM-based \glspl{fpga} are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults can alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical to developing effective mitigation strategies.
 
-The concept of soft error criticality describes the potential of FPGA bits to cause design failures. Upsets in unused regions generally pose a lower risk, as these bits are not expected to affect functionality; however, soft errors could still impact the design if unused elements become inadvertently enabled. Bits configured for the implemented design, whether set to zero or one, are referred to as essential bits. Single-bit upsets in essential bits may be masked by the design, but multiple upsets can accumulate and overcome this inherent protection, potentially leading to errors. Critical bits are those whose flipping can directly cause a system failure, meaning that a single-bit upset in such a bit may compromise the design \cite{Adria2023}. Figure~\ref{fpga-bits-definition} illustrates the classification of the various types of FPGA bits.
+The concept of soft error criticality describes the potential of \gls{fpga} bits to cause design failures. Upsets in unused regions generally pose a lower risk, as these bits are not expected to affect functionality; however, soft errors could still impact the design if unused elements become inadvertently enabled. Bits configured for the implemented design, whether set to zero or one, are referred to as essential bits. Single-bit upsets in essential bits may be masked by the design, but multiple upsets can accumulate and overcome this inherent protection, potentially leading to errors. Critical bits are those whose flipping can directly cause a system failure, meaning that a single-bit upset in such a bit may compromise the design \cite{Adria2023}. Figure~\ref{fpga-bits-definition} illustrates the classification of the various types of \gls{fpga} bits.
 
 \begin{figure}[ht]
 \centering
@@ -350,7 +349,7 @@ In Table~\ref{tab:voter_comparison}, the design and functionality of word and a 
 Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For instance, in a \gls{tmr} configuration, an upset in the voter logic renders the redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. Because the voter's reliability ($R_{\text{voter}}$) directly determines the overall system reliability, enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential for maintaining system dependability.
 
 \section{Dynamic Partial Reconfiguration (DPR)}
-\gls{dpr} enables the selective reprogramming of specific FPGA regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing FPGA systems.
+\gls{dpr} enables the selective reprogramming of specific \gls{fpga} regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing \gls{fpga} systems.
 
 \begin{figure}
     \centering
@@ -391,7 +390,7 @@ Implementing \gls{dpr} requires dedicated configuration flows and access to the 
 Thus, \gls{dpr} provides a foundation for adaptive and fault-tolerant \gls{fpga} systems, enabling the replacement, recovery, or upgrade of hardware modules on demand without system downtime.
 
 \section{Memory Scrubbing Techniques}
-Configuration memory scrubbing is a proactive approach that periodically reads and corrects the FPGA configuration to prevent error accumulation. This section discusses different scrubbing approaches, including blind scrubbing, readback-and-verify, and adaptive scrubbing. It also analyzes trade-offs between error coverage, bandwidth consumption, and system availability.
+Configuration memory scrubbing is a proactive approach that periodically reads and corrects the \gls{fpga} configuration to prevent error accumulation. This section discusses different scrubbing approaches, including blind scrubbing, readback-and-verify, and adaptive scrubbing. It also analyzes trade-offs between error coverage, bandwidth consumption, and system availability.
 
 \subsection{Scrubbing in SRAM-Based FPGAs}
 
@@ -417,7 +416,7 @@ While scrubbing plays a crucial role in preventing the accumulation of faults in
 
 
 \section{Fault Injection Principles}
-Fault injection is an essential method for evaluating the robustness of fault-tolerant FPGA designs. By deliberately introducing controlled errors into the system, researchers can analyze failure modes, verify mitigation strategies, and quantify reliability metrics. This section explains fault injection models (bit-flip, stuck-at), implementation techniques (simulation-based, emulation-based, on-chip), and evaluation criteria.
+Fault injection is an essential method for evaluating the robustness of fault-tolerant \gls{fpga} designs. By deliberately introducing controlled errors into the system, researchers can analyze failure modes, verify mitigation strategies, and quantify reliability metrics. This section explains fault injection models (bit-flip, stuck-at), implementation techniques (simulation-based, emulation-based, on-chip), and evaluation criteria.
 
 \subsection{Fault Injection in FPGA-Based Systems}
 
