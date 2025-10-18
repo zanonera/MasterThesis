@@ -184,7 +184,7 @@ In Vivado, one message that may indicate such an optimization is the following:
 
 This message indicates that the tool has merged or eliminated redundant module instances (``clones''), which may compromise the intended fault-tolerant behavior of the design.
 
-As presented by \citeauthor{acmeTuto}, one possible solution to this issue is the inclusion of the attribute \texttt{dont\_touch} in the design. This attribute is recognized by the synthesis tool and propagated to the place-and-route stages, ensuring that the specified object is preserved and not subject to optimization \cite{AMD:KEEP_DONT_TOUCH}.
+As presented by \textcite{acmeTuto}, one possible solution to this issue is the inclusion of the attribute \texttt{dont\_touch} in the design. This attribute is recognized by the synthesis tool and propagated to the place-and-route stages, ensuring that the specified object is preserved and not subject to optimization \cite{AMD:KEEP_DONT_TOUCH}.
 
 The following examples illustrate how to apply this attribute in different design description contexts:
 

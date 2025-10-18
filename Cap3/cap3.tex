@@ -36,7 +36,7 @@ The \glspl{lut} could also be configured for other structures, including the so 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
-\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \citeauthor{AMD_UG474}}\label{fpga-arch-clb-slice-amd}
+\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
 \subsubsection{Routing and Interconnect Resources}
@@ -59,7 +59,7 @@ As shown in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of conf
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{\gls{fpga} Structure. Adapted from \citeauthor{Marioli2010}}\label{fpga-arch}
+\caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}}\label{fpga-arch}
 \end{figure}
 
 As shown in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
@@ -67,7 +67,7 @@ As shown in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has othe
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
-\caption{\gls{fpga} Structure. Reproduced from \citeauthor{AMD_UG474}}\label{fpga-column-asmbl}
+\caption{\gls{fpga} Structure. Reproduced from \textcite{AMD_UG474}}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -98,7 +98,7 @@ Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structu
 \caption{Simple representation of the \gls{fpga} bitstream structure.}\label{fpga-simple-bitstream}
 \end{figure}
 
-A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \citeauthor{LeRoux2019,Aranda2019,Xie2023_HybridGrainedScrubbing}.
+A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \textcite{LeRoux2019,Aranda2019,Xie2023_HybridGrainedScrubbing}.
 
 A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 words store configuration data and 1 word contains \gls{ecc} for error correction within the frame.
 
@@ -190,7 +190,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{\gls{fpga} Structure. Adapted from \citeauthor{Mousavi2023_MTTR_FPGA_Scrubbing}}\label{fpga-seu-and}
+\caption{\gls{fpga} Structure. Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
@@ -213,13 +213,13 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/seu-sb-mb.png}
-\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \citeauthor{Aguiar2025_SEE_Space_to_Accelerator}}\label{fpga-seu-and-sbu-mbu}
+\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}}\label{fpga-seu-and-sbu-mbu}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fncom-17-1268374-g0001.jpg}
-\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \citeauthor{Xie2023_HybridGrainedScrubbing}}\label{fpga-3upsets-cram}
+\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Xie2023_HybridGrainedScrubbing}}\label{fpga-3upsets-cram}
 \end{figure}
 
 \section{Reliability Challenges in SRAM-based FPGAs}
@@ -231,7 +231,7 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-bits-definition.png}
-\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \citeauthor{Adria2023}}\label{fpga-bits-definition}
+\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \textcite{Adria2023}}\label{fpga-bits-definition}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -306,7 +306,7 @@ This approach enhances data integrity by enabling fault detection at the word le
 \end{itemize}
 
 \begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
-\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \citeauthor{Yaman2022}}
+\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \textcite{Yaman2022}}
 \label{tab:voter_comparison} \\
 
 \toprule
@@ -366,7 +366,7 @@ Voters are inherently critical components, as they introduce a \textit{single po
 The main characteristics of \gls{dpr} include:
 \begin{itemize}
     \item \textbf{Selective Modification:} Enables the reconfiguration of a defined region within the \gls{fpga} without interrupting the operation of the rest of the device \cite{Barbosa2021,Wilson2020_VideoPipelines}.
-    \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \citeauthor{Wilson2020_VideoPipelines}.
+    \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \textcite{Wilson2020_VideoPipelines}.
     \item \textbf{Static and Dynamic Logic:} \gls{dpr} separates the design into static (fixed) logic and dynamic (reconfigurable) logic. The static logic remains constant, while the dynamic logic—implemented in \glspl{dpr} can be replaced or updated at runtime \cite{Wilson2020_VideoPipelines}.
     \item \textbf{Partial Bitstreams:} Reconfiguration is performed through the loading of partial bitstreams, which contain only the configuration data for the reconfigurable partition, unlike full bitstreams that include both static and dynamic regions \cite{Yang2022_FaultInjectionUltrascale}.
 \end{itemize}
@@ -394,13 +394,13 @@ Configuration memory scrubbing is a proactive approach that periodically reads a
 
 \subsection{Scrubbing in SRAM-Based FPGAs}
 
-According to \citeauthor{Wubs2023}, the primary method for correcting bit-flips in the configuration memory of \glspl{fpga} based on \gls{sram} technology is \emph{scrubbing}. This process consists of rewriting corrupted configuration frames using a radiation-protected reference. Faults are identified either through continuous comparison between the current configuration memory and the reference, or by employing \glspl{ecc} mechanisms.
+According to \textcite{Wubs2023}, the primary method for correcting bit-flips in the configuration memory of \glspl{fpga} based on \gls{sram} technology is \emph{scrubbing}. This process consists of rewriting corrupted configuration frames using a radiation-protected reference. Faults are identified either through continuous comparison between the current configuration memory and the reference, or by employing \glspl{ecc} mechanisms.
 
 Two main approaches to scrubbing exist: internal and external. Internal scrubbers leverage the \gls{fpga}’s own resources and require no additional hardware but generally provide limited fault detection and correction capabilities. In contrast, external scrubbers offer higher performance and reliability, though they require dedicated external hardware to manage the process.
 
 Scrubbing can be performed on the entire configuration memory (\emph{full scrubbing}) or on selected regions (\emph{partial scrubbing}). The latter is only feasible if the targeted area is physically isolated from the rest of the circuit to avoid interference. It is important to note that scrubbing merely prevents the accumulation of soft errors in configuration memory. Bit-flips that occur between scrubbing cycles can still cause functional errors or incorrect output states, since there is an inevitable latency between fault occurrence and correction. Moreover, scrubbing does not address faults in user registers or embedded memories, which remain susceptible to radiation-induced effects~\cite{Wubs2023}.
 
-As highlighted by \citeauthor{Adria2023}, \glspl{seu} in \glspl{fpga} may lead to persistent functional errors by altering the architectural configuration of the implemented design. To mitigate such effects and prevent fault accumulation, \gls{cram} scrubbing is a well-established corrective strategy. However, scrubbing does not prevent the occurrence of bit-flips, nor can it fully mitigate the consequences of upsets affecting critical bits. Therefore, additional design-level mitigation mechanisms are typically employed to reduce single points of failure and enhance the system’s fault-masking capability.
+As highlighted by \textcite{Adria2023}, \glspl{seu} in \glspl{fpga} may lead to persistent functional errors by altering the architectural configuration of the implemented design. To mitigate such effects and prevent fault accumulation, \gls{cram} scrubbing is a well-established corrective strategy. However, scrubbing does not prevent the occurrence of bit-flips, nor can it fully mitigate the consequences of upsets affecting critical bits. Therefore, additional design-level mitigation mechanisms are typically employed to reduce single points of failure and enhance the system’s fault-masking capability.
 
 Several scrubbing architectures have been proposed in the literature, differing mainly in their error detection methods, resource utilization, power consumption, and correction latency~\cite{heiner2008,Brosser2014,tonfat2015,7776929}. Scrubbing strategies are usually classified into two categories:
 \begin{itemize}
@@ -420,7 +420,7 @@ Fault injection is an essential method for evaluating the robustness of fault-to
 
 \subsection{Fault Injection in FPGA-Based Systems}
 
-According to \citeauthor{Adria2023}, \gls{fi} is an experimental technique used to deliberately introduce faults into a system to reproduce radiation-induced effects and evaluate the dependability of its design. It serves to identify vulnerable regions that require hardening and to validate the effectiveness of implemented fault-mitigation strategies. In radiation-tolerant applications, \gls{fi} is an essential step for characterizing failure mechanisms, validating recovery techniques, and assessing system-level robustness~\cite{Adria2023,leipnitz2015}.
+According to \textcite{Adria2023}, \gls{fi} is an experimental technique used to deliberately introduce faults into a system to reproduce radiation-induced effects and evaluate the dependability of its design. It serves to identify vulnerable regions that require hardening and to validate the effectiveness of implemented fault-mitigation strategies. In radiation-tolerant applications, \gls{fi} is an essential step for characterizing failure mechanisms, validating recovery techniques, and assessing system-level robustness~\cite{Adria2023,leipnitz2015}.
 
 Fault injection can be applied at various abstraction levels, including the transistor, gate, register-transfer (RTL), or system level~\cite{anghel2007}. For example, in a soft processor implemented in a \gls{sram}-based \gls{fpga}, bit flips injected into \gls{cram} affect the processor’s \gls{rtl} architecture, while faults injected into \glspl{bram} influence the execution of applications at the user-level~\cite{Adria2023}.
 
@@ -465,7 +465,7 @@ Another level of mitigation, known as \gls{rhbd}, focuses on the physical layout
 \end{itemize}
 
 \subsection{SEU-Aware Placement}
-A modern design-flow-level mitigation approach, proposed by \citeauthor{Wilson2025}, is the \gls{seu}-aware placement, which applies physical placement constraints during the implementation phase:
+A modern design-flow-level mitigation approach, proposed by \textcite{Wilson2025}, is the \gls{seu}-aware placement, which applies physical placement constraints during the implementation phase:
 \begin{itemize}
     \item This method improves fault tolerance without modifying the \gls{hdl}'s design source code.
     \item Using \gls{xdc} or \gls{tcl} scripts, designers can control the placement of logic elements, registers, and routing paths to minimize sensitivity to \glspl{seu}.
