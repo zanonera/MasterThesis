@@ -78,7 +78,7 @@ The requirements for this architecture were established on the basis of the foll
     \label{zynq-paper-arch}
 \end{figure}
 
-As shown in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
+As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
 \subsection{Soft Error Mitigation}
 To protect \gls{sram}-based FPGA, Xilinx’s \gls{sem} \gls{ip}, \cite{amd2023sem} is being used on this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
@@ -86,9 +86,9 @@ It is possible to communicate with the controller using the AXI Bus of the proce
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
-The full or partial bitstream is loaded to the processor \gls{ddr}, then using \gls{dma}, the file is transferred to the configuration memory of the PL using the \gls{pcap} port.
+The full or partial bitstream could be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loadde into the \gls{fpga} \gls{cram} without processing interruption.
 
-The main idea of the \gls{dpr} region, denoted by the "HW Accel." in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application and to be able to reprogram this function accordingly to the one necessary for that specify computation.
+The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application, being able to reprogram this area accordingly to the need circuit or function needed at that time, giving the system some sort of hardware redundancy in time.
 
 \begin{figure}[ht]
     \centering
@@ -97,7 +97,7 @@ The main idea of the \gls{dpr} region, denoted by the "HW Accel." in Figure~\ref
     \label{dpr-partial-diagram}
 \end{figure}
 
-As shown in Figure~\ref{dpr-partial-diagram},
+As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any combination of partial bitstreams that could have different functions, for example a multiplier, an adder, a filter or any other needed function. Then, this could be dynamically programmed in this area, changing the behavior of the system without affecting the other function around it.
 
 \begin{figure}[ht]
     \centering
@@ -106,17 +106,19 @@ As shown in Figure~\ref{dpr-partial-diagram},
     \label{dpr-full-diagram}
 \end{figure}
 
-As shown in Figure~\ref{dpr-full-diagram},
+As illustrated in Figure~\ref{dpr-full-diagram}, the full bitstream reconfigures the entire \gls{fpga} \gls{cram}, so the entire circuit needs to be shut off and will only return to function when the complete reprogram is complete.
+
+The size of the bitstreams, illustrated by the squares in Figures ~\ref{dpr-full-diagram} and~\ref{dpr-partial-diagram}, gives the exact notion of the time needed to reprogram \gls{fpga} \gls{cram}. As the partial bitstream only reprograms a small portion of the device, the full bitstream will reprogram the entire device. So, this translates into the difference in the size of files and the time needed for reconfiguration. 
 
 \subsection{Integration of \glsentrytext{dpr} and \glsentrytext{sem} in the same project}
 
-In Zynq~\cite{Xilinx_DS190}, the processor sub-system has control at power-up of all configurations to \gls{pl}, using the \gls{pcap} port. The system is designed this way mainly because of two factors: 
-\begin{enumerate}
-    \item Improve the overall security of the design, so the Arm's TrustZone should take control of the configuration port and, using its set of registers, allow only the non-secure fabric \gls{icap} port to configure the device.
-    \item Allowing \gls{fpga}' configuration at boot time through Arm's \gls{fsbl}.
-\end{enumerate}
+As defined in \textcite{Xilinx_DS190},the processor sub-system, present in  Zynq device family, has control, at power-up, of all configurations to \gls{pl}, using the \gls{pcap} port. The system is designed this way mainly because of the following facts:
+\begin{itemize}
+    \item Improvement in the overall security of the design, as the Arm's TrustZone shall take control of the configuration port and, using its set of registers, allow only the non-secure fabric \gls{icap} port to configure the device.
+    \item Allows the \gls{fpga} to be configured at boot time, through Arm's \gls{fsbl}.
+\end{itemize}
 
-The selection of the interface under control of the \gls{fpga} configuration is made using a 2:1 mux, controlled by the \texttt{PCAP\_PR} register, as shown in Figure~\ref{fig:fpga_mux}.
+The selection of the interface under control of the \gls{fpga} configuration is made using a 2:1 mux, controlled by the \texttt{PCAP\_PR} register, as illustrated  in Figure~\ref{fig:fpga_mux}.
 
 \begin{figure}[ht!]
     \centering
@@ -127,19 +129,19 @@ The selection of the interface under control of the \gls{fpga} configuration is 
 
 After initial configuration (or at any time), the processor may set the control bit to switch the configuration interface to be accessed internally to the FPGA fabric; then \gls{icap} becomes active.
 
-As shown in Figure~\ref{fig:fpga_mux}, the SEM controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the SEM controller to monitor, detect, and correct radiation-induced errors.
+As illustrated  in Figure~\ref{fig:fpga_mux}, the SEM controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the SEM controller to monitor, detect, and correct radiation-induced errors.
 
 If the processor needs a partial reconfiguration in some area within the fabric, it will need the \gls{pcap} control back.
 
 When using the SEM Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
-\begin{enumerate}
+\begin{itemize}
     \item Set \gls{sem} \gls{ip} in IDLE mode.
     \item Send an SYNC command, stopping the \gls{sem} \gls{ip} frame’s error scanning.
     \item Select the port \gls{pcap} and perform a dynamic partial reconfiguration.
     \item After the DPR operation is done, transfer the control of \gls{icap} back to SEM IP.
     \item Perform a soft reset on \gls{sem} \gls{ip}.
     \item Set \gls{sem} \gls{ip} in \texttt{OBSERVATION} mode.
-\end{enumerate}
+\end{itemize}
 
 Figure~\ref{fig:fpga_mux} shows the interfaces that were developed to decouple the \gls{sem} \gls{ip} from the \gls{icap}, switching the control to \gls{pcap} to perform the partial reconfiguration. The items highlighted in yellow allow steps 2 and 4 of the procedure to be correctly executed.
 
@@ -163,7 +165,7 @@ Here, the integration of the NMR scheme is detailed. The voter architecture, mod
     \label{riscv-tmr-diagram}
 \end{figure}
 
-As shown in Figure~\ref{riscv-tmr-diagram},
+As illustrated  in Figure~\ref{riscv-tmr-diagram},
 
 \begin{landscape}
     \begin{figure}[ht]
@@ -248,7 +250,7 @@ This subsection describes how faults were emulated in the FPGA to validate syste
     \label{error-injection-diagram}
 \end{figure}
 
-As shown in Figure~\ref{error-injection-diagram},
+As illustrated  in Figure~\ref{error-injection-diagram},
 
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at simulation level, emulation level, and on the physical FPGA hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.

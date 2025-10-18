@@ -1,7 +1,7 @@
 %\section{Theoretical Introduction}
 \label{sec:cap3}
 
-This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of \glspl{fpga} based on \gls{sram}, examines fault-tolerance techniques such as N-Modular Redundancy (NMR) and Dynamic Partial Reconfiguration (DPR), discusses memory scrubbing mechanisms, and outlines the principles of fault injection for resilience evaluation. 
+This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of \gls{cots} \gls{sram} \glspl{fpga}, examines fault-tolerance techniques such as N-Modular Redundancy (NMR) and Dynamic Partial Reconfiguration (DPR), discusses memory scrubbing mechanisms, and outlines the principles of fault injection for resilience evaluation.
 
 \section{\glsentrytext{fpga}}
 This section introduces the \gls{fpga} architecture, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
@@ -11,6 +11,8 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 \glspl{fpga} could be reconfigured by the user, even after deployment \cite{Mazzeo2019}. Its programmable nature enables rapid prototyping, hardware acceleration, and long-term design flexibility.
 
 \glspl{fpga} are successful platforms because they combine the flexibility of software with the speed of hardware, providing adaptable computing cores and high-throughput processing of data streams. They are particularly attractive compared to \glspl{asic} due to their shorter development time and costs, and their ability to be reconfigured \cite{8524728}.
+
+The main advantage of \glspl{fpga} over software-based implementations lies in their inherently parallel architecture, which allows computations to be executed concurrently. For applications that can exploit this parallelism, \glspl{fpga} offer significant performance advantages.
 
 \subsection{Core Structure and Components}
 
@@ -54,7 +56,7 @@ Modern \glspl{fpga} also include various specialized resources beyond the basic 
     \item \textbf{Clock-management resources}.
 \end{itemize}
 
-As shown in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of configurable logic blocks, routing resources, and \gls{io} blocks.
+As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of configurable logic blocks, routing resources, and \gls{io} blocks.
 
 \begin{figure}[ht]
 \centering
@@ -62,7 +64,7 @@ As shown in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of conf
 \caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}}\label{fpga-arch}
 \end{figure}
 
-As shown in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
+As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
 
 \begin{figure}[ht]
 \centering
@@ -88,7 +90,7 @@ The type of \gls{cram} used dictates the device's characteristics:
 
 The bitstream represents the device's configuration for a specific application and is downloaded to the \gls{fpga}'s \gls{cram} at startup. Its exact structure and semantics are proprietary and have become increasingly complex over the years.
 
-Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example is \cite{f4pga_prjxray}.
+Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example could be seen in the \textcite{f4pga_prjxray} project.
 
 Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where we have the header and footer, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
 
@@ -171,19 +173,19 @@ Unfortunately, this reliance on volatile SRAM renders \glspl{fpga} highly suscep
 
 \subsubsection{Single Event Upsets (SEUs)}
 
-The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because the altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
+The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
 
 \subsubsection{\glsentrytext{see} Induced System Failure Types}
 
-When a \gls{seu} hits an essential or critical bit from the \gls{cram} of the \gls{fpga}, it could change the implemented circuit, altering the expected behavior of the affected area.
+When a \gls{seu} hits an essential or critical bit of the \gls{fpga}'s \gls{cram}, it could change the implemented circuit, altering the expected behavior of the affected area.
 
 The change could affect any of the configurable elements of \gls{fpga}, such as the state of the interconnection switches, the clock configuration, the contents of \gls{bram}, the entries in \gls{lut}, or the specific state of the hardware configuration.
 
-Figure~\ref{fpga-seu-and}(a) illustrates one scenario in which a 2-input \gls{lut} is configured by the \gls{cram} bits to describe an $AND$ gate and the \gls{clb} inputs are connected to the inputs $A$ and $B$ by an interconnection switch.
+Figure~\ref{fpga-seu-and}(a) illustrates one scenario in which a 2-input \gls{lut} is configured by the \gls{cram} bits to describe an $AND$ gate and the \gls{lut} inputs are connected to the inputs $A$ and $B$ by an interconnection switch.
 
-From Table~\ref{tab:logic_gates}, it is evident that the implemented circuit acts as a $AND$ gate, exhibiting the exact behavior described for the values of its inputs.
+From Table~\ref{tab:logic_gates}, it is evident that the implemented circuit acts as an $AND$ gate, exhibiting the exact behavior described for the values of its inputs.
 
-Then in Figure~\ref{fpga-seu-and}(b), a \gls{seu} is represented, changing the first value of the 2-input \gls{lut} from $0$ to $1$. Now, the behavior of the circuit changes, as shown in Table~\ref{tab:logic_gates}, from a $AND$ gate to an $XNOR$ gate.
+Then in Figure~\ref{fpga-seu-and}(b), a \gls{seu} is represented, changing the first value of the 2-input \gls{lut} from $0$ to $1$. Now, the behavior of the circuit changes, as demonstrated in Table~\ref{tab:logic_gates}, from an $AND$ gate to a $XNOR$ gate.
 
 Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an interconnection switch is hit by a \gls{seu}, disconnecting the $A$ input from the \gls{lut}. As the input is left floating, the output result is unpredictable. The unconnected input might drift between high or low logic values, depending on nearby static fields. In the worst case, it drifts to an intermediate voltage and only partially switches the output, leading to excess heating of the gate. Or, the output could oscillate between high and low logic values.
 
@@ -237,13 +239,13 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{N-Modular Redundancy (NMR)}
-\gls{nmr} is a fault-masking technique where multiple identical modules operate in parallel, and a majority voter determines the correct output. While \gls{tmr} (Triple Modular Redundancy) is the most common case, extending to higher-order NMR provides increased fault tolerance at the expense of resource overhead. This section explains the mathematical basis of NMR, voter design considerations, fault coverage properties, and limitations regarding permanent resource degradation.
+\gls{nmr} is a fault-masking technique in which multiple identical modules operate in parallel and a majority voter determines the correct output. Although \gls{tmr} (Triple Modular Redundancy) is the most common case, extending to higher-order NMR provides increased fault tolerance at the expense of resource overhead. This section explains the mathematical basis of NMR, voter design considerations, fault coverage properties, and limitations with respect to permanent resource degradation.
 
 \subsection{Voters}
 
-In \gls{nmr} architectures, the \emph{voter} is a fundamental component responsible for determining the system’s final output based on the responses of redundant modules. It mediates the outputs of multiple redundant units to produce a single, reliable system response, serving as the coupling element between redundancy and output. Voters are indispensable in both static and hybrid redundancy schemes.
+In \gls{nmr} architectures, the \emph{voter} is a fundamental component responsible for determining the final output of the system based on the responses of redundant modules. Mediates the outputs of multiple redundant units to produce a single reliable system response, serving as the coupling element between redundancy and output. Voters are indispensable in both static and hybrid redundancy schemes.
 
-The main functions of voters include:
+The main functions of voters include the following:
 
 \begin{enumerate}
     \item \textbf{Generating Consensus:} Voters receive outputs from the redundant modules and compare them to determine a consensus result, typically based on a majority of matching outputs \cite{Yaman2022,7948063,Dorflinger2022}.
@@ -270,15 +272,15 @@ The Boolean equation for a three-input majority voter can be expressed as:
     For a general case with $N$ redundant modules, the majority function can be defined as:
     \begin{equation}
         Q =
-        \begin{cases}
-        1, & \text{if } \displaystyle \sum_{i=1}^{N} x_i \geq \frac{N}{2} + 1,\\[6pt]
-        0, & \text{otherwise,}
-        \end{cases}
-        \label{eq:n_input_majority}
+            \begin{cases}
+                1, & \text{if } \displaystyle \sum_{i=1}^{N} x_i \geq \left\lceil \frac{N}{2} \right\rceil, \\[6pt]
+                0, & \text{otherwise.}
+            \end{cases}
+    \label{eq:n_input_majority}
     \end{equation}
     where $x_i$ represents the binary output of the $i$-th module, and $Q$ is asserted when the majority of inputs are logical ‘1’.
     
-    \item \textbf{Word Voter:} Proposed by \cite{Mitra2000}, it is designed to overcome the limitations of bit-by-bit voters in wide memory buses, the word voter incorporates additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This mechanism enhances reliability by revealing inconsistencies that conventional voters may otherwise mask.
+    \item \textbf{Word Voter:} Proposed by \textcite{Mitra2000}, it is designed to overcome the limitations of bit-by-bit voters in wide memory buses, the word voter incorporates additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This mechanism enhances reliability by revealing inconsistencies that conventional voters may otherwise mask.
 
    he operation of a three-input word voter can be expressed as:
 \begin{equation}
@@ -302,7 +304,7 @@ where $W_1$, $W_2$, and $W_3$ are the $m$-bit words from the three redundant mod
 
 This approach enhances data integrity by enabling fault detection at the word level, allowing the system to identify inconsistencies that bit-by-bit voting may overlook.
     
-    \item \textbf{Self-Adapted Voter (SAv):} Proposed by \cite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerates multiple accumulated faults. The SAv determines the output by considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
+    \item \textbf{Self-Adapted Voter (SAv):} Proposed by \textcite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerates multiple accumulated faults. The SAv determines the output by considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
 \end{itemize}
 
 \begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
@@ -366,7 +368,7 @@ Voters are inherently critical components, as they introduce a \textit{single po
 The main characteristics of \gls{dpr} include:
 \begin{itemize}
     \item \textbf{Selective Modification:} Enables the reconfiguration of a defined region within the \gls{fpga} without interrupting the operation of the rest of the device \cite{Barbosa2021,Wilson2020_VideoPipelines}.
-    \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \textcite{Wilson2020_VideoPipelines}.
+    \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \cite{Wilson2020_VideoPipelines}.
     \item \textbf{Static and Dynamic Logic:} \gls{dpr} separates the design into static (fixed) logic and dynamic (reconfigurable) logic. The static logic remains constant, while the dynamic logic—implemented in \glspl{dpr} can be replaced or updated at runtime \cite{Wilson2020_VideoPipelines}.
     \item \textbf{Partial Bitstreams:} Reconfiguration is performed through the loading of partial bitstreams, which contain only the configuration data for the reconfigurable partition, unlike full bitstreams that include both static and dynamic regions \cite{Yang2022_FaultInjectionUltrascale}.
 \end{itemize}

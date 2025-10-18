@@ -12,12 +12,65 @@ Before introducing fault-tolerance mechanisms, the system performance is evaluat
 \section{Fault-Injection Campaign Results}
 This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
 
+\subsection{Scrubbing and Fault Injection with a FIR Filter}
+
+The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
+
+The idea of using \gls{fir} filters is because they are pure mathematical modules and so they do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
+    \caption{Enter Caption}
+    \label{fig:automated_design}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/detail_fir.png}
+    \caption{Enter Caption}
+    \label{fig:detail_fir}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/dut_fir_bird_view.png}
+    \caption{Enter Caption}
+    \label{fig:dut_fir_bird_view}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
+    \caption{Enter Caption}
+    \label{fig:error-injection-fir}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
+    \caption{Enter Caption}
+    \label{fig:fir_filter_equal}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
+    \caption{Enter Caption}
+    \label{fig:fir_filter_error}
+\end{figure}
+
+Simulation-based fault injection provides high controllability and low cost, as no actual device is required. It suffers, however, from long simulation times, especially for complex systems [7][8]. It may also fail to identify complex faulty behaviors, especially when simulations are done at high abstraction levels. When the goal is to evaluate the effects of faults in the FPGA bitstream, the use of an actual device is near mandatory. The effects of configurations unforeseen by manufacturers and the lack of low level schematics available to the end user make it almost infeasible to perform accurate simulation-based fault injection for this case. \textcite{NazarCarro_DFT_FastSingleFPGA,Antoni2003}
+
+The proposed injection system also presents some limitations when compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on FPGA. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
+
 \section{Impact of Mitigation Techniques}
 The results obtained after implementing the proposed fault-mitigation strategies are discussed. Comparisons are made between unprotected and protected designs, focusing on improvements in fault coverage, error recovery, and reliability metrics.
 
 \section{Comparative Analysis with Existing Approaches}
-This section benchmarks the proposed solution against similar works in the literature. A summary table highlights differences in methodology, fault coverage, resource overhead, and performance impact.
+This section compares the proposed solution to similar works in the literature. A summary table highlights differences in methodology, fault coverage, resource overhead, and performance impact.
 
 \section{Discussion of Findings}
-The key findings are synthesized and interpreted in terms of practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing insights for future improvements.
+The key findings are synthesized and interpreted in terms of practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing information for future improvements.
 
+As discussed in \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links, such as the USB-to-serial converter used in this research, are constrained by the latency introduced by the software and hardware communication stack. The minimum achievable fault injection sequence duration achieved by \textcite{Fibichi2019} is reported to be 20 milliseconds. The reported \gls{fi} reported by is 4.6 ms.
