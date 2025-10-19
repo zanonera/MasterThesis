@@ -92,7 +92,9 @@ The bitstream represents the device's configuration for a specific application a
 
 Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example could be seen in the \textcite{f4pga_prjxray} project.
 
-Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where we have the header and footer, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
+Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where the header and footer are represented in the beggining and ending of the structure, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
+
+Before any configuration packet is processed by the \gls{fpga}, the configuration logic must first detect a specific synchronization pattern. For Xilinx devices, this synchronization word—commonly referred to as the Sync Word—has the hexadecimal value \texttt{0xAA995566}. It allows the configuration logic to align data at a 32-bit word boundary, ensuring correct interpretation of subsequent configuration packets. In parallel configuration modes, successful detection of the bus width is required prior to recognizing the synchronization word \cite{f4pga_prjxray}.
 
 \begin{figure}[ht]
 \centering
@@ -247,12 +249,12 @@ In \gls{nmr} architectures, the \emph{voter} is a fundamental component responsi
 
 The main functions of voters include the following:
 
-\begin{enumerate}
+\begin{itemize}
     \item \textbf{Generating Consensus:} Voters receive outputs from the redundant modules and compare them to determine a consensus result, typically based on a majority of matching outputs \cite{Yaman2022,7948063,Dorflinger2022}.
     \item \textbf{Masking Errors:} In a \gls{tmr} configuration, the voter masks single faults by selecting the majority output from the correctly functioning modules, maintaining system reliability \cite{7948063,Yaman2022,Neves2009,OliveiraKastensmidt2023,Wilson2021_TMRVexRiscv}.
     \item \textbf{Propagating the Correct Signal:} Once a consensus is established, the voter propagates the signal identified as correct to the subsequent system stage \cite{Romero2015}.
     \item \textbf{Defining Output Conditions:} In an $N$-modular system, a consensus is achieved when at least $N/2 + 1$ modules produce matching outputs. If this condition is not met, the system is considered to have no valid consensus \cite{Neves2009}.
-\end{enumerate}
+\end{itemize}
 
 \subsection{Voter Architectures and Vulnerabilities}
 \label{sec:voter_types}
@@ -378,7 +380,7 @@ Figure~\ref{fig:dpr-xilinx} illustrates the concept described above, where multi
 \subsection{Implementation in FPGA Platforms}
 Implementing \gls{dpr} requires dedicated configuration flows and access to the device’s configuration memory through specialized interfaces. The most common configuration interfaces include:
 
-\begin{enumerate}
+\begin{itemize}
     \item \textbf{Internal Configuration Access Port (ICAP):}  
     An internal hardware interface accessible through HDL primitives. The ICAP allows rapid reconfiguration directly from within the programmable logic and is often employed in fault injection or fast module updates.
 
@@ -387,7 +389,7 @@ Implementing \gls{dpr} requires dedicated configuration flows and access to the 
 
     \item \textbf{JTAG and SelectMAP:}  
     External configuration interfaces commonly used for debugging, testing, or initial configuration. While JTAG offers flexibility for development and validation, SelectMAP provides higher bandwidth for bitstream loading during operation.
-\end{enumerate}
+\end{itemize}
 
 Thus, \gls{dpr} provides a foundation for adaptive and fault-tolerant \gls{fpga} systems, enabling the replacement, recovery, or upgrade of hardware modules on demand without system downtime.
 

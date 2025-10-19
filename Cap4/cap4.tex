@@ -6,7 +6,7 @@ This chapter details the methodology adopted to design, implement and validate t
 For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested independently and, ultimately, all mitigations were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
 
 \section{FPGA Platform and Toolchain}
-This section presents the selected FPGA device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
+This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
 
 \begin{table}[ht]
 \centering
@@ -16,16 +16,16 @@ This section presents the selected FPGA device, development board, and software 
 \textbf{Tool} & \textbf{Description} \\
 \hline
 \href{https://www.xilinx.com/products/design-tools/vivado.html}{Vivado 2018.3} &
-Xilinx FPGA design suite used for HDL synthesis, implementation, and bitstream generation. Provides Tcl scripting support for automation. \\
+Xilinx \gls{fpga} design suite used for \gls{hdl} synthesis, implementation, and bitstream generation. Provides Tcl scripting support for automation. \\
 \hline
 \href{https://www.python.org/}{Python} &
-High-level programming language for automation, scripting, and testbench development. Widely used to coordinate FPGA workflows and fault injection experiments. \\
+High-level programming language for automation, scripting, and testbench development. Widely used to coordinate \gls{fpga} workflows and fault injection experiments. \\
 \hline
 \href{https://github.com/riscv-collab/riscv-gnu-toolchain}{RISC-V Toolchain} &
 Open-source GNU toolchain supporting the RISC-V ISA, enabling firmware compilation and debugging for soft-core processors like PicoRV32 \cite{PICORV32I}. \\
 \hline
 \href{https://github.com/YosysHQ/picorv32/}{PicoRV32} &
-Compact and configurable RISC-V soft processor core optimized for FPGA, often used for embedded control, monitoring, and fault injection control logic. \\
+Compact and configurable RISC-V soft processor core optimized for \gls{fpga}, often used for embedded control, monitoring, and fault injection control logic. \\
 \hline
 \end{tabular}
 \end{adjustbox}
@@ -47,7 +47,7 @@ The PYNQ-Z2 is a development board designed for experimenting with FPGAs and emb
 \hline
 \href{https://ftdichip.com/products/ft2232hq/}{FT2232} &
 The FT2232 is a USB-to-multi-purpose communication interface IC developed by FTDI (Future Technology Devices International).
-It is widely used for bridging USB connections to various serial and parallel protocols, making it especially popular in FPGA development boards, embedded systems, and debugging tools. \\
+It is widely used for bridging USB connections to various serial and parallel protocols, making it especially popular in \gls{fpga} development boards, embedded systems, and debugging tools. \\
 \hline
 \end{tabular}
 \end{adjustbox}
@@ -65,7 +65,7 @@ The requirements for this architecture were established on the basis of the foll
     Periodic correction of configuration memory upsets to maintain system integrity and prevent fault accumulation.
 
     \item \textbf{Dynamic Partial Reconfiguration (DPR):}  
-    Ability to reconfigure specific regions of the FPGA at runtime without interrupting the operation of the static logic.
+    Ability to reconfigure specific regions of the \gls{fpga} at runtime without interrupting the operation of the static logic.
 
     \item \textbf{Fault Injection Capability:}  
     Implementation of controlled fault injection mechanisms to evaluate the system’s fault tolerance and recovery strategies.
@@ -81,7 +81,8 @@ The requirements for this architecture were established on the basis of the foll
 As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
 \subsection{Soft Error Mitigation}
-To protect \gls{sram}-based FPGA, Xilinx’s \gls{sem} \gls{ip}, \cite{amd2023sem} is being used on this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
+To protect \gls{sram}-based \gls{fpga}, Xilinx’s \gls{sem} \gls{ip}, \cite{amd2023sem} is being used on this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
+
 It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use an external PC with a script to inject error and check how the platform behaves.
 
 \subsection{Dynamic Partial Reconfiguration}
@@ -102,7 +103,7 @@ As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{Cap4/dpr-full-bit.png}
-    \caption{Representation of the "Full" Bitstream, responsible for the entire FPGA configuration.}
+    \caption{Representation of the "Full" Bitstream, responsible for the entire \gls{fpga} configuration.}
     \label{dpr-full-diagram}
 \end{figure}
 
@@ -123,11 +124,11 @@ The selection of the interface under control of the \gls{fpga} configuration is 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/cram.png}
-    \caption{2:1 mux controlling the FPGA configuration interface between \gls{pcap} and \gls{icap}.}
+    \caption{2:1 mux controlling the \gls{fpga} configuration interface between \gls{pcap} and \gls{icap}.}
     \label{fig:fpga_mux}
 \end{figure}
 
-After initial configuration (or at any time), the processor may set the control bit to switch the configuration interface to be accessed internally to the FPGA fabric; then \gls{icap} becomes active.
+After initial configuration (or at any time), the processor may set the control bit to switch the configuration interface to be accessed internally to the \gls{fpga} fabric; then \gls{icap} becomes active.
 
 As illustrated  in Figure~\ref{fig:fpga_mux}, the SEM controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the SEM controller to monitor, detect, and correct radiation-induced errors.
 
@@ -156,7 +157,30 @@ If \gls{sem} \gls{ip} is not changed to IDLE mode prior to \gls{dpr}, it will co
 It is important that all \gls{pcap} or \gls{icap} operations are completed before switching control between them. Figure~\ref{fig:fpga_mux} also shows that JTAG has precedence over both ports, so care should be taken when using JTAG together with \gls{pcap} and \gls{icap} to avoid interference between the ports.
 
 \section{Implementation of N-Modular Redundancy}
-Here, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the chosen parameters for $N>3$.
+In this section, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the parameters chosen for $N>3$.
+
+In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to fault injection experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/fir-dmr.png}
+    \caption{Enter Caption}
+    \label{fig:fir-dmr}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/dut_fir_bird_view.png}
+    \caption{Enter Caption}
+    \label{fig:dut_fir_bird_view}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/detail_fir.png}
+    \caption{Enter Caption}
+    \label{fig:detail_fir}
+\end{figure}
 
 \begin{figure}[ht]
     \centering
@@ -165,7 +189,13 @@ Here, the integration of the NMR scheme is detailed. The voter architecture, mod
     \label{riscv-tmr-diagram}
 \end{figure}
 
+As illustrated  in Figure~\ref{fig:fir-dmr},
+
 As illustrated  in Figure~\ref{riscv-tmr-diagram},
+
+As illustrated  in Figure~\ref{fig:dut_fir_bird_view},
+
+As illustrated  in Figure~\ref{fig:detail_fir},
 
 \begin{landscape}
     \begin{figure}[ht]
@@ -176,7 +206,7 @@ As illustrated  in Figure~\ref{riscv-tmr-diagram},
 
 It is essential, when designing systems based on modular redundancy, to carefully analyze the synthesis and implementation logs generated by the design tool---in this work, Vivado---to ensure that redundant modules are not optimized away.
 
-Since modular redundancy typically employs multiple identical instances of a module operating in parallel and receiving identical input signals, as illustrated in Figure~\ref{riscv-tmr-diagram}, the synthesis tool can infer functional equivalence between them. Consequently, as these modules generate the same output, the tool might remove one or more instances during optimization.
+Since modular redundancy typically employs multiple identical instances of a module operating in parallel and receiving identical input signals, as illustrated in Figure~\ref{riscv-tmr-diagram}, the synthesis tool can infer functional equivalence between them. Consequently, since these modules generate the same output, the tool might remove one or more instances during optimization.
 
 In Vivado, one message that may indicate such an optimization is the following:
 
@@ -209,39 +239,48 @@ The following examples illustrate how to apply this attribute in different desig
     \end{verbatim}
 \end{itemize}
 
+Another configuration name for both architectures, was to disable the usage of DSP48 from the \gls{fpga}.
+
+\begin{itemize}
+    \item \textbf{\gls{tcl} Script (Vivado Constraint):}
+    \begin{verbatim}
+    set_property USE_DSP48 no [get_cells <module_name>]
+    \end{verbatim}
+\end{itemize}
+
 \section{Partial Dynamic Reconfiguration Flow}
 The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the design of the reconfiguration controller, and performance metrics such as reconfiguration latency and system recovery time.
 
 \gls{dpr} flow is supported by Vivado, but is not yet fully integrated with the GUI-based project flow~\cite{vipin2018dpr}. 
-The designs are implemented using the Vivado Tcl-based command flow or a combination of Tcl commands and the GUI. 
+The designs are implemented using the Vivado \gls{tcl}-based command flow or a combination of \gls{tcl} commands and the GUI. 
 To facilitate the reproduction of the results and provide a base configuration for other studies using this architecture, a set of scripts was developed to create a project with two PR modules, implementing the following steps:
 
-\begin{enumerate}
+\begin{itemize}
     \item Create the project and block design.
-    \begin{enumerate}
+    \begin{itemize}
         \item The block design should contain the ARM processing system instance.
         \item The reconfigurable items should have only the interface definitions declared in this step.
-    \end{enumerate}
+    \end{itemize}
     \item Synthesize the design, generating all the design checkpoints (DCP) for the static region and blocks of logic.
-    \item Load the DCP for the static region and one of the reconfigurable partitions (RP).
+    \item Load the \gls{dcp} for the static region and one of the reconfigurable partitions (RP).
     \item Define RP properties.
     \item Run Design Rule Checker (DRC).
     \item Create and implement the first configuration.
-    \begin{enumerate}
-        \item  It is important that all the configurable resources (LUTs, FFs, BRAMs, DSPs) needed by the design must be available in the allocated space for the partial area.
-    \end{enumerate}
+    \begin{itemize}
+        \item  It is important that all the configurable resources (\glspl{lut}, \glspl{ff}, \glspl{bram}, \glspl{dsp}) needed by the design must be available in the allocated space for the partial area.
+    \end{itemize}
     \item Create all other configurations.
     \item Verify all configurations using the \texttt{PR\_verify} command.
     \item Generate bitstreams.
-\end{enumerate}
+\end{itemize}
 
-The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s DDR memory, after which a DMA transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
+The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s \gls{ddr} memory, after which a \gls{dma} transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
 
 \section{Integration with Processing System (PS)}
-This section discusses how the ARM processing system in the SoC was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance workload and reduce logic overhead in the programmable fabric.
+This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
 
 \section{Fault Injection Strategy}
-This subsection describes how faults were emulated in the FPGA to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the FPGA fabric. The methodology ensures repeatability and coverage of critical failure modes.
+This subsection describes how faults were emulated in the \gls{fpga} to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
 
 \begin{figure}[ht]
     \centering
@@ -252,8 +291,30 @@ This subsection describes how faults were emulated in the FPGA to validate syste
 
 As illustrated  in Figure~\ref{error-injection-diagram},
 
+As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout the \gls{fpga}, defining the functionality of its internal resources, including the \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
+
+For this purpose, Xilinx provides the \textit{Essential Bits} technology~\cite{Garcia2020,Yang2022_FaultInjectionUltrascale}, which generates, along with the bitstream, a mask file indicating whether each configuration bit is used in the design. This information is stored in the \texttt{.ebd} file. To enable the generation of the \gls{ebd} file, the following constraint must be added to the Vivado project:
+
+\begin{itemize}
+    \item \textbf{\gls{tcl} Script (Vivado Constraint):}
+    \begin{verbatim}
+set_property BITSTREAM.SEU.ESSENTIALBITS YES [current_design]
+    \end{verbatim}
+\end{itemize}
+
+The mapping between the \gls{ebd} file and the configuration memory enables the identification of configuration bits that are essential to the implemented design. This mapping provides a practical foundation for correlating the logical elements defined during synthesis with their physical representation in the \gls{fpga} configuration frames, thereby allowing precise targeting of configuration bits during fault injection experiments.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/xilinx-ebd-ebc.png}
+    \caption{Enter Caption}
+    \label{fig:xilinx-ebd-ebc}
+\end{figure}
+
+As illustrated  in Figure~\ref{fig:xilinx-ebd-ebc},
+
 \section{Verification and Validation Methodology}
-The testing strategy is presented to demonstrate how the design was verified at simulation level, emulation level, and on the physical FPGA hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
+The testing strategy is presented to demonstrate how the design was verified at simulation level, emulation level, and on the physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
 
 \section{Summary}
 This section summarizes the methodology chapter, highlighting the major design decisions and how they lay the groundwork for the results presented in the next chapter.
