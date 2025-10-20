@@ -38,7 +38,7 @@ The \glspl{lut} could also be configured for other structures, including the so 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
-\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
+\caption{Structure of a \gls{clb} in an AMD's 7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
 \subsubsection{Routing and Interconnect Resources}
@@ -69,7 +69,7 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
-\caption{\gls{fpga} Structure. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
+\caption{\gls{fpga} specialized resources. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -132,7 +132,7 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 % Soft SEE
 \node (soft) [subblock, below left of=see, xshift=-5cm, yshift=-1cm] {Soft SEE};
 \node (seu) [subblock, below of=soft, yshift=-0.5cm] {Single Event Upset (SEU)};
-\node (mbu) [subblock, below of=seu, yshift=-0.5cm] {Multi-Bit Upset (MBU)};
+\node (mbu) [subblock, below of=seu, yshift=-0.5cm] {Multi-Bit/Cell Upset (MBU/MCU)};
 \node (set) [subblock, below of=mbu, yshift=-0.5cm] {Single Event Transient (SET)};
 \node (sefi_soft) [subblock, below of=set, yshift=-0.5cm] {Single Event Functional Interrupt (SEFI)};
 
@@ -161,7 +161,7 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Classification of Single Event Effects (SEE) into Soft SEE and Hard SEE, including Multi-Bit Upset (MBU) as a subtype of SEU.}
+\caption{Classification of \gls{see} subtypes.}
 \label{fig:see_hard_soft}
 \end{figure}
 
@@ -180,7 +180,7 @@ As technology feature size decreases, \glspl{seu} and \glspl{set} become the dom
 
 \subsubsection{Single Event Upsets (SEUs)}
 
-The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
+The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit \cite{Wilson2025}. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
 
 \subsubsection{\glsentrytext{see} Induced System Failure Types}
 
@@ -188,7 +188,7 @@ When a \gls{seu} hits an essential or critical bit of the \gls{fpga}'s \gls{cram
 
 The change could affect any of the configurable elements of \gls{fpga}, such as the state of the interconnection switches, the clock configuration, the contents of \gls{bram}, the entries in \gls{lut}, or the specific state of the hardware configuration.
 
-Figure~\ref{fpga-seu-and}(a) illustrates one scenario in which a 2-input \gls{lut} is configured by the \gls{cram} bits to describe an $AND$ gate and the \gls{lut} inputs are connected to the inputs $A$ and $B$ by an interconnection switch.
+Figure~\ref{fpga-seu-and}(a) illustrates a scenario in which a 2-input \gls{lut} is configured by the \gls{cram} bits to describe an $AND$ gate and the \gls{lut} inputs are connected to the inputs $A$ and $B$ by an interconnection switch.
 
 From Table~\ref{tab:logic_gates}, it is evident that the implemented circuit acts as an $AND$ gate, exhibiting the exact behavior described for the values of its inputs.
 
@@ -199,7 +199,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{\gls{fpga} Structure. Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
+\caption{Illustartion o a \gls{seu} effect in a \gls{lut} \gls{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
