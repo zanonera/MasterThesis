@@ -92,9 +92,9 @@ The bitstream represents the device's configuration for a specific application a
 
 Several initiatives have attempted to document the structure of the 7‑series bitstream via reverse engineering; a representative example could be seen in the \textcite{f4pga_prjxray} project.
 
-Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where the header and footer are represented in the beggining and ending of the structure, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
+Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where the header and footer are represented in the beginning and ending of the structure, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
 
-Before any configuration packet is processed by the \gls{fpga}, the configuration logic must first detect a specific synchronization pattern. For Xilinx devices, this synchronization word—commonly referred to as the Sync Word—has the hexadecimal value \texttt{0xAA995566}. It allows the configuration logic to align data at a 32-bit word boundary, ensuring correct interpretation of subsequent configuration packets. In parallel configuration modes, successful detection of the bus width is required prior to recognizing the synchronization word \cite{f4pga_prjxray}.
+Before any configuration packet is processed by the \gls{fpga}, the configuration logic must first detect a specific synchronization pattern. For Xilinx devices, this synchronization word has the hexadecimal value \texttt{0xAA995566}. It allows the configuration logic to align data at a 32-bit word boundary, ensuring correct interpretation of subsequent configuration packets. In parallel configuration modes, successful detection of the bus width is required prior to recognizing the synchronization word \cite{f4pga_prjxray}.
 
 \begin{figure}[ht]
 \centering
@@ -110,7 +110,7 @@ A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 wor
 
 Integrated circuits operating in radiation environments are susceptible to transient and permanent faults caused by the interaction of ionizing particles with silicon. Ionizing radiation can generate electrical disturbances by depositing charge that alters transistor states. This deposition occurs either directly, when charged particles interact with the material, or indirectly, when neutral particles such as neutrons produce secondary charged particles (e.g., alpha particles, ions, or protons). The severity of the effect depends on the amount and location of the deposited charge within the semiconductor \cite{KastensmidtRech2016}.
 
-\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting \cite{GomezToro2014}. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multi-Bit Upsets (MBUs) and Multi-Cell Upsets (MCUs) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011}.
+\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting \cite{GomezToro2014}. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multiple-Bit Upsets (MBUs) (also called Multiple-Cell Upsets (MCUs)) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011,Daniello2025_SEU_ShiftRegister16nm}.
 
 Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} phenomena and their respective subtypes.
 
@@ -132,7 +132,8 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 % Soft SEE
 \node (soft) [subblock, below left of=see, xshift=-5cm, yshift=-1cm] {Soft SEE};
 \node (seu) [subblock, below of=soft, yshift=-0.5cm] {Single Event Upset (SEU)};
-\node (set) [subblock, below of=seu, yshift=-0.5cm] {Single Event Transient (SET)};
+\node (mbu) [subblock, below of=seu, yshift=-0.5cm] {Multi-Bit Upset (MBU)};
+\node (set) [subblock, below of=mbu, yshift=-0.5cm] {Single Event Transient (SET)};
 \node (sefi_soft) [subblock, below of=set, yshift=-0.5cm] {Single Event Functional Interrupt (SEFI)};
 
 % Hard SEE
@@ -148,7 +149,8 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 
 % Arrows within Soft SEE
 \draw [arrow] (soft.south) -- (seu.north);
-\draw [arrow] (seu.south) -- (set.north);
+\draw [arrow] (seu.south) -- (mbu.north);
+\draw [arrow] (mbu.south) -- (set.north);
 \draw [arrow] (set.south) -- (sefi_soft.north);
 
 % Arrows within Hard SEE
@@ -159,9 +161,10 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Classification of Single Event Effects (SEE) into Soft SEE and Hard SEE with their subtypes.}
+\caption{Classification of Single Event Effects (SEE) into Soft SEE and Hard SEE, including Multi-Bit Upset (MBU) as a subtype of SEU.}
 \label{fig:see_hard_soft}
 \end{figure}
+
 
 This research focuses exclusively on soft errors, while hard errors are beyond the scope of this study and will not be discussed further.
 
@@ -172,6 +175,8 @@ Most modern high-density \glspl{fpga} rely on \gls{sram} cells to store their co
 This \gls{cram} defines the functionality of logic blocks (\glspl{lut} and \glspl{ff}) and all internal interconnections. 
 
 Unfortunately, this reliance on volatile SRAM renders \glspl{fpga} highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
+
+As technology feature size decreases, \glspl{seu} and \glspl{set} become the dominant radiation-induced effects in modern microelectronic circuits. In addition, \glspl{mbu}—events in which multiple configuration or memory bits are simultaneously affected—are increasingly significant due to the higher integration density and reduced node capacitance of advanced semiconductor technologies \cite{Zhao2015_SEU_AdvancedIC}.
 
 \subsubsection{Single Event Upsets (SEUs)}
 
@@ -289,13 +294,13 @@ The Boolean equation for a three-input majority voter can be expressed as:
 \begin{aligned}
 W_{\text{out}} &=
 \begin{cases}
-W_1, & \text{if } (W_1 = W_2) \lor (W_1 = W_3), \\[4pt]
-W_2, & \text{if } (W_2 = W_3), \\[4pt]
+W_1, & \text{if } (W_1 = W_3), \\[4pt]
+W_2, & \text{if } (W_1 \neq W_3), \\[4pt]
 \text{undefined}, & \text{otherwise,}
 \end{cases} \\[6pt]
 E_{\text{flag}} &= 
 \begin{cases}
-1, & \text{if } (W_1 \neq W_2) \land (W_1 \neq W_3) \land (W_2 \neq W_3), \\[4pt]
+1, & \text{if } (W_1 \neq W_2) \lor (W_1 \neq W_3) \lor (W_2 \neq W_3), \\[4pt]
 0, & \text{otherwise.}
 \end{cases}
 \end{aligned}
@@ -412,21 +417,34 @@ Several scrubbing architectures have been proposed in the literature, differing 
     \item \textbf{External scrubbing:} The scrubber controller is implemented on an external device. This architecture provides greater robustness and can manage multiple upsets more reliably, as it is isolated from the internal \gls{fpga} logic.
 \end{itemize}
 
-Nonetheless, \gls{cram} scrubbing, whether internal or external, does not protect volatile memory elements such as \glspl{bram}, distributed memories (\glspl{lutram}), and \glspl{ff}. Upsets in these dynamic elements must be addressed through complementary techniques such as redundancy, \gls{ecc}, or periodic resets to restore the system’s initial state. In more severe cases, such as \glspl{sefi} affecting the \gls{fpga} control logic or configuration interfaces, a power cycle may be required to reestablish normal operation.
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap3/scrubbing1.30.png}
+    \caption{Different memory scrubbing techniques. (a) Internal (b) External}
+    \label{fig:scrubbing-int-ext}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Cap3/scrubbing2-30.png}
+    \caption{Scrubbing method avaiable in \gls{soc} devices}
+    \label{fig:scrubbing-soc}
+\end{figure}
+
+However, \gls{cram} scrubbing, whether internal or external, does not protect volatile memory elements such as \glspl{bram}, distributed memories (\glspl{lutram}) and \glspl{ff}. Upsets in these dynamic elements must be addressed through complementary techniques such as redundancy, \gls{ecc}, or periodic resets to restore the initial state of the system. In more severe cases, such as \glspl{sefi} that affects the control logic or configuration interfaces \gls{fpga}, a power cycle may be required to restore normal operation.
 
 \bigskip
 \noindent
-While scrubbing plays a crucial role in preventing the accumulation of faults in the configuration memory, it does not offer insight into how these upsets affect system functionality or reliability at the architectural level. To evaluate and validate the effectiveness of mitigation techniques, researchers often employ \emph{\gls{fi}} methodologies. The next section explores \gls{fi} as an essential experimental approach for characterizing fault tolerance and assessing the dependability of \gls{fpga}-based systems.
-
+Although scrubbing plays a crucial role in preventing the accumulation of faults in configuration memory, it does not offer insight into how these issues affect system functionality or reliability at the architectural level. To evaluate and validate the effectiveness of mitigation techniques, researchers often employ \emph{\gls{fi}} campaigns. The next section explores \gls{fi} as an essential experimental approach for characterizing fault tolerance and assessing the dependability of \gls{fpga}-based systems.
 
 \section{Fault Injection Principles}
-Fault injection is an essential method for evaluating the robustness of fault-tolerant \gls{fpga} designs. By deliberately introducing controlled errors into the system, researchers can analyze failure modes, verify mitigation strategies, and quantify reliability metrics. This section explains fault injection models (bit-flip, stuck-at), implementation techniques (simulation-based, emulation-based, on-chip), and evaluation criteria.
+Fault injection is an essential method to evaluate the robustness of fault-tolerant \gls{fpga} designs. By deliberately introducing controlled errors into the system, researchers can analyze failure modes, verify mitigation strategies, and quantify reliability metrics. This section explains fault injection models (bit-flip, stuck-at), implementation techniques (simulation-based, emulation-based, on-chip), and evaluation criteria.
 
 \subsection{Fault Injection in FPGA-Based Systems}
 
-According to \textcite{Adria2023}, \gls{fi} is an experimental technique used to deliberately introduce faults into a system to reproduce radiation-induced effects and evaluate the dependability of its design. It serves to identify vulnerable regions that require hardening and to validate the effectiveness of implemented fault-mitigation strategies. In radiation-tolerant applications, \gls{fi} is an essential step for characterizing failure mechanisms, validating recovery techniques, and assessing system-level robustness~\cite{Adria2023,leipnitz2015}.
+According to \textcite{Adria2023}, \gls{fi} is an experimental technique used to deliberately introduce faults into a system to reproduce radiation-induced effects and evaluate the dependability of its design. It serves to identify vulnerable regions that require hardening and to validate the effectiveness of implemented fault-mitigation strategies. In radiation-tolerant applications, \gls{fi} is an essential step in characterizing failure mechanisms, validating recovery techniques, and assessing system-level robustness~\cite{Adria2023,leipnitz2015}.
 
-Fault injection can be applied at various abstraction levels, including the transistor, gate, register-transfer (RTL), or system level~\cite{anghel2007}. For example, in a soft processor implemented in a \gls{sram}-based \gls{fpga}, bit flips injected into \gls{cram} affect the processor’s \gls{rtl} architecture, while faults injected into \glspl{bram} influence the execution of applications at the user-level~\cite{Adria2023}.
+Fault injection can be applied at various abstraction levels, including transistor, gate, register-transfer (RTL), or system level~\cite{anghel2007}. For example, in a soft processor implemented in a \gls{sram}-based \gls{fpga}, bit flips injected into \gls{cram} affect the processor’s \gls{rtl} architecture, while faults injected into \glspl{bram} influence the execution of applications at the user-level~\cite{Adria2023}.
 
 Different techniques can be used to perform fault injection, depending on the level of realism, controllability, and available hardware resources. The three main approaches are as follows:
 

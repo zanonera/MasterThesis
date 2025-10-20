@@ -4,13 +4,86 @@
 This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, fault-injection outcomes, comparison with reference approaches, and an assessment of the reliability improvements achieved.
 
 \section{Experimental Setup}
-This section describes the hardware platform, software environment, test configurations, and performance metrics used for the experiments. Details such as FPGA device characteristics, fault-injection parameters, and evaluation benchmarks are provided to ensure reproducibility.
+
+The software and hardware used in this research is discussed in \hyperref[sec:cap4-material]{Section 4 - FPGA Platform and Toolchain}. Figure~\ref{fig:setup-diagram} illustrates the diagram of connections in order to conduct the research. Figure~\ref{fig:setup-pic} illustrates the setup used during this work. The \href{https://ftdichip.com/products/ft2232hq/}{FT-2232 module} is connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} connector of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{Pynq-Z2}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/setup-diagram.png}
+    \caption{Interconnection diagram of the main board and the USB to Serial Interface module}
+    \label{fig:setup-diagram}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap5/setup.jpg}
+    \caption{Setup of the main board (center) and the USB to Serial Interface module (up right)}
+    \label{fig:setup-pic}
+\end{figure}
 
 \section{Baseline Performance Evaluation}
 Before introducing fault-tolerance mechanisms, the system performance is evaluated under normal conditions. This subsection discusses metrics such as resource utilization, operating frequency, and execution latency to establish a baseline reference.
 
+\section{Partial Reconfiguration Results}
+
+\begin{table}[H]
+\centering
+\caption{Partial Reconfiguration Time.}
+\label{tab:pr_time}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{Time ($\mu$s)} & \textbf{Throughput (Mb/s)} & \textbf{Cache} \\
+\midrule
+First \gls{dpr} & 897 & 143 & Enabled \\
+All others \gls{dpr} & 1.35 & 95,195 & Enabled \\
+First \gls{dpr} & 1,186 & 108 & Enabled and invalidated \\
+All others \gls{dpr} & 576 & 222 & Enabled and invalidated \\
+First \gls{dpr} & 984 & 130 & Disabled \\
+All others \gls{dpr} & 6 & 21,117 & Disabled \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Fault-Injection Campaign Results}
 This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
+
+\subsection{FIR Filter block}
+
+\begin{table}[H]
+\centering
+\caption{Summary of configuration bits and detected critical upsets in the multiplier region.}
+\label{tab:fir_fi_summary}
+\begin{tabular}{l r}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total FPGA bits (CRAM) & 25.697.632 \\
+Total essential bits in the \gls{fir} region & 31.020 \\
+Total injected bits & 31.020 \\
+Critical bits detected: Multiplication error & 34 \\
+Critical bits detected: AXI bus lock & \gls{na} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Math \glsentrytext{dpr} block}
+
+\begin{table}[H]
+\centering
+\caption{Summary of configuration bits and detected critical upsets in the multiplier region.}
+\label{tab:math_fi_summary}
+\begin{tabular}{l r}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total FPGA bits (CRAM) & 25.697.632 \\
+Total essential bits in the multiplier region & 70.182 \\
+Total injected bits & 70.182 \\
+Critical bits detected: Multiplication error & 29 \\
+Critical bits detected: AXI bus lock & 3 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Scrubbing and Fault Injection with a FIR Filter}
 
@@ -21,28 +94,28 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
-    \caption{Enter Caption}
+    \caption{Complete automation of the \gls{fi} and visualization of the \gls{ila} to "debug" the design.}
     \label{fig:automated_design}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
-    \caption{Enter Caption}
+    \caption{Script and visualization of the progress of \gls{fi} campaign.}
     \label{fig:error-injection-fir}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
-    \caption{Enter Caption}
+    \caption{\gls{ila} capture, showing correct function of both filters.}
     \label{fig:fir_filter_equal}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
-    \caption{Enter Caption}
+    \caption{\gls{ila} capture, showing a \gls{fi} that caused an rror in the output of the \gls{fir} filter.}
     \label{fig:fir_filter_error}
 \end{figure}
 

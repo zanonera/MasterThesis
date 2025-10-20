@@ -1096,22 +1096,25 @@
 %%% Redefinicao do comando \appendix para mostrar 'Apêndice' ou 'Anexo'
 %%% no Sumario
 %==============================================================================
+\newcounter{appchapter} %create new counter for appendix
 \renewcommand{\appendix}{%
   \cleardoublepage
   \providecommand\anexoautorefname{appendix}
-	\setcounter{chapter}{0}%
+	%\setcounter{chapter}{0}%
 	\setcounter{section}{0}%
 	\def\Hy@appendixstring{appendix}% %%novo string no *.toc, para fazer o hyperlink funcionar
 	\def\anexo{%
   \@ifundefined{chapter}%
-    {\gdef\theHsection{\Alph{section}}}%
-    {\gdef\theHchapter{\Alph{chapter}}}%
+    {\gdef\theHsection{\Alph{appchapter}}}%
+    {\gdef\theHchapter{\Alph{appchapter}}}%
   \xdef\Hy@chapapp{\Hy@appendixstring}%
 
   \gdef\@chapapp{\appendixname}%
   \addtocontents{toc}{\SetAppendixTocName{\appendixname}}%
-  \gdef\thechapter{\@Alph\c@chapter}%
+  \gdef\thechapter{\@Alph\c@appchapter}%
   }
+  %\setcounter{appchapter}{0}% <-- Reset appendix counter
+  \stepcounter{appchapter}% <-- Increment appendix counter (moved outside of \anexo)
   \anexo
 }
 

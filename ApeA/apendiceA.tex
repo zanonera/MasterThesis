@@ -1,6 +1,6 @@
 %\section{Supporting Scripts and Tools}
 
-\section{Example Makefile for FPGA Build and Programming}
+\section{Makefile for FPGA Build and Programming}
 \begin{adjustbox}{max width=\textwidth}
 \begin{lstlisting}[language=make, caption={Sample Makefile targets for building and programming FPGA.}, numbers=left, numberstyle=\tiny, stepnumber=1, firstnumber=1]
 # Target: Build the FPGA bitstream
@@ -101,17 +101,41 @@ frameRange.close()
 testReport.close()
 \end{lstlisting}
 
-\section{Example Partial Bitstream Load Script (Python)}
+\section{Full and Partial Bitstream Load Script}
 
-\begin{lstlisting}[language=Python, caption={Python script to trigger partial dynamic reconfiguration on FPGA.}]
-import subprocess
+\begin{lstlisting}[language=tcl, caption={\gls{tcl} script to trigger partial dynamic reconfiguration on FPGA.}]
+if { $argc < 4 } {
+    puts "ERROR: The script requires four arguments."
+    exit
+}
 
-def load_partial_bitstream(bitstream_path):
-    # Example using Vivado hardware manager Tcl batch
-    tcl_cmd = f"open_hw; connect_hw_server; open_hw_target; current_hw_device [lindex [get_hw_devices] 0]; "
-    tcl_cmd += f"program_hw_devices {bitstream_path}; exit"
-    subprocess.run(["vivado", "-mode", "batch", "-source", tcl_cmd])
+set HW_PRJ        [lindex $argv 0];#Hardware Platform
+set FSBL_PRJ      [lindex $argv 1];#FSBL
+set SW_PRJ_NAME   [lindex $argv 2];#Software Project
+set FPGA_PRJ_NAME [lindex $argv 3];#FPGA Project
+set SCRIPT_PATH   [ file dirname [file normalize [info script]] ]
+set WORKSPACE     [ file normalize SCRIPT_PATH/.. ]
+set HDF_FILE      $SCRIPT_PATH/hw0/system.hdf
+set BIT_FILE      $SCRIPT_PATH/bitstreams/Config_add.bit
 
-# Load faulty module repair
-load_partial_bitstream("reconfig_partition.bit")
+connect
+
+targets -set -nocase -filter {name =~"APU*"} -index 0
+rst -system
+fpga $BIT_FILE
+loadhw $HDF_FILE
+source "$SCRIPT_PATH/hw0/ps7_init.tcl"
+ps7_init
+ps7_post_config
+
+targets -set -filter {name =~ "ARM* #0"}
+rst -processor
+targets -set -filter {name =~ "ARM* #0"}
+dow "$SCRIPT_PATH/elfs/cpu_0.elf"
+con 
+
+after 500
+dow -data  $SCRIPT_PATH/bitstreams/mult.bin  0x02000000
+dow -data  $SCRIPT_PATH/bitstreams/add.bin   0x03000000
+dow -data  $SCRIPT_PATH/bitstreams/blank.bin 0x04000000
 \end{lstlisting}

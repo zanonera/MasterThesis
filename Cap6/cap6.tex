@@ -20,10 +20,10 @@ Although this work has demonstrated the feasibility and effectiveness of combini
     \end{itemize}
 
     \item \textbf{Mitigation Strategies in the Processing System (PS):}
-    Extending fault-tolerant techniques to the embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} could enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400}, \cite{7948063}.
+    Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} could enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.
 
     \item \textbf{Evaluation Across Multiple \gls{fpga} Vendors:}
-    While this research has focused on a Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU}, \cite{Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
+ Although this research has focused on an Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU,Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
 
     \item \textbf{Scalability and Resource Optimization:}
     As the \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work could explore automated design-space exploration to optimize the balance between fault coverage, resource consumption and system performance.
