@@ -38,7 +38,7 @@ The \glspl{lut} could also be configured for other structures, including the so 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
-\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}}\label{fpga-arch-clb-slice-amd}
+\caption{Structure of a \gls{clb} in an AMD7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
 \subsubsection{Routing and Interconnect Resources}
@@ -61,7 +61,7 @@ As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists o
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}}\label{fpga-arch}
+\caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
 \end{figure}
 
 As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
@@ -69,7 +69,7 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
-\caption{\gls{fpga} Structure. Reproduced from \textcite{AMD_UG474}}\label{fpga-column-asmbl}
+\caption{\gls{fpga} Structure. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -199,12 +199,12 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{\gls{fpga} Structure. Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}}\label{fpga-seu-and}
+\caption{\gls{fpga} Structure. Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
 \centering
-\caption{Truth Tables for AND and XNOR Logic Gates}
+\caption{Truth Tables for AND and XNOR Logic Gates.}
 \label{tab:logic_gates}
 \[
 \begin{array}{c c | c @{\hskip 1cm} c c | c}
@@ -222,13 +222,13 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/seu-sb-mb.png}
-\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}}\label{fpga-seu-and-sbu-mbu}
+\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}.}\label{fpga-seu-and-sbu-mbu}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fncom-17-1268374-g0001.jpg}
-\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Xie2023_HybridGrainedScrubbing}}\label{fpga-3upsets-cram}
+\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Xie2023_HybridGrainedScrubbing}.}\label{fpga-3upsets-cram}
 \end{figure}
 
 \section{Reliability Challenges in SRAM-based FPGAs}
@@ -240,7 +240,7 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-bits-definition.png}
-\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \textcite{Adria2023}}\label{fpga-bits-definition}
+\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \textcite{Adria2023}.}\label{fpga-bits-definition}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -315,7 +315,7 @@ This approach enhances data integrity by enabling fault detection at the word le
 \end{itemize}
 
 \begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
-\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \textcite{Yaman2022}}
+\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \textcite{Yaman2022}.}
 \label{tab:voter_comparison} \\
 
 \toprule
@@ -420,14 +420,14 @@ Several scrubbing architectures have been proposed in the literature, differing 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap3/scrubbing1.30.png}
-    \caption{Different memory scrubbing techniques. (a) Internal (b) External}
+    \caption{Different memory scrubbing techniques, (a) Internal (b) External.}
     \label{fig:scrubbing-int-ext}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{Cap3/scrubbing2-30.png}
-    \caption{Scrubbing method avaiable in \gls{soc} devices}
+    \caption{Scrubbing method available in \gls{soc} devices.}
     \label{fig:scrubbing-soc}
 \end{figure}
 

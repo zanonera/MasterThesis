@@ -10,14 +10,14 @@ The software and hardware used in this research is discussed in \hyperref[sec:ca
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/setup-diagram.png}
-    \caption{Interconnection diagram of the main board and the USB to Serial Interface module}
+    \caption{Interconnection diagram of the main board and the USB to Serial Interface module.}
     \label{fig:setup-diagram}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/setup.jpg}
-    \caption{Setup of the main board (center) and the USB to Serial Interface module (up right)}
+    \caption{Setup of the main board (center) and the USB to Serial Interface module (up right).}
     \label{fig:setup-pic}
 \end{figure}
 
@@ -43,6 +43,38 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-blank.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-dpr-error.png}}
+    \caption{(a) Menu Selection of the \gls{pr} of the blanking bitstream (b) Menu indication that the \gls{pr} failed to set a new bitstream.}
+    \label{fig:menu-blank&dpr-error}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-mult.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-ok.png}}
+    \caption{(a) Menu Selection of the multiplier to be applied to the \gls{pr} (b) Multiplication check on \gls{hw} and \gls{sw}.}
+    \label{fig:menu-mult&mult-ok}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-add.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add-ok.png}}
+    \caption{(a) Menu Selection of the adder to be applied to the \gls{pr} (b) Addition check on \gls{hw} and \gls{sw}.}
+    \label{fig:menu-add&add-ok}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/error_add_after_injection_C0003C440C.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add_error_other_operand.png}}
+    \caption{(a) \gls{hw} addition error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the value with other operands for the addition.}
+    \label{fig:add-error-fi}
+\end{figure}
 
 \section{Fault-Injection Campaign Results}
 This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
@@ -84,6 +116,20 @@ Critical bits detected: AXI bus lock & 3 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap5/mult/mult_injection_results-wo_reprogram.png}
+    \caption{Automated \gls{fi} result without the reprogram ability.}
+    \label{fig:mult-list-wo-reprogram}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap5/mult/mult-error-reprogram.png}
+    \caption{Automated \gls{fi} result with the reprogram ability.}
+    \label{fig:mult-list-reprogram}
+\end{figure}
 
 \subsection{Scrubbing and Fault Injection with a FIR Filter}
 

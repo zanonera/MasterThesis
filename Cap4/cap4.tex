@@ -179,7 +179,7 @@ In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and su
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap4/detail_fir.png}
-    \caption{Block Diagram, in detal, of the \gls{fir} implementation in Vivado. The \gls{dmr} is presengted and the circuito to detect if the modules has the correct outputs}
+    \caption{Block Diagram, in detail, of the \gls{fir} implementation in Vivado. The \gls{dmr} is presented and the circuit to detect if the modules has the correct outputs.}
     \label{fig:detail_fir}
 \end{figure}
 
@@ -276,6 +276,13 @@ To facilitate the reproduction of the results and provide a base configuration f
 \end{itemize}
 
 The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s \gls{ddr} memory, after which a \gls{dma} transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
+
+\begin{landscape}
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.5\textwidth]{Cap4/pr_math_bd.png}
+    \caption{Block Diagram of the implementation in Vivado. In the blue square (center) the area for \gls{dpr} of the mathematical function (multiplier or adder), in the red square (left) the check box indicating that this is a \gls{pr} block in the violet square (right) the \gls{pr} decoupler for the \gls{axi} bus.}\label{vivado-pr-math}
+\end{figure}\end{landscape}
 
 \section{Integration with Processing System (PS)}
 This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
