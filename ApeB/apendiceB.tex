@@ -1,6 +1,26 @@
 %\section{Fault Injection Results}
 \label{apeB}
 
+\section{Full List of Errors before Automatic Reprogram Script}
+
+Figure~\ref{fig:multiplication_error_list_before} illustrates the full list of error before the creation of the new script that reprogram the device when ARM stall and then continues with the campaign.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=1\linewidth]{ApeB/mult_injection_results.png}
+    \caption{List with All errors before the new script with automatic reprogram}
+    \label{fig:multiplication_error_list_before}
+\end{figure}
+
+\section{Multiplication SEU AXI Error (ARM stall) List}
+\label{apeB-mult-list-w-axi-error}
+
+\begin{lstlisting}[caption={List of bits that caused ARM stall}, label={lst:arm_stall_bits}]
+Frame: C000364142 | DUT Checker: E
+Frame: C0003671B3 | DUT Checker: E
+Frame: C00036A143 | DUT Checker: E
+\end{lstlisting}
+
 \section{Multiplication SEU Error List}
 \label{apeB-mult-list-w-error}
 
@@ -37,28 +57,6 @@ Frame: C0003C4342 | DUT Checker: 1
 Frame: C0003C440C | DUT Checker: 1
 \end{lstlisting}
 \end{adjustbox}
-
-\section{Multiplication SEU AXI Error (ARM stall) List}
-\label{apeB-mult-list-w-axi-error}
-
-\begin{adjustbox}{max width=\textwidth}
-\begin{lstlisting}[caption={List of bits that caused ARM stall}, label={lst:arm_stall_bits}]
-Frame: C000364142 | DUT Checker: E
-Frame: C0003671B3 | DUT Checker: E
-Frame: C00036A143 | DUT Checker: E
-\end{lstlisting}
-\end{adjustbox}
-
-\section{Full List of Errors before Automatic Reprogram Script}
-
-Figure~\ref{fig:multiplication_error_list_before} illustrates the full list of error before the creation of the new script that reprogram the device when ARM stall and then continues with the campaign.
-
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=1\linewidth]{ApeB/mult_injection_results.png}
-    \caption{List with All errors before the new script with automatic reprogram}
-    \label{fig:multiplication_error_list_before}
-\end{figure}
 
 \section{Reprogram After ARM stall Fault}
 \label{apeB-mult-auto-reprogram}
