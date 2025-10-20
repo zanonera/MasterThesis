@@ -83,7 +83,7 @@ The type of \gls{cram} used dictates the device's characteristics:
 
     \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to SRAM devices \cite{Wubs2023}.
 
-    \item \textbf{Antifuse \glspl{fpga}:} These are One-Time Programmable (OTP) devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020,bates2016}.
+    \item \textbf{Antifuse \glspl{fpga}:} These are One-Time Programmable (OTP) devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020,bates2016,Wang2003_RadiationEffectsFPGAs}.
 \end{itemize}
 
 \subsubsection{Bitstream}
@@ -180,7 +180,7 @@ As technology feature size decreases, \glspl{seu} and \glspl{set} become the dom
 
 \subsubsection{Single Event Upsets (SEUs)}
 
-The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit \cite{Wilson2025}. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
+The principal threat to \glspl{fpga} reliability is the \textit{Single Event Upset (SEU)}, a non-destructive event where a single particle strike flips the state of a memory bit \cite{Wilson2025,Yaman2022,leipnitz2015}. In \gls{sram}-based \glspl{fpga}, \glspl{seu} are a major concern because altered configuration bits can permanently change the implemented logic and routing, leading to persistent malfunctions \cite{Quinn2017_RadiationEffectsReconfigurableFPGAs}, as illustrated in Figures~\ref{fpga-seu-and} and~\ref{fpga-3upsets-cram}.
 
 \subsubsection{\glsentrytext{see} Induced System Failure Types}
 
