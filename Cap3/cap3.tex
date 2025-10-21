@@ -38,7 +38,7 @@ The \glspl{lut} could also be configured for other structures, including the so 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
-\caption{Structure of a \gls{clb} in an AMD's 7-series \gls{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
+\caption{Structure of a \acrshort{clb} in an AMD's 7-series \acrshort{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
 \subsubsection{Routing and Interconnect Resources}
@@ -61,7 +61,7 @@ As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists o
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
+\caption{\acrshort{fpga} Structure. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
 \end{figure}
 
 As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains represent the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
@@ -69,7 +69,7 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
-\caption{\gls{fpga} specialized resources. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
+\caption{\acrshort{fpga} specialized resources. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -99,7 +99,7 @@ Before any configuration packet is processed by the \gls{fpga}, the configuratio
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.5\textwidth]{Cap3/simple-bitstream.png}
-\caption{Simple representation of the \gls{fpga} bitstream structure.}\label{fpga-simple-bitstream}
+\caption{Simple representation of the \acrshort{fpga} bitstream structure.}\label{fpga-simple-bitstream}
 \end{figure}
 
 A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \textcite{LeRoux2019,Aranda2019,Xie2023_HybridGrainedScrubbing}.
@@ -161,7 +161,7 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Classification of \gls{see} subtypes.}
+\caption{Classification of \acrlong{see} subtypes.}
 \label{fig:see_hard_soft}
 \end{figure}
 
@@ -199,7 +199,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{Illustration of a \gls{seu} effect in a \gls{lut}'s \gls{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
+\caption{Illustration of a \acrshort{seu} effect in a \acrshort{lut}'s \acrshort{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
@@ -222,13 +222,13 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/seu-sb-mb.png}
-\caption{\gls{sbu} and \gls{mbu} representations in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}.}\label{fpga-seu-and-sbu-mbu}
+\caption{\acrshort{sbu} and \acrshort{mbu} representations in a \acrshort{fpga} \acrshort{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}.}\label{fpga-seu-and-sbu-mbu}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fncom-17-1268374-g0001.jpg}
-\caption{Representation of different types of upsets in a \gls{fpga} \gls{cram}. Reproduced from \textcite{Xie2023_HybridGrainedScrubbing}.}\label{fpga-3upsets-cram}
+\caption{Representation of different types of upsets in a \acrshort{fpga} \acrshort{cram}. Reproduced from \textcite{Xie2023_HybridGrainedScrubbing}.}\label{fpga-3upsets-cram}
 \end{figure}
 
 \section{Reliability Challenges in SRAM-based FPGAs}
@@ -240,7 +240,7 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-bits-definition.png}
-\caption{Representation of different types of bits in the \gls{fpga} \gls{cram} due to its criticality. Reproduced from \textcite{Adria2023}.}\label{fpga-bits-definition}
+\caption{Representation of different types of bits in the \acrshort{fpga} \acrshort{cram} due to its criticality. Reproduced from \textcite{Adria2023}.}\label{fpga-bits-definition}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -277,7 +277,7 @@ Figure~\ref{fig:cgtmr} illustrates an example of a \gls{cgtmr} implementation.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap3/cgtmr.png}
-    \caption{Enter Caption}
+    \caption{Representation of the \acrlong{cgtmr}}
     \label{fig:cgtmr}
 \end{figure}
 
@@ -302,7 +302,7 @@ Figure~\ref{fig:fgtmr} illustrates an example of a \gls{fdtmr} implementation.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap3/fgtmr.png}
-    \caption{Enter Caption}
+    \caption{Representation of the \acrlong{fgtmr}}
     \label{fig:fgtmr}
 \end{figure}
 
@@ -421,7 +421,7 @@ Voters are inherently critical components, as they introduce a \textit{single po
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap3/dpr-xilinx.png}
-    \caption{Basic Principle of \gls{dpr}.Reproduced from \cite{Xilinx_UG702_PR}.}
+    \caption{Basic Principle of \acrshort{dpr}.Reproduced from \cite{Xilinx_UG702_PR}.}
     \label{fig:dpr-xilinx}
 \end{figure}
 
@@ -487,7 +487,7 @@ Figure~\ref{fig:scrubbing-soc} illustrates a scrubbing solution based on \gls{so
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Cap3/scrubbing2-30.png}
-    \caption{Scrubbing method available in \gls{soc} devices.}
+    \caption{Scrubbing method available in \acrshort{soc} devices.}
     \label{fig:scrubbing-soc}
 \end{figure}
 
