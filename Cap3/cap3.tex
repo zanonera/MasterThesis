@@ -1,7 +1,7 @@
 %\section{Theoretical Introduction}
 \label{sec:cap3}
 
-This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of \gls{cots} \gls{sram} \glspl{fpga}, examines fault-tolerance techniques such as N-Modular Redundancy (NMR) and Dynamic Partial Reconfiguration (DPR), discusses memory scrubbing mechanisms, and outlines the principles of fault injection for resilience evaluation.
+This chapter presents the theoretical background necessary to understand the techniques and concepts explored in this dissertation. Introduces the reliability challenges of \gls{cots} \gls{sram} \glspl{fpga}, examines fault-tolerance techniques such as \gls{nmr} and \gls{dpr}, discusses memory scrubbing mechanisms, and outlines the principles of \gls{fi} for resilience evaluation.
 
 \section{\glsentrytext{fpga}}
 This section introduces the \gls{fpga} architecture, focusing on the role of configurable logic blocks, routing resources, and configuration memory.
@@ -45,14 +45,14 @@ The \glspl{lut} could also be configured for other structures, including the so 
 These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks, and embedded resources to implement complex systems.
 
 \subsubsection{Input/Output Blocks (IOBs)}
-These blocks are positioned around the logic core to interface the internal logic with the external environment, handling data input and output.
+These blocks are positioned around the logic core to interface the internal logic with the external environment, handling input and output data.
 
 \subsubsection{Specialized Heterogeneous Resources}
-Modern \glspl{fpga} also include various specialized resources beyond the basic structure, such as:
+Modern \glspl{fpga} also includes various specialized resources beyond the basic structure, such as:
 \begin{itemize}
     \item \textbf{Embedded Memories}, such as \glspl{bram}.
     \item \textbf{Arithmetic Resources}, such as \gls{dsp} units.
-    \item \textbf{Processing Resources}, which can be hard cores (e.g., ARM Cortex processors in Xilinx Zynq-7000 \gls{apsoc}) or soft processors implemented using programmable logic.
+    \item \textbf{Processing Resources}, which can be hard cores (e.g. ARM Cortex processors on Xilinx Zynq-7000 \gls{apsoc}) or soft processors implemented using programmable logic.
     \item \textbf{Clock-management resources}.
 \end{itemize}
 
@@ -64,7 +64,7 @@ As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists o
 \caption{\gls{fpga} Structure. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
 \end{figure}
 
-As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains, represents the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
+As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains represent the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
 
 \begin{figure}[ht]
 \centering
@@ -76,14 +76,14 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 
 \glspl{fpga} are programmable devices whose behavior is defined by the \textit{bitstream} loaded to its \gls{cram}. This bitstream contains all the information needed to configure the blocks in the \gls{fpga} architecture, mapping the user-defined \gls{hdl} design to the available logic and routing elements.
 
-The type of \gls{cram} used dictates the device's characteristics:
+The type of \gls{cram} used dictates the characteristics of the device:
 
 \begin{itemize}
-    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial \glspl{fpga} due to their high reconfiguration flexibility, the ability to integrate complex systems and their competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration of all internal \glspl{lut} and functions of the device. This technology allows \glspl{fpga} to be reprogrammed in an virtually infinite number of cycles and allows \textit{\gls{dpr}}, which means parts of the configuration can be changed during runtime. A significant drawback is that \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
+    \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial \glspl{fpga} due to their high reconfiguration flexibility, the ability to integrate complex systems and their competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration of all internal \glspl{lut} and functions of the device. This technology allows \glspl{fpga} to be reprogrammed in an virtually infinite number of cycles and allows \textit{\gls{dpr}}, which means that parts of the configuration can be changed during runtime. A significant drawback is that \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
 
-    \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to SRAM devices \cite{Wubs2023}.
+        \item \textbf{Flash-based \glspl{fpga}:} These are reconfigurable and non-volatile, meaning the configuration memory is immune to \glspl{seu}. However, they may have lower capacity and fewer reprogramming cycles compared to \gls{sram} devices \cite{Wubs2023}.
 
-    \item \textbf{Antifuse \glspl{fpga}:} These are One-Time Programmable (OTP) devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020,bates2016,Wang2003_RadiationEffectsFPGAs}.
+    \item \textbf{Antifuse \glspl{fpga}:} These are \gls{otp} devices whose configuration cannot be changed once set. Their configuration memory is immune to radiation effects, making them suitable for harsh environments, but they offer lower logic capacity \cite{Garcia2020,bates2016,Wang2003_RadiationEffectsFPGAs}.
 \end{itemize}
 
 \subsubsection{Bitstream}
@@ -94,7 +94,7 @@ Several initiatives have attempted to document the structure of the 7‑series b
 
 Figure~\ref{fpga-simple-bitstream} illustrates, very simplistically, the structure of the bitstream, where the header and footer are represented in the beginning and ending of the structure, the sync word and then the \gls{far} that points to one frame \cite{Xilinx_UG470_7Series_Config}.
 
-Before any configuration packet is processed by the \gls{fpga}, the configuration logic must first detect a specific synchronization pattern. For Xilinx devices, this synchronization word has the hexadecimal value \texttt{0xAA995566}. It allows the configuration logic to align data at a 32-bit word boundary, ensuring correct interpretation of subsequent configuration packets. In parallel configuration modes, successful detection of the bus width is required prior to recognizing the synchronization word \cite{f4pga_prjxray}.
+Before any configuration packet is processed by the \gls{fpga}, the configuration logic must first detect a specific synchronization pattern. For Xilinx devices, this synchronization word has the hexadecimal value \texttt{0xAA995566}. It allows the configuration logic to align data at a 32-bit word boundary, ensuring correct interpretation of subsequent configuration packets. In parallel configuration modes, successful detection of the bus width is required before recognizing the synchronization word \cite{f4pga_prjxray}.
 
 \begin{figure}[ht]
 \centering
@@ -108,9 +108,9 @@ A 7-series \gls{fpga} frame consists of 101 words of 32 bits each, where 100 wor
 
 \section{Sources of Faults in \glsentrytext{fpga}}
 
-Integrated circuits operating in radiation environments are susceptible to transient and permanent faults caused by the interaction of ionizing particles with silicon. Ionizing radiation can generate electrical disturbances by depositing charge that alters transistor states. This deposition occurs either directly, when charged particles interact with the material, or indirectly, when neutral particles such as neutrons produce secondary charged particles (e.g., alpha particles, ions, or protons). The severity of the effect depends on the amount and location of the deposited charge within the semiconductor \cite{KastensmidtRech2016}.
+Integrated circuits operating in radiation environments are susceptible to transient and permanent faults caused by the interaction of ionizing particles with silicon. Ionizing radiation can generate electrical disturbances by depositing a charge that alters transistor states. This deposition occurs either directly, when charged particles interact with the material, or indirectly, when neutral particles such as neutrons produce secondary charged particles (e.g., alpha particles, ions, or protons). The severity of the effect depends on the amount and location of the charge deposited within the semiconductor \cite{KastensmidtRech2016}.
 
-\glspl{see} encompass all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting \cite{GomezToro2014}. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multiple-Bit Upsets (MBUs) (also called Multiple-Cell Upsets (MCUs)) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011,Daniello2025_SEU_ShiftRegister16nm}.
+\glspl{see} encompasses all radiation-induced phenomena resulting from the interaction of energetic particles with electronic components. These effects are generally classified as hard or soft errors. Hard errors, such as Single Event Burnout (SEB), Single Event Gate Rupture (SEGR), and latch-up (SEL), are permanent and often destructive, while soft errors are recoverable through reset, power cycling, or data rewriting \cite{GomezToro2014}. Among soft errors, Single Event Upsets (SEUs) cause bit flips in memory elements, Multiple-Bit Upsets (MBUs) (also called Multiple-Cell Upsets (MCUs)) affect multiple storage cells, and Single Event Transients (SETs) induce temporary voltage pulses in analog or combinational logic circuits. In complex integrated systems, Single Event Functional Interrupts (SEFIs) can disrupt control logic or clocks, leading to temporary loss of functionality that typically requires reconfiguration or reset for recovery \cite{Nicolaidis2011,Daniello2025_SEU_ShiftRegister16nm}.
 
 Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} phenomena and their respective subtypes.
 
@@ -174,9 +174,9 @@ Most modern high-density \glspl{fpga} rely on \gls{sram} cells to store their co
 
 This \gls{cram} defines the functionality of logic blocks (\glspl{lut} and \glspl{ff}) and all internal interconnections. 
 
-Unfortunately, this reliance on volatile SRAM renders \glspl{fpga} highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
+Unfortunately, this reliance on volatile \gls{sram} renders \glspl{fpga} highly susceptible to soft errors induced by high-energy ionizing radiation, a phenomenon particularly severe in environments such as space.
 
-As technology feature size decreases, \glspl{seu} and \glspl{set} become the dominant radiation-induced effects in modern microelectronic circuits. In addition, \glspl{mbu}—events in which multiple configuration or memory bits are simultaneously affected—are increasingly significant due to the higher integration density and reduced node capacitance of advanced semiconductor technologies \cite{Zhao2015_SEU_AdvancedIC}.
+As the size of the technology features decreases, \glspl{seu} and \glspl{set} become the dominant radiation-induced effects in modern microelectronic circuits. In addition, \glspl{mbu}—events in which multiple configuration or memory bits are simultaneously affected—are increasingly significant due to the higher integration density and reduced node capacitance of advanced semiconductor technologies \cite{Zhao2015_SEU_AdvancedIC}.
 
 \subsubsection{Single Event Upsets (SEUs)}
 
@@ -199,7 +199,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{Illustartion o a \gls{seu} effect in a \gls{lut} \gls{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
+\caption{Illustration of a \gls{seu} effect in a \gls{lut}'s \gls{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
@@ -233,7 +233,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 
 \section{Reliability Challenges in SRAM-based FPGAs}
 
-SRAM-based \glspl{fpga} are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults can alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical to developing effective mitigation strategies.
+\gls{sram}-based \glspl{fpga} are widely adopted for their flexibility, performance, and reconfigurability. However, their configuration memory (\gls{cram}) and user logic are highly susceptible to soft errors induced by radiation, electromagnetic interference, or aging effects. These transient faults can alter logic functionality or corrupt stored data, potentially leading to malfunction or complete system failure. Understanding the nature, frequency, and impact of these faults is critical to developing effective mitigation strategies.
 
 The concept of soft error criticality describes the potential of \gls{fpga} bits to cause design failures. Upsets in unused regions generally pose a lower risk, as these bits are not expected to affect functionality; however, soft errors could still impact the design if unused elements become inadvertently enabled. Bits configured for the implemented design, whether set to zero or one, are referred to as essential bits. Single-bit upsets in essential bits may be masked by the design, but multiple upsets can accumulate and overcome this inherent protection, potentially leading to errors. Critical bits are those whose flipping can directly cause a system failure, meaning that a single-bit upset in such a bit may compromise the design \cite{Adria2023}. Figure~\ref{fpga-bits-definition} illustrates the classification of the various types of \gls{fpga} bits.
 
@@ -307,11 +307,11 @@ E_{\text{flag}} &=
 \label{eq:word_voter_mitra}
 \end{equation}
 
-where $W_1$, $W_2$, and $W_3$ are the $m$-bit words from the three redundant modules, $W_{\text{out}}$ is the voted output word, and $E_{\text{flag}}$ indicates a mismatch among all module outputs.
+where $W_1$, $W_2$, and $W_3$ are the $m$-bit words from the three redundant modules, $W_{\text{out}}$ is the output word voted and $E_{\text{flag}}$ indicates a mismatch between all outputs of the modules.
 
 This approach enhances data integrity by enabling fault detection at the word level, allowing the system to identify inconsistencies that bit-by-bit voting may overlook.
     
-    \item \textbf{Self-Adapted Voter (SAv):} Proposed by \textcite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerates multiple accumulated faults. The SAv determines the output by considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
+    \item \textbf{Self-Adapted Voter (SAv):} Proposed by \textcite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerate multiple accumulated faults. The SAv determines the output considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
 \end{itemize}
 
 \begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
@@ -352,13 +352,13 @@ C & 000 & 000 & 000 & 010 \\
 
 \end{longtable}
 
-In Table~\ref{tab:voter_comparison}, the design and functionality of word and a bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
+In Table~\ref{tab:voter_comparison}, the design and functionality of word and bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
 
 \subsubsection{Voter Vulnerabilities and Mitigation}
-Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For instance, in a \gls{tmr} configuration, an upset in the voter logic renders the redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. Because the voter's reliability ($R_{\text{voter}}$) directly determines the overall system reliability, enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential for maintaining system dependability.
+Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For example, in a \gls{tmr} configuration, an omission in the voter logic renders redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. The reliability of the voter directly determines the overall reliability of the system. Enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential to maintain system dependability.
 
 \section{Dynamic Partial Reconfiguration (DPR)}
-\gls{dpr} enables the selective reprogramming of specific \gls{fpga} regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, DPR reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of DPR, design partitioning strategies, and how it complements redundancy to achieve self-repairing \gls{fpga} systems.
+\gls{dpr} enables the selective reprogramming of specific \gls{fpga} regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, \gls{dpr} reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of \gls{dpr}, design partitioning strategies, and how it complements redundancy to achieve self-repairing \gls{fpga} systems.
 
 \begin{figure}
     \centering
@@ -377,7 +377,7 @@ The main characteristics of \gls{dpr} include:
     \item \textbf{Selective Modification:} Enables the reconfiguration of a defined region within the \gls{fpga} without interrupting the operation of the rest of the device \cite{Barbosa2021,Wilson2020_VideoPipelines}.
     \item \textbf{Partitioning:} The programmable area can be divided into one or more partitions, where each partition can be reconfigured independently \cite{Bonna2021}. These reconfigurable regions are typically defined using Vivado’s \texttt{pblock} feature \cite{Wilson2020_VideoPipelines}.
     \item \textbf{Static and Dynamic Logic:} \gls{dpr} separates the design into static (fixed) logic and dynamic (reconfigurable) logic. The static logic remains constant, while the dynamic logic—implemented in \glspl{dpr} can be replaced or updated at runtime \cite{Wilson2020_VideoPipelines}.
-    \item \textbf{Partial Bitstreams:} Reconfiguration is performed through the loading of partial bitstreams, which contain only the configuration data for the reconfigurable partition, unlike full bitstreams that include both static and dynamic regions \cite{Yang2022_FaultInjectionUltrascale}.
+    \item \textbf{Partial Bitstreams:} Reconfiguration is performed by loading partial bitstreams, which contain only the configuration data for the reconfigurable partition, unlike full bitstreams that include both static and dynamic regions \cite{Yang2022_FaultInjectionUltrascale}.
 \end{itemize}
 
 Figure~\ref{fig:dpr-xilinx} illustrates the concept described above, where multiple partial bitstreams can coexist in external memory and dynamically loaded, one at a time, into the reconfigurable region of the \gls{dpr} setup.
@@ -387,13 +387,13 @@ Implementing \gls{dpr} requires dedicated configuration flows and access to the 
 
 \begin{itemize}
     \item \textbf{Internal Configuration Access Port (ICAP):}  
-    An internal hardware interface accessible through HDL primitives. The ICAP allows rapid reconfiguration directly from within the programmable logic and is often employed in fault injection or fast module updates.
+    An internal hardware interface accessible through HDL primitives. The \gls{icap} allows rapid reconfiguration directly from within the programmable logic and is often employed in fault injection or fast module updates.
 
     \item \textbf{Processor Configuration Access Port (PCAP):}  
-    Available on Xilinx Zynq and UltraScale+ \glspl{fpga}, the PCAP is managed by software running on the embedded ARM processor. It facilitates bitstream transfer between the Processing System (PS) and the Programmable Logic (PL) via DMA, enabling efficient runtime reconfiguration.
+    Available on Xilinx Zynq and UltraScale+ \glspl{fpga}, the \gls{pcap} is managed by software running on the embedded ARM processor. It facilitates bitstream transfer between the Processing System (PS) and the Programmable Logic (PL) via DMA, enabling efficient runtime reconfiguration.
 
     \item \textbf{JTAG and SelectMAP:}  
-    External configuration interfaces commonly used for debugging, testing, or initial configuration. While JTAG offers flexibility for development and validation, SelectMAP provides higher bandwidth for bitstream loading during operation.
+    External configuration interfaces commonly used for debugging, testing, or initial configuration. While \gls{jtag} offers flexibility for development and validation, SelectMAP provides higher bandwidth for bitstream loading during operation.
 \end{itemize}
 
 Thus, \gls{dpr} provides a foundation for adaptive and fault-tolerant \gls{fpga} systems, enabling the replacement, recovery, or upgrade of hardware modules on demand without system downtime.

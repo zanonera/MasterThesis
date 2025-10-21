@@ -18,7 +18,7 @@ As presented by \textcite{9298818, Adria2023,Rogenmoser2023_HMR,paikowsky2017,Ga
 
 Traditional fault-tolerant techniques, such as static redundancy or periodic device reprogramming, are often insufficient or inefficient in these scenarios. They may incur high area overhead, disrupt system operation during recovery, or fail to respond rapidly to localized failures. \gls{nmr} provides a robust mechanism for masking errors at run-time through majority voting, but its static nature cannot repair defective modules, leading to gradual degradation of resources.
 
-\gls{dpr} and memory scrubbing emerges as a powerful complement to redundancy techniques by allowing the selective repair of faulty modules without interrupting system functionality. When combined with systematic fault injection, researchers can accurately evaluate the resilience of FPGA-based systems and validate mitigation strategies under realistic conditions. 
+\gls{dpr} and memory scrubbing emerges as a powerful complement to redundancy techniques by allowing the selective repair of faulty modules without interrupting system functionality. When combined with systematic fault injection, researchers can accurately evaluate the resilience of \gls{fpga}-based systems and validate mitigation strategies under realistic conditions. 
 
 In addition, to address the high demand for computing power, while maintaining high design flexibility, \gls{soc} solutions have gained significant traction. \glspl{soc} integrate, within a single component, a \gls{fpga} fabric, one or more processor cores, multiple communication buses, and a wide variety of peripherals for data input and output. This integration enables efficient implementation of complex reconfigurable systems that can be upgraded or repurposed even after deployment in the field.
 
@@ -27,7 +27,7 @@ In addition, to address the high demand for computing power, while maintaining h
 
 Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission-critical and safety-critical applications, especially in the aerospace \cite{9298818}, it is important to apply error mitigation strategies to increase reliability, especially in unmanned devices. While static \gls{nmr} can mask faults, periodic full, \gls{dpr} and scrubbing can repair them. These approaches achieve better results when applied in combination, increasing tolerance to error, and achieving some degree of self-healing \cite{6880163,Shaji2019}.
 
-Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to degradation in performance or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation, enabling FPGA-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
+Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to degradation in performance or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation, enabling \gls{fpga}-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
 
 Inspired by the framework developed by \textcite{8541452}, this study advances their reconfigurable platform by adding robust error mitigation, fault injection, and analysis capabilities.
 
@@ -55,10 +55,10 @@ The main objectives of this work are:
 \section{Work Contribution}
 The main contributions of this work can be summarized as follows:
     \begin{itemize}
-        \item {A fault-tolerant FPGA design methodology integrating NMR, DPR, and fault injection for reliability evaluation;}
-        \item {A practical test framework using a benchmark circuit (e.g., a modular RISC-V processor core) to validate the approach under realistic fault scenarios;}
+        \item {A fault-tolerant \gls{fpga} design methodology integrating \gls{nmr}, \gls{dpr}, and \gls{fi} for reliability evaluation;}
+        \item {A practical test framework using a benchmark circuit (e.g., a modular RISC-V processor core) to validate the approach in realistic fault scenarios;}
         \item {Experimental data and analysis quantifying the trade-offs between redundancy overhead, reconfiguration time, and system availability;}
-        \item {Design guidelines for developing resilient FPGA architectures in mission- and safety-critical applications.}
+        \item {Design guidelines for the development of resilient \gls{fpga} architectures in mission- and safety-critical applications.}
     \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,11 +68,11 @@ This dissertation is structured into six chapters, organized to guide the reader
 \begin{itemize}
     \item \hyperref[sec:cap1]{\textbf{Chapter 1 – Introduction:}} Presents the background, motivation, scope, and objectives of the work. Introduces \glspl{fpga} and \glspl{soc}, highlights their susceptibility to transient faults, and outlines the importance of combining \gls{nmr}, \gls{dpr}, and fault injection techniques to enhance the reliability of the system.
     
-    \item \hyperref[sec:cap2]{\textbf{Chapter 2 – Concepts and Literature Review:}} Reviews the state-of-the-art in fault-tolerant FPGA design, including redundancy schemes, memory scrubbing, partial dynamic reconfiguration, and fault injection methodologies. This chapter provides a foundation for understanding the theoretical and practical aspects of reliability in SRAM-based FPGA systems.
+    \item \hyperref[sec:cap2]{\textbf{Chapter 2 – Concepts and Literature Review:}} Reviews the state-of-the-art in fault-tolerant \gls{fpga} design, including redundancy schemes, memory scrubbing, partial dynamic reconfiguration, and fault injection methodologies. This chapter provides a foundation for understanding the theoretical and practical aspects of reliability in \gls{sram}-based \gls{fpga} systems.
     
     \item \hyperref[sec:cap3]{\textbf{Chapter 3 – Theoretical Introduction:}} This section provides the theoretical background that supports the proposed approach, addressing key topics such as \gls{nmr} principles, fault modeling, reconfiguration techniques, and reliability assessment metrics.
     
-    \item \hyperref[sec:cap4]{\textbf{Chapter 4 – Development Methodology:}} Describes the design and implementation methodology of the proposed system, including benchmark selection, design of the FPGA architecture, integration of \gls{nmr} and \gls{dpr}, and setup of the fault injection framework.
+    \item \hyperref[sec:cap4]{\textbf{Chapter 4 – Development Methodology:}} Describes the design and implementation methodology of the proposed system, including benchmark selection, design of the \gls{fpga} architecture, integration of \gls{nmr} and \gls{dpr}, and setup of the fault injection framework.
     
     \item \hyperref[sec:cap5]{\textbf{Chapter 5 – Results and Analysis:}} Presents the experimental results obtained from the fault injection campaigns and the runtime reconfiguration tests. The chapter includes analysis of fault coverage, system performance, resource utilization, and the effectiveness of proposed mitigation strategies.
     
