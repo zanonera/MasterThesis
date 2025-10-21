@@ -57,6 +57,7 @@ It is widely used for bridging USB connections to various serial and parallel pr
 \end{table}
 
 \section{Reference Design Architecture}
+\label{sec:ref-design-arch}
 In order to evaluate all necessary knowledge to implement the final solution, the first step was to develop an initial architecture with the needed components.
 
 The requirements for this architecture were established on the basis of the following key assumptions:
@@ -110,7 +111,7 @@ As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any
 
 As illustrated in Figure~\ref{dpr-full-diagram}, the full bitstream reconfigures the entire \gls{fpga} \gls{cram}, so the entire circuit needs to be shut off and will only return to function when the complete reprogram is complete.
 
-The size of the bitstreams, illustrated by the squares in Figures ~\ref{dpr-full-diagram} and~\ref{dpr-partial-diagram}, gives the exact notion of the time needed to reprogram \gls{fpga} \gls{cram}. As the partial bitstream only reprograms a small portion of the device, the full bitstream will reprogram the entire device. So, this translates into the difference in the size of files and the time needed for reconfiguration. 
+The size of the bitstreams, illustrated by the squares in Figures ~\ref{dpr-partial-diagram} and~\ref{dpr-full-diagram}, gives the exact notion of the time needed to reprogram \gls{fpga} \gls{cram}. As the partial bitstream only reprograms a small portion of the device, the full bitstream will reprogram the entire device. So, this translates into the difference in the size of files and the time needed for reconfiguration. 
 
 \subsection{Integration of \glsentrytext{dpr} and \glsentrytext{sem} in the same project}
 
@@ -162,44 +163,48 @@ In this section, the integration of the NMR scheme is detailed. The voter archit
 
 In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to fault injection experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
 
-\begin{figure}
+Figure~\ref{fig:fir-dmr} illustrates the proposed architecture used to evaluate the \gls{dmr} design in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on the \gls{cram} of the \gls{fpga}.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/fir-dmr.png}
     \caption{Block diagram representation of the proposed Duplicated \gls{fir} filters.}
     \label{fig:fir-dmr}
 \end{figure}
 
-\begin{figure}
+Figure~\ref{fig:dut_fir_bird_view} illustrates the implemented design of the \gls{dmr} architecture using the Vivado tool. The \gls{semip} is instantiate together with the wrapper that constitutes of both \gls{fir} filters and the \gls{ps}. 
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/dut_fir_bird_view.png}
     \caption{Block diagram representation for the Vivado implementation, showing the \gls{fir} filter implemented in the \textit{My Design} block and the \gls{sem} wrapper containing the scrubber, which integrates the \gls{semip} and the ARM processor.}
     \label{fig:dut_fir_bird_view}
 \end{figure}
 
-\begin{figure}
+Figure~\ref{fig:detail_fir} presentes the \gls{dmr} architecture in detail. It is possible to visualize the \gls{rom} with the data to be inputted in the \gls{fir}. The outputs of the designe are checked with the "checker" block and the resullt of the comparsion is sent through serial communication to be evaluated by the \gls{fi} computer.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/detail_fir.png}
     \caption{Block Diagram, in detail, of the \gls{fir} implementation in Vivado. The \gls{dmr} is presented and the circuit to detect if the modules has the correct outputs.}
     \label{fig:detail_fir}
 \end{figure}
 
-\begin{figure}[ht]
+Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using the PicoRV32I.
+
+For the \gls{tmr} evaluation conducted in this study, the \gls{cgtmr} method with a single word voter was selected. As discussed in Section~\ref{sec:cap3}, the word voter was chosen because it provides better results when applied to buses and wide data words. In this case, most voters operate on 32-bit signals due to the use of the \gls{riscv} processor.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/riscv-tmr-diagram.png}
     \caption{Block diagram representation of the proposed Triplicated PicoRV32I.}
     \label{riscv-tmr-diagram}
 \end{figure}
 
-As illustrated  in Figure~\ref{fig:fir-dmr},
-
-As illustrated  in Figure~\ref{riscv-tmr-diagram},
-
-As illustrated  in Figure~\ref{fig:dut_fir_bird_view},
-
-As illustrated  in Figure~\ref{fig:detail_fir},
+Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementation in Vivado. It is possible to observe the triplicated \gls{riscv} cores, as well as the voters inserted into each processor output that interfaces with the memory. In this study, the memory was neither triplicated nor equipped with any form of \gls{ecc} protection.
 
 \begin{landscape}
-    \begin{figure}[ht]
+    \begin{figure}[H]
     \centering
     \includegraphics[width=1.5\textwidth]{Cap4/tmr-vivado.png}
     \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the \gls{riscv} instructions (firmware), in the red square (center) the triplicated \gls{riscv} cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
@@ -240,7 +245,7 @@ The following examples illustrate how to apply this attribute in different desig
     \end{verbatim}
 \end{itemize}
 
-Another configuration applied to both architectures was the disabling of the \gls{dsp}48 blocks in the \gls{fpga}. This ensured that the design was implemented exclusively using \glspl{lut}, which made the \gls{fi} process more consistent and easier to emulate.
+Another configuration applied to both architectures was the disablement of \gls{dsp}48 blocks in \gls{fpga}. This ensured that the design was implemented exclusively using \glspl{lut}, which made the \gls{fi} process more consistent and easier to emulate.
 
 \begin{itemize}
     \item \textbf{\gls{tcl} Script (Vivado Constraint):}
@@ -288,6 +293,7 @@ The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initi
 This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
 
 \section{Fault Injection Strategy}
+\label{sec:fi-strategy}
 This subsection describes how faults were emulated in the \gls{fpga} to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
 
 \begin{figure}[ht]
@@ -297,7 +303,7 @@ This subsection describes how faults were emulated in the \gls{fpga} to validate
     \label{error-injection-diagram}
 \end{figure}
 
-As illustrated  in Figure~\ref{error-injection-diagram},
+As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that enable readback and correction of the \gls{fpga}'s configuration memory (\gls{cram}). Since the device includes a \gls{ps}, it is utilized both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is employed to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
 
 As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout the \gls{fpga}, defining the functionality of its internal resources, including the \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
 

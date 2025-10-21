@@ -1,30 +1,34 @@
 %\section{Results and Analysis}
 \label{sec:cap5}
 
-This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, fault-injection outcomes, comparison with reference approaches, and an assessment of the reliability improvements achieved.
+This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, fault-injection results, comparison with reference approaches, and an assessment of the reliability improvements achieved.
 
 \section{Experimental Setup}
 
-The software and hardware used in this research is discussed in \hyperref[sec:cap4-material]{Section 4 - FPGA Platform and Toolchain}. Figure~\ref{fig:setup-diagram} illustrates the diagram of connections in order to conduct the research. Figure~\ref{fig:setup-pic} illustrates the setup used during this work. The \href{https://ftdichip.com/products/ft2232hq/}{FT-2232 module} is connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} connector of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{Pynq-Z2}.
+The software and hardware used in this research is discussed in \hyperref[sec:cap4-material]{Section 4 - FPGA Platform and Toolchain}. Figure~\ref{fig:setup-diagram} illustrates the connection diagram to conduct the research. Figure~\ref{fig:setup-pic} illustrates the setup used during this work. The \href{https://ftdichip.com/products/ft2232hq/}{FT-2232 module} is connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} connector of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{Pynq-Z2}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/setup-diagram.png}
     \caption{Interconnection diagram of the main board and the USB to Serial Interface module.}
     \label{fig:setup-diagram}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/setup.jpg}
     \caption{Setup of the main board (center) and the USB to Serial Interface module (up right).}
     \label{fig:setup-pic}
 \end{figure}
 
+For a detailed explanation of this experimental setup, see \hyperref[sec:ref-design-arch]{Section 4 - Reference Design Architecture}, \hyperref[sec:fi-strategy]{Section 4 - Fault Injection Strategy} and particularly Figure~\ref{zynq-paper-arch} for a detailed block diagram of the implemented design.
+
 \section{Baseline Performance Evaluation}
 Before introducing fault-tolerance mechanisms, the system performance is evaluated under normal conditions. This subsection discusses metrics such as resource utilization, operating frequency, and execution latency to establish a baseline reference.
 
 \section{Partial Reconfiguration Results}
+
+This section discusses the \gls{dpr} results, mainly in the reprogramming speed and size of the partial bitstreams.
 
 \begin{table}[H]
 \centering
@@ -44,7 +48,7 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
 \end{tabular}
 \end{table}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-blank.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-dpr-error.png}}
@@ -52,7 +56,7 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
     \label{fig:menu-blank&dpr-error}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-mult.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-ok.png}}
@@ -60,7 +64,7 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
     \label{fig:menu-mult&mult-ok}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-add.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add-ok.png}}
@@ -68,7 +72,7 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
     \label{fig:menu-add&add-ok}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/error_add_after_injection_C0003C440C.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add_error_other_operand.png}}
@@ -80,6 +84,44 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
 This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
 
 \subsection{FIR Filter block}
+
+\subsubsection{Scrubbing and Fault Injection with a FIR Filter}
+
+The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
+
+The idea of using \gls{fir} filters is because they are pure mathematical modules and so they do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
+    \caption{Complete automation of the \gls{fi} and visualization of the \gls{ila} to "debug" the design.}
+    \label{fig:automated_design}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
+    \caption{Script and visualization of the progress of \gls{fi} campaign.}
+    \label{fig:error-injection-fir}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
+    \caption{\gls{ila} capture, showing correct function of both filters.}
+    \label{fig:fir_filter_equal}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
+    \caption{\gls{ila} capture, showing a \gls{fi} that caused an rror in the output of the \gls{fir} filter.}
+    \label{fig:fir_filter_error}
+\end{figure}
+
+Simulation-based fault injection provides high controllability and low cost, as no actual device is required. It suffers, however, from long simulation times, especially for complex systems [7][8]. It may also fail to identify complex faulty behaviors, especially when simulations are done at high abstraction levels. When the goal is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device is near mandatory. The effects of configurations unforeseen by manufacturers and the lack of low level schematics available to the end user make it almost infeasible to perform accurate simulation-based fault injection for this case. \textcite{NazarCarro_DFT_FastSingleFPGA,Antoni2003}
+
+The proposed injection system also presents some limitations when compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
 
 \begin{table}[H]
 \centering
@@ -117,57 +159,21 @@ Critical bits detected: AXI bus lock & 3 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/mult/mult_injection_results-wo_reprogram.png}
     \caption{Automated \gls{fi} result without the reprogram ability.}
     \label{fig:mult-list-wo-reprogram}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/mult/mult-error-reprogram.png}
     \caption{Automated \gls{fi} result with the reprogram ability.}
     \label{fig:mult-list-reprogram}
 \end{figure}
 
-\subsection{Scrubbing and Fault Injection with a FIR Filter}
-
-The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
-
-The idea of using \gls{fir} filters is because they are pure mathematical modules and so they do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
-    \caption{Complete automation of the \gls{fi} and visualization of the \gls{ila} to "debug" the design.}
-    \label{fig:automated_design}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
-    \caption{Script and visualization of the progress of \gls{fi} campaign.}
-    \label{fig:error-injection-fir}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
-    \caption{\gls{ila} capture, showing correct function of both filters.}
-    \label{fig:fir_filter_equal}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
-    \caption{\gls{ila} capture, showing a \gls{fi} that caused an rror in the output of the \gls{fir} filter.}
-    \label{fig:fir_filter_error}
-\end{figure}
-
-Simulation-based fault injection provides high controllability and low cost, as no actual device is required. It suffers, however, from long simulation times, especially for complex systems [7][8]. It may also fail to identify complex faulty behaviors, especially when simulations are done at high abstraction levels. When the goal is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device is near mandatory. The effects of configurations unforeseen by manufacturers and the lack of low level schematics available to the end user make it almost infeasible to perform accurate simulation-based fault injection for this case. \textcite{NazarCarro_DFT_FastSingleFPGA,Antoni2003}
-
-The proposed injection system also presents some limitations when compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
+For a complete list with the addresses that caused error in this \gls{fi} campaign, consult \hyperref[apeB:mult-list-w-axi-error]{Appendix B - Multiplication SEU AXI Error (ARM stall) List} and \hyperref[apeB:mult-list-w-error]{Appendix B - Multiplication SEU Error List}.
 
 \section{Impact of Mitigation Techniques}
 The results obtained after implementing the proposed fault-mitigation strategies are discussed. Comparisons are made between unprotected and protected designs, focusing on improvements in fault coverage, error recovery, and reliability metrics.

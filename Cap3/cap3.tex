@@ -246,7 +246,65 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{N-Modular Redundancy (NMR)}
-\gls{nmr} is a fault-masking technique in which multiple identical modules operate in parallel and a majority voter determines the correct output. Although \gls{tmr} (Triple Modular Redundancy) is the most common case, extending to higher-order NMR provides increased fault tolerance at the expense of resource overhead. This section explains the mathematical basis of NMR, voter design considerations, fault coverage properties, and limitations with respect to permanent resource degradation.
+\gls{nmr} is a fault-masking technique in which multiple identical modules operate in parallel and a majority voter determines the correct output \cite{Adria2023,7948063}. Although \gls{tmr} is the most common case, extending to higher-order NMR provides increased fault tolerance at the expense of resource overhead. This section explains the mathematical basis of \gls{nmr}, voter design considerations, fault coverage properties, and limitations with respect to permanent resource degradation.
+
+\gls{nmr} is a core redundancy-based technique used to enhance a system's resilience to faults. It generalizes the well-known \gls{tmr} scheme, where $N = 3$.
+
+\subsection{Architecture and Principle}
+The fundamental operation of \gls{nmr} relies on spatially redundant hardware, employing $N$ copies of a module or functional unit operating in parallel. All redundant modules receive identical input data, and their outputs are directed to a voter or majority voting circuit \cite{Tarrillo2014_Power_nMR}. This voter determines the final system output based on the majority result, thereby masking any single disagreement. For the system to maintain correct functionality, the absolute majority of the $N$ units must remain fault-free. To guarantee error correction capability through majority voting, $N$ is typically chosen as an odd number.
+
+\subsection{Benefits and Context}
+\gls{nmr} architectures are primarily utilized to mask faults and significantly enhance system reliability and availability. Employing redundancy beyond $N = 3$ (e.g., Quad-MR or 7MR) enables tolerance to multiple simultaneous or accumulated faults, such as \glspl{mbu}, which are increasingly common in modern integrated circuits. These upsets raise the likelihood that more than two modules may fail concurrently, thus requiring higher levels of redundancy for continued operation.
+
+\gls{nmr} can also be viewed as a specific case of a $R$-out-of-$N$ redundancy system \cite{Yaman2022}. An \textit{R-out-of-N} redundancy scheme consists of $N$ redundant elements (such as modules, processors, or sensors), and the system is considered operational if at least $R$ of them function correctly. In contrast, if fewer than $R$ units are operating properly, the system is deemed to have failed.
+
+\subsection{Implementation Overheads}
+The main drawback of implementing \gls{nmr} lies in its overhead, primarily due to increased resource utilization and power consumption \cite{Tarrillo2014_Power_nMR}. Theoretically, power scales linearly with the number of redundant modules ($N$ times the power of a single circuit) \cite{Adria2023}. However, when implemented in a single \gls{sram}-based \gls{fpga}, this increase is often non-linear and considerably lower than predicted for equivalent \gls{asic} designs \cite{Tarrillo2014_Power_nMR} \. The applicability of \gls{nmr} is inherently limited by the available resources in the target \gls{fpga} device \cite{OliveiraKastensmidt2023,Adria2023}.
+
+\subsection{Coarse-Grain Triple Modular Redundancy (CGTMR)}
+\label{sec:cgtmr}
+
+\gls{cgtmr}, also referred to as \textit{block-level TMR}, applies redundancy at a high level of design hierarchy, such as an entire system module or component \cite{Yaman2022}.
+
+\paragraph{Implementation}
+In \gls{cgtmr}, the entire component or module is triplicated as a complete functional block. The voting mechanism is performed only on the external outputs of the replicated blocks, rather than within the internal logic. This simplifies integration and minimizes design modifications, as the redundancy is confined to the system’s top-level boundaries \cite{Adria2023,Wilson2025}.
+
+\paragraph{Granularity Example}
+In the context of a processor, \gls{cgtmr} corresponds to replicating the entire processor core as a single block and performing voting at the output interface \cite{Adria2023}. For example, core-level \gls{tmr} applied to a \gls{riscv} processor can be implemented as a wrapper that encompasses three identical processor cores, without changes to their internal architecture. This approach facilitates the adoption of fault-tolerance in complex designs while maintaining modularity and reusability \cite{Yaman2022}.
+
+Figure~\ref{fig:cgtmr} illustrates an example of a \gls{cgtmr} implementation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap3/cgtmr.png}
+    \caption{Enter Caption}
+    \label{fig:cgtmr}
+\end{figure}
+
+\subsection{Fine-Grain Triple Modular Redundancy (FGTMR)}
+\label{sec:fgtmr}
+
+Fine-grain redundancy applies modular redundancy at a lower and more detailed level of the circuit architecture \cite{Yaman2022}. This approach encompasses several variations, depending on the extent to which the internal logic and circuit elements are protected.
+
+\subsubsection{Fine-Grain Distributed TMR (FDTMR)}
+\label{sec:fdtmr}
+
+\gls{fdtmr} represents the most comprehensive form of fine-grain \gls{tmr}, involving widespread triplication and distributed voting throughout the circuit structure. \cite{OliveiraKastensmidt2023,Adria2023}.
+
+\paragraph{Implementation}
+In \gls{fdtmr}, all internal submodules of the design are triplicated \cite{Adria2023}. For \glspl{sram}-based \glspl{fpga}, this form of fine-grain redundancy involves triplicating the fundamental programmable primitives such as Flip-Flops (FFs), \glspl{lut}, \glspl{bram}, and \glspl{dsp}. Triplicated voters are inserted between these primitives to ensure continuous error masking within the circuit \cite{Wilson2021_TMRVexRiscv,wilson2020}.
+
+% \paragraph{Voting}
+% Voting in \gls{fdtmr} is typically performed at multiple internal stages of the design \cite{Yaman2022}. Feedback voters may also be added to Flip-Flops that incorporate feedback logic, enabling localized error correction at that stage. This distributed voting strategy enhances fault coverage but also increases design complexity and resource usage. In practice, such implementations are often automated by specialized software tools capable of performing netlist-level triplication and voter insertion \cite{OliveiraKastensmidt2023,Adria2023}.
+
+Figure~\ref{fig:fgtmr} illustrates an example of a \gls{fdtmr} implementation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap3/fgtmr.png}
+    \caption{Enter Caption}
+    \label{fig:fgtmr}
+\end{figure}
 
 \subsection{Voters}
 
@@ -261,7 +319,7 @@ The main functions of voters include the following:
     \item \textbf{Defining Output Conditions:} In an $N$-modular system, a consensus is achieved when at least $N/2 + 1$ modules produce matching outputs. If this condition is not met, the system is considered to have no valid consensus \cite{Neves2009}.
 \end{itemize}
 
-\subsection{Voter Architectures and Vulnerabilities}
+\subsubsection{Voter Architectures and Vulnerabilities}
 \label{sec:voter_types}
 
 Voters play a central role in ensuring reliable outputs in \gls{nmr} systems by mediating between redundant modules. Different voter architectures have been proposed to address specific design constraints and reliability requirements:
@@ -413,18 +471,20 @@ As highlighted by \textcite{Adria2023}, \glspl{seu} in \glspl{fpga} may lead to 
 
 Several scrubbing architectures have been proposed in the literature, differing mainly in their error detection methods, resource utilization, power consumption, and correction latency~\cite{heiner2008,Brosser2014,tonfat2015,7776929}. Scrubbing strategies are usually classified into two categories:
 \begin{itemize}
-    \item \textbf{Internal scrubbing:} The scrubber engine is implemented within the same \gls{fpga} that it monitors. This approach requires no additional hardware and provides high-speed detection and correction capabilities. An example is the \gls{semip}~\cite{amd2023sem}, which is integrated into most modern Xilinx devices. However, internal scrubbers remain vulnerable to \glspl{seu} that may affect their own logic or communication interfaces. Such upsets may cause the scrubber to become unresponsive, compromising its correction capability, especially in cases involving multiple simultaneous upsets~\cite{berg2008}.
-    \item \textbf{External scrubbing:} The scrubber controller is implemented on an external device. This architecture provides greater robustness and can manage multiple upsets more reliably, as it is isolated from the internal \gls{fpga} logic.
+    \item \textbf{Internal scrubbing:} The scrubber engine is implemented within the same \gls{fpga} that it monitors. This approach requires no additional hardware and provides high-speed detection and correction capabilities. An example is the \gls{semip}~\cite{amd2023sem}, which is integrated into most modern Xilinx devices. However, internal scrubbers remain vulnerable to \glspl{seu} that may affect their own logic or communication interfaces. Such upsets may cause the scrubber to become unresponsive, compromising its correction capability, especially in cases involving multiple simultaneous upsets~\cite{berg2008}, as illustrated in Figure~\ref{fig:scrubbing-int-ext}(a).
+    \item \textbf{External scrubbing:} The scrubber controller is implemented on an external device. This architecture provides greater robustness and can manage multiple upsets more reliably, as it is isolated from the internal \gls{fpga} logic, as illustrated in Figure~\ref{fig:scrubbing-int-ext}(b).
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap3/scrubbing1.30.png}
     \caption{Different memory scrubbing techniques, (a) Internal (b) External.}
     \label{fig:scrubbing-int-ext}
 \end{figure}
 
-\begin{figure}
+Figure~\ref{fig:scrubbing-soc} illustrates a scrubbing solution based on \gls{soc}, where the integrated ARM processor is used to scrub the \gls{sram}-based configuration memory of \gls{fpga}. This type of architecture is expected to become increasingly common, as most modern \glspl{fpga} integrate a hard processor core within the same die.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Cap3/scrubbing2-30.png}
     \caption{Scrubbing method available in \gls{soc} devices.}

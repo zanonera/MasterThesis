@@ -13,7 +13,7 @@ Figure~\ref{fig:multiplication_error_list_before} illustrates the full list of e
 \end{figure}
 
 \section{Multiplication SEU AXI Error (ARM stall) List}
-\label{apeB-mult-list-w-axi-error}
+\label{apeB:mult-list-w-axi-error}
 
 \begin{lstlisting}[caption={List of bits that caused ARM stall}, label={lst:arm_stall_bits}]
 Frame: C000364142 | DUT Checker: E
@@ -22,7 +22,7 @@ Frame: C00036A143 | DUT Checker: E
 \end{lstlisting}
 
 \section{Multiplication SEU Error List}
-\label{apeB-mult-list-w-error}
+\label{apeB:mult-list-w-error}
 
 \begin{adjustbox}{max width=0.8\textwidth}
 \begin{lstlisting}[caption={List of bits that caused fault in Multiplication module.}, label={lst:faulty_bits}]
@@ -59,7 +59,7 @@ Frame: C0003C440C | DUT Checker: 1
 \end{adjustbox}
 
 \section{Reprogram After ARM stall Fault}
-\label{apeB-mult-auto-reprogram}
+\label{apeB:mult-auto-reprogram}
 
 Figure~\ref{fig:axi-stall} illustrates the script developed in this work to automate the \gls{fi} and reprogram the device when the ARM stalls, due to the injection in an \gls{axi} bit flip.
 
