@@ -89,7 +89,7 @@ It is possible to communicate with the controller using the AXI Bus of the proce
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
-The full or partial bitstream could be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loadde into the \gls{fpga} \gls{cram} without processing interruption.
+The full or partial bitstream could be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loaded into the \gls{fpga} \gls{cram} without processing interruption.
 
 The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application, being able to reprogram this area accordingly to the need circuit or function needed at that time, giving the system some sort of hardware redundancy in time.
 
@@ -138,15 +138,15 @@ If the processor needs a partial reconfiguration in some area within the fabric,
 
 When using the SEM Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
 \begin{itemize}
-    \item Set \gls{sem} \gls{ip} in IDLE mode.
-    \item Send an SYNC command, stopping the \gls{sem} \gls{ip} frame’s error scanning.
-    \item Select the port \gls{pcap} and perform a dynamic partial reconfiguration.
-    \item After the \gls{dpr} operation is done, transfer the control of \gls{icap} back to SEM IP.
-    \item Perform a soft reset on \gls{sem} \gls{ip}.
-    \item Set \gls{sem} \gls{ip} in \texttt{OBSERVATION} mode.
+    \item Set \gls{semip} in \texttt{IDLE} mode.
+    \item Send an \texttt{SYNC} command to stop the \gls{semip} frame’s error scanning.
+    \item Select the \gls{pcap} port and perform a \gls{dpr}.
+    \item After \gls{dpr} is complete, transfer control of \gls{cram} back to \gls{semip}, through \gls{icap}.
+    \item Perform a soft reset on \gls{semip}.
+    \item Set \gls{semip} to \texttt{OBSERVATION} mode.
 \end{itemize}
 
-Figure~\ref{fig:fpga_mux} shows the interfaces that were developed to decouple the \gls{sem} \gls{ip} from the \gls{icap}, switching the control to \gls{pcap} to perform the partial reconfiguration. The items highlighted in yellow allow steps 2 and 4 of the procedure to be correctly executed.
+Figure~\ref{fig:fpga_mux} shows the interfaces that were developed to decouple \gls{semip} from \gls{icap}, switching the control to \gls{pcap} to perform the partial reconfiguration. The items highlighted in yellow allow steps 2 and 4 of the procedure to be correctly executed.
 
 To stop \gls{sem} \gls{ip} scanning, the controller should be configured in IDLE mode, and a SYNC word command should be sent through the mux to \gls{icap}. This is accomplished using the output of the \texttt{\gls{icap} Sync controller} block that sends the value \texttt{0x5599AA66}.
 
@@ -163,7 +163,7 @@ In this section, the integration of the NMR scheme is detailed. The voter archit
 
 In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to fault injection experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
 
-Figure~\ref{fig:fir-dmr} illustrates the proposed architecture used to evaluate the \gls{dmr} design in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on the \gls{cram} of the \gls{fpga}.
+Figure~\ref{fig:fir-dmr} illustrates the architecture proposed to evaluate the design \gls{dmr} in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on \gls{cram} of \gls{fpga}.
 
 \begin{figure}[H]
     \centering
@@ -172,7 +172,7 @@ Figure~\ref{fig:fir-dmr} illustrates the proposed architecture used to evaluate 
     \label{fig:fir-dmr}
 \end{figure}
 
-Figure~\ref{fig:dut_fir_bird_view} illustrates the implemented design of the \gls{dmr} architecture using the Vivado tool. The \gls{semip} is instantiate together with the wrapper that constitutes of both \gls{fir} filters and the \gls{ps}. 
+Figure~\ref{fig:dut_fir_bird_view} illustrates the design implemented in the \gls{dmr} architecture using the Vivado tool. The \gls{semip} is instantiated together with the wrapper that consists of both, the \gls{fir} filters and the \gls{ps}. 
 
 \begin{figure}[H]
     \centering
@@ -181,12 +181,12 @@ Figure~\ref{fig:dut_fir_bird_view} illustrates the implemented design of the \gl
     \label{fig:dut_fir_bird_view}
 \end{figure}
 
-Figure~\ref{fig:detail_fir} presentes the \gls{dmr} architecture in detail. It is possible to visualize the \gls{rom} with the data to be inputted in the \gls{fir}. The outputs of the designe are checked with the "checker" block and the resullt of the comparsion is sent through serial communication to be evaluated by the \gls{fi} computer.
+Figure~\ref{fig:detail_fir} presents the \gls{dmr} architecture in detail. It is possible to visualize the \gls{rom} with the data to be inputted in \gls{fir}. The design output is checked with the "checker" block and the result of the comparison is sent through serial communication to be evaluated by the \gls{fi} computer.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/detail_fir.png}
-    \caption{Block Diagram, in detail, of the \gls{fir} implementation in Vivado. The \acrshort{dmr} is presented and the circuit to detect if the modules has the correct outputs.}
+    \caption{Block Diagram, in detail, of the \gls{fir} implementation in Vivado. The \acrshort{dmr} is presented and the circuit to detect if the modules have the correct outputs.}
     \label{fig:detail_fir}
 \end{figure}
 
@@ -303,7 +303,7 @@ This subsection describes how faults were emulated in the \gls{fpga} to validate
     \label{error-injection-diagram}
 \end{figure}
 
-As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that enable readback and correction of the \gls{fpga}'s configuration memory (\gls{cram}). Since the device includes a \gls{ps}, it is utilized both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is employed to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
+As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that allow readback and correction of the 'configuration memory of \gls{fpga} (\gls{cram}). Since the device includes a \gls{ps}, it is utilized both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is employed to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
 
 As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout the \gls{fpga}, defining the functionality of its internal resources, including the \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
 
@@ -316,7 +316,13 @@ set_property BITSTREAM.SEU.ESSENTIALBITS YES [current_design]
     \end{verbatim}
 \end{itemize}
 
-The mapping between the \gls{ebd} file and the configuration memory enables the identification of configuration bits that are essential for the implemented design. This mapping provides a practical foundation for correlating the logical elements defined during synthesis with their physical representation in the \gls{fpga} configuration frames, thereby allowing precise targeting of configuration bits during \gls{fi} experiments.
+The mapping between the \gls{ebd} file and the configuration memory enables the identification of configuration bits that are essential for the implemented design. This mapping provides a practical foundation for correlating the logical elements defined during synthesis with their physical representation in the configuration frames \gls{fpga}, thereby allowing for precise targeting of the configuration bits during \gls{fi} experiments.
+
+The \textbf{\acrfull{ebc}} file contains the reference data of all configuration memory cells of the FPGA. It represents the actual content that the \gls{semip} controller would read during a \gls{seu} read back operation. It is important to emphasize that the \gls{ebc} file is \textbf{not} the FPGA programming bitstream, but a representation of the configuration data after implementation.
+
+The \textbf{\acrfull{ebd}} file acts as a mask for the EBC file, identifying which bits are considered \textit{essential} to the correct operation of the implemented design. Each bit with a value of ‘1’ in the \gls{ebd} file indicates that the corresponding bit in the \gls{ebc} file is essential or potentially critical to the functionality of the system.
+
+In summary, essential bits can potentially cause an error in \gls{dut} when corrupted. To determine which essential bits are actually capable of producing a malfunction, fault injection experiments are performed. The subset of essential bits that, when flipped, result in erroneous behavior of the system are defined as \textit{critical bits}. This is illustrated in Figure~\ref{fig:xilinx-ebd-ebc}, with examples of each file and the number of essential bits.
 
 \begin{figure}
     \centering
@@ -325,7 +331,7 @@ The mapping between the \gls{ebd} file and the configuration memory enables the 
     \label{fig:xilinx-ebd-ebc}
 \end{figure}
 
-As illustrated  in Figure~\ref{fig:xilinx-ebd-ebc},
+Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device becomes essential~\textcite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of the \gls{fpga}.
 
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at the simulation level, the emulation level, and on physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.

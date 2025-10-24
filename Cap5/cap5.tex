@@ -119,8 +119,6 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
     \label{fig:fir_filter_error}
 \end{figure}
 
-Simulation-based fault injection provides high controllability and low cost, as no actual device is required. It suffers, however, from long simulation times, especially for complex systems [7][8]. It may also fail to identify complex faulty behaviors, especially when simulations are done at high abstraction levels. When the goal is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device is near mandatory. The effects of configurations unforeseen by manufacturers and the lack of low level schematics available to the end user make it almost infeasible to perform accurate simulation-based fault injection for this case. \textcite{NazarCarro_DFT_FastSingleFPGA,Antoni2003}
-
 The proposed injection system also presents some limitations when compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
 
 \begin{table}[H]
