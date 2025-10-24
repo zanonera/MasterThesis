@@ -10,6 +10,8 @@ For easier development and debugging, the entire design was broken down into mod
 This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
 
 \begin{table}[ht]
+\caption{\acrlong{sw} development tools used in this work.}
+\label{tab:sw-tools}
 \centering
 \begin{adjustbox}{max width=\paperwidth}
 \begin{tabular}{c p{12cm}}
@@ -30,13 +32,15 @@ Compact and configurable RISC-V soft processor core optimized for \gls{fpga}, of
 \hline
 \end{tabular}
 \end{adjustbox}
-\caption{\acrlong{sw} development tools used in this work.}
-\label{tab:sw-tools}
 \end{table}
 
-All software resources applied in this work are presented in Table \ref{tab:sw-tools}. The development environment was based on the \href{https://releases.ubuntu.com/18.04/} {Linux Ubuntu 18.04} operating system, which provided stability and compatibility with the required tools.
+Table~\ref{tab:sw-tools} lists the \gls{sw} resources and the \gls{riscv} \textit{soft-core} utilized in this work. The development environment was based on the \href{https://releases.ubuntu.com/18.04/}{Linux Ubuntu 18.04} operating system, which provided stability and compatibility with the required toolchain.
+
+Table~\ref{tab:hw-tools} presents the \gls{hw} development platforms used in this research.
 
 \begin{table}[ht]
+\caption{\acrlong{hw} development tools used in this work.}
+\label{tab:hw-tools}
 \centering
 \begin{adjustbox}{max width=\paperwidth}
 \begin{tabular}{c p{12cm}}
@@ -52,8 +56,6 @@ It is widely used for bridging USB connections to various serial and parallel pr
 \hline
 \end{tabular}
 \end{adjustbox}
-\caption{\acrlong{hw} development tools used in this work.}
-\label{tab:hw-tools}
 \end{table}
 
 \section{Reference Design Architecture}
@@ -318,9 +320,9 @@ set_property BITSTREAM.SEU.ESSENTIALBITS YES [current_design]
 
 The mapping between the \gls{ebd} file and the configuration memory enables the identification of configuration bits that are essential for the implemented design. This mapping provides a practical foundation for correlating the logical elements defined during synthesis with their physical representation in the configuration frames \gls{fpga}, thereby allowing for precise targeting of the configuration bits during \gls{fi} experiments.
 
-The \textbf{\acrfull{ebc}} file contains the reference data of all configuration memory cells of the FPGA. It represents the actual content that the \gls{semip} controller would read during a \gls{seu} read back operation. It is important to emphasize that the \gls{ebc} file is \textbf{not} the FPGA programming bitstream, but a representation of the configuration data after implementation.
+The \emph{\acrfull{ebc}} file contains the reference data of all \gls{cram} cells of the \gls{fpga}. It represents the actual content that the \gls{semip} controller would read during a \gls{seu} read back operation. It is important to emphasize that the \gls{ebc} file is not the FPGA programming bitstream, but a representation of the configuration data after implementation.
 
-The \textbf{\acrfull{ebd}} file acts as a mask for the EBC file, identifying which bits are considered \textit{essential} to the correct operation of the implemented design. Each bit with a value of ‘1’ in the \gls{ebd} file indicates that the corresponding bit in the \gls{ebc} file is essential or potentially critical to the functionality of the system.
+The \emph{\acrfull{ebd}} file acts as a mask for the EBC file, identifying which bits are considered \textit{essential} to the correct operation of the implemented design. Each bit with a value of ‘1’ in the \gls{ebd} file indicates that the corresponding bit in the \gls{ebc} file is essential or potentially critical to the functionality of the system.
 
 In summary, essential bits can potentially cause an error in \gls{dut} when corrupted. To determine which essential bits are actually capable of producing a malfunction, fault injection experiments are performed. The subset of essential bits that, when flipped, result in erroneous behavior of the system are defined as \textit{critical bits}. This is illustrated in Figure~\ref{fig:xilinx-ebd-ebc}, with examples of each file and the number of essential bits.
 
@@ -331,7 +333,7 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
     \label{fig:xilinx-ebd-ebc}
 \end{figure}
 
-Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device becomes essential~\textcite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of the \gls{fpga}.
+Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of the \gls{fpga}.
 
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at the simulation level, the emulation level, and on physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
