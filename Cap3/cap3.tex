@@ -207,14 +207,17 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \caption{Truth Tables for AND and XNOR Logic Gates.}
 \label{tab:logic_gates}
 \[
-\begin{array}{c c | c @{\hskip 1cm} c c | c}
-\multicolumn{3}{c}{\textbf{AND Gate}} & \multicolumn{3}{c}{\textbf{XNOR Gate}} \\
+\begin{array}{c c  c @{\hskip 3cm} c c  c}
+\hline
+\multicolumn{3}{l}{\textbf{AND Gate}} & \multicolumn{3}{c}
+{\textbf{XNOR Gate}} \\
 \text{In1} & \text{In2} & \text{Out} & \text{In1} & \text{In2} & \text{Out} \\
-\midrule
+\hline
 0 & 0 & 0 & 0 & 0 & 1 \\
 0 & 1 & 0 & 0 & 1 & 0 \\
 1 & 0 & 0 & 1 & 0 & 0 \\
 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
 \end{array}
 \]
 \end{table}
@@ -372,43 +375,27 @@ This approach enhances data integrity by enabling fault detection at the word le
     \item \textbf{Self-Adapted Voter (SAv):} Proposed by \textcite{Tarrillo2014, Tarrillo2014_Power_nMR}, it is designed to tolerate multiple accumulated faults. The SAv determines the output considering only the responses of healthy modules as part of the majority voting population. It computes the fault-free output (FFO) bit-by-bit based on the summation of outputs from fault-free modules and their total count.
 \end{itemize}
 
-\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
+\begin{table}[H]
+\centering
+\small
 \caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \textcite{Yaman2022}.}
-\label{tab:voter_comparison} \\
-
+\label{tab:voter_comparison}
+\begin{tabular}{p{3cm} p{2.5cm} p{2.5cm} p{2.5cm} p{2.5cm}}
 \toprule
 \textbf{Module} & 
 \textbf{0-Module Faulty} & 
 \textbf{1-Module Faulty} & 
 \textbf{2-Module Faulty} & 
-\textbf{3-Module Faulty} \\  
+\textbf{3-Module Faulty} \\
 \midrule
-\endfirsthead
-
-\multicolumn{5}{c}{\tablename\ \thetable{} -- \textit{continued from previous page}} \\ 
-\toprule
-\textbf{Module} & 
-\textbf{0-Module Faulty} & 
-\textbf{1-Module Faulty} & 
-\textbf{2-Module Faulty} & 
-\textbf{3-Module Faulty} \\ 
-\midrule
-\endhead
-
-\midrule
-\multicolumn{5}{r}{\textit{Continued on next page}} \\ 
-\endfoot
-
-\bottomrule
-\endlastfoot
-
 A & 000 & 001 & 001 & 100 \\
 B & 000 & 000 & 010 & 001 \\
 C & 000 & 000 & 000 & 010 \\
 \textbf{Majority Voter} & 000 & 000 & 000 & 000 \\
 \textbf{Word Voter} & 000 & 000 & \textit{No majority} & \textit{No majority} \\
-
-\end{longtable}
+\bottomrule
+\end{tabular}
+\end{table}
 
 In Table~\ref{tab:voter_comparison}, the design and functionality of word and bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
 

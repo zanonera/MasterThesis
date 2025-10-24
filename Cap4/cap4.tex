@@ -12,19 +12,19 @@ This section presents the selected \gls{fpga} device, development board, and sof
 \begin{table}[ht]
 \centering
 \begin{adjustbox}{max width=\paperwidth}
-\begin{tabular}{|l|p{11.5cm}|}
+\begin{tabular}{c p{12cm}}
 \hline
 \textbf{Tool} & \textbf{Description} \\
 \hline
 \href{https://www.xilinx.com/products/design-tools/vivado.html}{Vivado 2018.3} &
 Xilinx \gls{fpga} design suite used for \gls{hdl} synthesis, implementation, and bitstream generation. Provides Tcl scripting support for automation. \\
-\hline
+
 \href{https://www.python.org/}{Python} &
 High-level programming language for automation, scripting, and testbench development. Widely used to coordinate \gls{fpga} workflows and fault injection experiments. \\
-\hline
+
 \href{https://github.com/riscv-collab/riscv-gnu-toolchain}{RISC-V Toolchain} &
 Open-source GNU toolchain supporting the RISC-V ISA, enabling firmware compilation and debugging for soft-core processors like PicoRV32 \cite{PICORV32I}. \\
-\hline
+
 \href{https://github.com/YosysHQ/picorv32/}{PicoRV32} &
 Compact and configurable RISC-V soft processor core optimized for \gls{fpga}, often used for embedded control, monitoring, and fault injection control logic. \\
 \hline
@@ -39,13 +39,13 @@ All software resources applied in this work are presented in Table \ref{tab:sw-t
 \begin{table}[ht]
 \centering
 \begin{adjustbox}{max width=\paperwidth}
-\begin{tabular}{|l|p{13.5cm}|}
+\begin{tabular}{c p{12cm}}
 \hline
 \textbf{Tool} & \textbf{Description} \\
 \hline
 \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{Pynq Z2} &
 The PYNQ-Z2 is a development board designed for experimenting with FPGAs and embedded systems in an accessible way. It is based on the Xilinx Zynq-7000 SoC (System on Chip). Specifically the Zynq XC7Z020, the same device used in the \href{https://www.amd.com/en/search/partner/embedded-partner-solutions.html#/6821}{Zedboard} development kit. \\
-\hline
+
 \href{https://ftdichip.com/products/ft2232hq/}{FT2232} &
 The FT2232 is a USB-to-multi-purpose communication interface IC developed by FTDI (Future Technology Devices International).
 It is widely used for bridging USB connections to various serial and parallel protocols, making it especially popular in \gls{fpga} development boards, embedded systems, and debugging tools. \\

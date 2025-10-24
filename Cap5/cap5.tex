@@ -28,13 +28,13 @@ Before introducing fault-tolerance mechanisms, the system performance is evaluat
 
 \section{Partial Reconfiguration Results}
 
-This section discusses the \gls{dpr} results, mainly in the reprogramming speed and size of the partial bitstreams.
+This section discusses the \gls{dpr} results, mainly in the reprogramming speed and size of partial bitstreams.
 
 \begin{table}[H]
 \centering
 \caption{\acrlong{pr}.}
 \label{tab:pr_time}
-\begin{tabular}{lccc}
+\begin{tabular}{cccc}
 \toprule
 \textbf{Condition} & \textbf{Time ($\mu$s)} & \textbf{Throughput (Mb/s)} & \textbf{Cache} \\
 \midrule
@@ -83,9 +83,7 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
 \section{Fault-Injection Campaign Results}
 This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
 
-\subsection{FIR Filter block}
-
-\subsubsection{Scrubbing and Fault Injection with a FIR Filter}
+\subsection{Scrubbing and Fault Injection with a FIR Filter}
 
 The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
 
@@ -119,7 +117,7 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
     \label{fig:fir_filter_error}
 \end{figure}
 
-The proposed injection system also presents some limitations when compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
+The proposed injection system also presents some limitations compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
 
 \begin{table}[H]
 \centering
@@ -138,7 +136,7 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 \end{tabular}
 \end{table}
 
-\subsection{Math \glsentrytext{dpr} block}
+\subsection{DPR, Scrubbing and Fault Injection with Mathematical Functions}
 
 \begin{table}[H]
 \centering
@@ -171,7 +169,10 @@ Critical bits detected: AXI bus lock & 3 \\
     \label{fig:mult-list-reprogram}
 \end{figure}
 
-For a complete list with the addresses that caused error in this \gls{fi} campaign, consult \hyperref[apeB:mult-list-w-axi-error]{Appendix B - Multiplication SEU AXI Error (ARM stall) List} and \hyperref[apeB:mult-list-w-error]{Appendix B - Multiplication SEU Error List}.
+For a complete list of the addresses that caused error in this \gls{fi} campaign, consult \hyperref[apeB:mult-list-w-axi-error]{Appendix B - Multiplication SEU AXI Error (ARM stall) List} and \hyperref[apeB:mult-list-w-error]{Appendix B - Multiplication SEU Error List}.
+
+\section{RISC-V with Triple Modular Redundancy}
+
 
 \section{Impact of Mitigation Techniques}
 The results obtained after implementing the proposed fault-mitigation strategies are discussed. Comparisons are made between unprotected and protected designs, focusing on improvements in fault coverage, error recovery, and reliability metrics.
@@ -182,4 +183,10 @@ This section compares the proposed solution to similar works in the literature. 
 \section{Discussion of Findings}
 The key findings are synthesized and interpreted in terms of practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing information for future improvements.
 
-As discussed in \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links, such as the USB-to-serial converter used in this research, are constrained by the latency introduced by the software and hardware communication stack. The minimum achievable fault injection sequence duration achieved by \textcite{Fibichi2019} is reported to be 20 milliseconds. The reported \gls{fi} reported by is 4.6 ms.
+As discussed in \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links, such as the USB-to-serial converter used in this research, are constrained by the latency introduced by the software and hardware communication stack. The minimum achievable duration of the fault injection sequence achieved by \textcite{Fibichi2019} is reported to be 20 milliseconds. The average speed achieved by this research is 6 bit flip per second.
+
+The finding of the \gls{ps} \gls{axi} bus stall during the \gls{fi} shows the biggest advantage of this kind of test using the physical \gls{fpga} device under bit flips.
+
+This kind off error, as it needs a large interaction between the \gls{ps} and \gls{pl}, it is not possible to simply simulate the \gls{hdl} design, it needs a co-simulation between the ARM processor and the \gls{hdl}. This type of co-simulation is complex and very time consuming.
+
+Simulation is an indispensable tool during the design phase, as presented in the results of \gls{riscv} with \gls{tmr}. This work presented a time of 8 minutes for each loop of synthesis, implementation, and simulation. Each simulation loop took 16s of computer time to run only 125$\mu$s of \gls{fpga} time.

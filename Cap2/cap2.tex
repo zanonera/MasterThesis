@@ -81,10 +81,10 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 
 %%%============== Long Comparison Table =========================================================================
 
-\begin{longtable}{p{3cm}|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}}
+\begin{longtable}{p{3cm} p{3cm} p{3cm} p{3cm} p{3cm}}
 \caption{Comparison of \acrshort{fpga} fault-tolerance approaches in related works.} \label{tab:related_works} \\
 \hline
-\textbf{Reference / Approach} 
+\textbf{Reference} 
 & \textbf{Fault-Tolerance Method} 
 & \textbf{Evaluation Method} 
 & \textbf{Advantages} 
@@ -100,13 +100,11 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & \textbf{Evaluation Method} 
 & \textbf{Advantages} 
 & \textbf{Limitations} \\
-\hline
 \endhead
 
 \hline \multicolumn{5}{r}{\textit{Continued on next page}} \\
 \endfoot
 
-\hline
 \endlastfoot
 
 \cite{Barbosa2021}
@@ -114,78 +112,78 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 & Simulation-based fault injection 
 & Simple design, high coverage 
 & High area and power overhead \\
-\hline
+
 \cite{Balbino2022}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
-\hline
+& \gls{tmr} 
+& Sabouteur 
+& Less Complex
+& Special Bitstream\\
+
 \cite{Yaman2022}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Wubs2023}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Adria2023} 
 & Dynamic Partial Reconfiguration (DPR) repair 
 & On-chip fault injection 
 & Real-time reconfiguration, reduced downtime 
 & Complex controller, reconfiguration latency \\
-\hline
+
 \cite{Mousavi2023_MTTR_FPGA_Scrubbing}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Koers2024}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Garg2024}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Aguilar2024}
 \cite{Wang2024_SoftErrorReview}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Wilson2025}
-& N-Modular Redundancy (NMR) voter circuits 
+& \gls{tmr}
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \cite{Cano-Paez2025}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-\hline
+
 \textbf{This Work} 
-& NMR with DPR and integrated fault injection 
+& \gls{nmr} \& \gls{dpr} \& \gls{fi}
 & On-chip + software-in-the-loop evaluation 
-& Low downtime, tunable redundancy, adaptive repair 
-& Slightly higher design complexity \\
+& Low downtime, redundancy \& adaptive repair 
+& design complexity \\
 \hline
 
 \end{longtable}
