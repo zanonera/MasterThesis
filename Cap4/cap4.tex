@@ -91,7 +91,7 @@ It is possible to communicate with the controller using the AXI Bus of the proce
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
-The full or partial bitstream could be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loaded into the \gls{fpga} \gls{cram} without processing interruption.
+The full or partial bitstream can be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loaded into the \gls{fpga} \gls{cram} without processing interruption.
 
 The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application, being able to reprogram this area accordingly to the need circuit or function needed at that time, giving the system some sort of hardware redundancy in time.
 
@@ -102,7 +102,7 @@ The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figu
     \label{dpr-partial-diagram}
 \end{figure}
 
-As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any combination of partial bitstreams that could have different functions, for example a multiplier, an adder, a filter or any other needed function. Then, this could be dynamically programmed in this area, changing the behavior of the system without affecting the other function around it.
+As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any combination of partial bitstreams that can have different functions, for example a multiplier, an adder, a filter or any other needed function. Then, this can be dynamically programmed in this area, changing the behavior of the system without affecting the other function around it.
 
 \begin{figure}[ht]
     \centering

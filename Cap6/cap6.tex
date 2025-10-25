@@ -5,7 +5,7 @@ This work presented a comprehensive investigation into the reliability of \gls{s
 
 The proposed methodology proved effective for systematically evaluating \gls{fpga} reliability, offering a reproducible approach for both academic research and industrial validation. Moreover, the study confirmed that partial dynamic reconfiguration is a viable solution for mitigating the effects of faults in critical modules while minimizing downtime and resource overhead.
 
-While the results were promising, the research also revealed limitations regarding reconfiguration latency, hardware resource usage, and the scalability of the proposed approach to more complex systems. Future work could explore adaptive redundancy schemes, machine-learning-based fault prediction, and the application of the proposed methodology to heterogeneous \gls{fpga}-\gls{soc} platforms.
+While the results were promising, the research also revealed limitations regarding reconfiguration latency, hardware resource usage, and the scalability of the proposed approach to more complex systems. Future work can explore adaptive redundancy schemes, machine-learning-based fault prediction, and the application of the proposed methodology to heterogeneous \gls{fpga}-\gls{soc} platforms.
 
 Ultimately, this dissertation contributes to advancing the understanding of fault behavior in \gls{sram}-based \glspl{fpga} and demonstrates practical pathways to improving their reliability in safety-critical and high-availability applications.
 
@@ -20,13 +20,13 @@ Although this work has demonstrated the feasibility and effectiveness of combini
     \end{itemize}
 
     \item \textbf{Mitigation Strategies in the Processing System (PS):}
-    Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} could enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.
+    Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} can enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.
 
     \item \textbf{Evaluation Across Multiple \gls{fpga} Vendors:}
  Although this research has focused on an Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU,Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
 
     \item \textbf{Scalability and Resource Optimization:}
-    As the \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work could explore automated design-space exploration to optimize the balance between fault coverage, resource consumption and system performance.
+    As the \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work can explore automated design-space exploration to optimize the balance between fault coverage, resource consumption and system performance.
 
     \item \textbf{In-Field Deployment and Long-Term Testing:}
     Extending the methodology to real operational environments, such as radiation test facilities \cite{Wilson2019Neutron} or mission-critical field deployments, would allow validation of laboratory results under practical conditions \cite{Adria2023}.
