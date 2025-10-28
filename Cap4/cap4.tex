@@ -60,7 +60,7 @@ It is widely used for bridging USB connections to various serial and parallel pr
 
 \section{Reference Design Architecture}
 \label{sec:ref-design-arch}
-In order to evaluate all necessary knowledge to implement the final solution, the first step was to develop an initial architecture with the needed components.
+To acquire the necessary knowledge to implement the final solution, the first step consisted of developing an initial architecture containing all the required components.
 
 The requirements for this architecture were established on the basis of the following key assumptions:
 
@@ -85,9 +85,11 @@ The requirements for this architecture were established on the basis of the foll
 As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
 \subsection{Soft Error Mitigation}
-To protect \gls{sram}-based \gls{fpga}, Xilinx’s \gls{sem} \gls{ip}, \cite{amd2023sem} is being used on this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
+To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd2023sem} is being used in this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
 
 It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use an external PC with a script to inject error and check how the platform behaves.
+
+The \gls{semip} was chosen to be the scrubbing methodology due to the fact that it is already disponible in the 7-series device used and to allow the \gls{fi}.
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
@@ -134,11 +136,11 @@ The selection of the interface under control of the \gls{fpga} configuration is 
 
 After initial configuration (or at any time), the processor may set the control bit to switch the configuration interface to be accessed internally to the \gls{fpga} fabric; then \gls{icap} becomes active.
 
-As illustrated  in Figure~\ref{fig:fpga_mux}, the SEM controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the SEM controller to monitor, detect, and correct radiation-induced errors.
+As illustrated  in Figure~\ref{fig:fpga_mux}, the \gls{semip} controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the \gls{semip} controller to monitor, detect, and correct radiation-induced errors.
 
-If the processor needs a partial reconfiguration in some area within the fabric, it will need the \gls{pcap} control back.
+If the processor needs to perform a partial reconfiguration in a specific region of the fabric, control must be handed back to the \gls{pcap}.
 
-When using the SEM Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
+When using the \gls{semip} Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
 \begin{itemize}
     \item Set \gls{semip} in \texttt{IDLE} mode.
     \item Send an \texttt{SYNC} command to stop the \gls{semip} frame’s error scanning.
@@ -163,7 +165,9 @@ It is important that all \gls{pcap} or \gls{icap} operations are completed befor
 \section{Implementation of N-Modular Redundancy}
 In this section, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the parameters chosen for $N>3$.
 
-In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to fault injection experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
+In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to \acrlong{fi} experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
+
+\subsection{DMR}
 
 Figure~\ref{fig:fir-dmr} illustrates the architecture proposed to evaluate the design \gls{dmr} in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on \gls{cram} of \gls{fpga}.
 
@@ -192,9 +196,11 @@ Figure~\ref{fig:detail_fir} presents the \gls{dmr} architecture in detail. It is
     \label{fig:detail_fir}
 \end{figure}
 
-Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using the PicoRV32I.
+\subsection{TMR}
 
 For the \gls{tmr} evaluation conducted in this study, the \gls{cgtmr} method with a single word voter was selected. As discussed in Section~\ref{sec:cap3}, the word voter was chosen because it provides better results when applied to buses and wide data words. In this case, most voters operate on 32-bit signals due to the use of the \gls{riscv} processor.
+
+Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using PicoRV32I. The redundancy is applied in the module level, replicating the entire soft core processor.
 
 \begin{figure}[H]
     \centering
@@ -211,6 +217,10 @@ Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementa
     \includegraphics[width=1.5\textwidth]{Cap4/tmr-vivado.png}
     \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the \acrshort{riscv} instructions (firmware), in the red square (center) the triplicated \acrshort{riscv} cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
 \end{figure}\end{landscape}
+
+The \gls{fgtmr} approach was not selected due to its high level of intrusiveness, which increases the complexity of the design and often results in increased use of area and degraded synchronization and timing between modules \cite{Wilson2025,Adria2023}.
+
+\subsection{Synthesis control for redundancy}
 
 It is essential, when designing systems based on modular redundancy, to carefully analyze the synthesis and implementation logs generated by the design tool---in this work, Vivado---to ensure that redundant modules are not optimized away.
 
@@ -257,11 +267,10 @@ Another configuration applied to both architectures was the disablement of \gls{
 \end{itemize}
 
 \section{Partial Dynamic Reconfiguration Flow}
-The implementation of partial dynamic reconfiguration is explained, focusing on how faulty modules can be repaired in real time without halting system operation. This includes the generation of partial bitstreams, the design of the reconfiguration controller, and performance metrics such as reconfiguration latency and system recovery time.
 
-\gls{dpr} flow is supported by Vivado, but is not yet fully integrated with the GUI-based project flow~\cite{vipin2018dpr}. 
-The designs are implemented using the Vivado \gls{tcl}-based command flow or a combination of \gls{tcl} commands and the GUI. 
-To facilitate the reproduction of the results and provide a base configuration for other studies using this architecture, a set of scripts was developed to create a project with two PR modules, implementing the following steps:
+The \gls{dpr} flow is supported by Vivado; however, it is not yet fully integrated into the GUI-based project workflow~\cite{vipin2018dpr}.
+Consequently, the designs are typically implemented using the Vivado \gls{tcl}-based command flow, or through a combination of \gls{tcl} commands and the graphical interface.
+To facilitate the reproduction of results and provide a baseline configuration for future studies employing this architecture, a set of scripts were developed to automatically generate a project with two modules \gls{pr}, executing the following steps:
 
 \begin{itemize}
     \item Create the project and block design.
@@ -269,13 +278,13 @@ To facilitate the reproduction of the results and provide a base configuration f
         \item The block design should contain the ARM processing system instance.
         \item The reconfigurable items should have only the interface definitions declared in this step.
     \end{itemize}
-    \item Synthesize the design, generating all the design checkpoints (DCP) for the static region and blocks of logic.
-    \item Load the \gls{dcp} for the static region and one of the reconfigurable partitions (RP).
-    \item Define RP properties.
-    \item Run Design Rule Checker (DRC).
+    \item Synthesize the design, generating all the \gls{dcp} for the static region and blocks of logic.
+    \item Load the \gls{dcp} for the static region and one of the \gls{rp}.
+    \item Define \gls{rp} properties.
+    \item Run the \gls{drc}.
     \item Create and implement the first configuration.
     \begin{itemize}
-        \item  It is important that all the configurable resources (\glspl{lut}, \glspl{ff}, \glspl{bram}, \glspl{dsp}) needed by the design must be available in the allocated space for the partial area.
+        \item  It is important that all configurable resources (\glspl{lut}, \glspl{ff}, \glspl{bram}, \glspl{dsp}) needed by the design must be available in the space allocated for the partial area.
     \end{itemize}
     \item Create all other configurations.
     \item Verify all configurations using the \texttt{PR\_verify} command.

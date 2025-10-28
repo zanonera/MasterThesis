@@ -12,7 +12,7 @@ A \gls{fpga} is a reconfigurable logic device or a programmable \gls{ic} widely 
 
 \glspl{fpga} are successful platforms because they combine the flexibility of software with the speed of hardware, providing adaptable computing cores and high-throughput processing of data streams. They are particularly attractive compared to \glspl{asic} due to their shorter development time and costs, and their ability to be reconfigured \cite{8524728}.
 
-The main advantage of \glspl{fpga} over software-based implementations lies in their inherently parallel architecture, which allows computations to be executed concurrently. For applications that can exploit this parallelism, \glspl{fpga} offer significant performance advantages.
+The main advantage of \glspl{fpga} over software-based implementations lies in their inherently parallel architecture, which allows computations to be executed concurrently. For applications that can exploit this parallelism, \glspl{fpga} offer significant performance advantages \cite{Wilson2020_VideoPipelines}.
 
 \subsection{Core Structure and Components}
 
@@ -76,7 +76,7 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 
 \glspl{fpga} are programmable devices whose behavior is defined by the \textit{bitstream} loaded to its \gls{cram}. This bitstream contains all the information needed to configure the blocks in the \gls{fpga} architecture, mapping the user-defined \gls{hdl} design to the available logic and routing elements.
 
-The type of \gls{cram} used dictates the characteristics of the device:
+The characteristics of the device are determined by the technology used in \gls{cram}, as follows:
 
 \begin{itemize}
     \item \textbf{\gls{sram}-based \glspl{fpga}:} These are the most widely used commercial \glspl{fpga} due to their high reconfiguration flexibility, the ability to integrate complex systems and their competitive costs. They use \gls{sram} cells, known as \gls{cram}, to store the configuration of all internal \glspl{lut} and functions of the device. This technology allows \glspl{fpga} to be reprogrammed in an virtually infinite number of cycles and allows \textit{\gls{dpr}}, which means that parts of the configuration can be changed during runtime. A significant drawback is that \gls{sram} cells are volatile and highly susceptible to radiation-induced faults such as \glspl{seu} \cite{Adria2023}.
