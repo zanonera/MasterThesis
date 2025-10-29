@@ -39,25 +39,25 @@ This section discusses the \gls{dpr} results, mainly in the reprogramming speed 
 \textbf{Condition} & \textbf{Time ($\mu$s)} & \textbf{Throughput (Mb/s)} & \textbf{Cache} \\
 \midrule
 First \gls{dpr} & 897 & 143 & Enabled \\
-All others \gls{dpr} & 1.35 & 95,195 & Enabled \\
-First \gls{dpr} & 1,186 & 108 & Enabled and invalidated \\
+All others \gls{dpr} & 1.35 & 95195 & Enabled \\
+First \gls{dpr} & 1186 & 108 & Enabled and invalidated \\
 All others \gls{dpr} & 576 & 222 & Enabled and invalidated \\
 First \gls{dpr} & 984 & 130 & Disabled \\
-All others \gls{dpr} & 6 & 21,117 & Disabled \\
+All others \gls{dpr} & 6 & 21117 & Disabled \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textcite{Sultana2021} reports that the theoretical throughput of the \gls{pcap} interface is 400~Mb/s when operating on a 32-bit platform, achieving an average throughput of approximately 140~Mb/s. This result is closely aligned with the performance observed for the first \gls{dpr} in this study, as shown in Table~\ref{tab:pr_time}.
 
-According to the results in Table~\ref{tab:pr_time}, during the first \gls{pr}, the achieved throughput approaches the theoretical value. However, from the second reconfiguration onward, certain configurations exhibit unrealistically high speeds. This behavior was identified as a side effect of the small bitstream size used for \gls{pr} and the \gls{ddr} cache present in Zynq device. When the cache is enabled, write speeds of up to 96~Gb/s can be observed. However, if the cache is explicitly invalidated before each \gls{pr} operation, the throughput stabilizes near the average value and remains below the theoretical limit.
+According to the results in Table~\ref{tab:pr_time}, during the first \gls{pr}, the achieved throughput approaches the theoretical value. However, from the second reconfiguration onward, certain configurations exhibit unrealistically high speeds. This behavior was identified as a side effect of the small bitstream size used for \gls{pr} and the \gls{ddr} cache present on the Zynq device. When the cache is enabled, write speeds of up to 96~Gb/s can be observed. However, if the cache is explicitly invalidated before each \gls{pr} operation, the throughput stabilizes near the average value and remains below the theoretical limit.
 
 This phenomenon occurs because \gls{pcap} is designed to operate via \gls{dma} transfers from Zynq's \gls{ddr} memory, thus utilizing the cache unless it is explicitly disabled or invalidated.
 Higher reconfiguration speeds could potentially be achieved using custom reconfiguration controllers, as demonstrated by ~\textcite{Vipin2014_ZyCAP} on Zynq devices.
 
 For comparison, the total size of the full bitstream is 3.9~Mbit, while each partial bitstream corresponding to the math block is 109~kbit, representing around only 2.8\% of the full configuration size. This significant reduction in bitstream size directly impacts the reconfiguration time, allowing partial reconfiguration to be performed considerably faster than a full device reconfiguration.
 
-Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \gls{dpr} and the application of the blanking bitstream. The blanking configuration corresponds to a partial bitstream that contains no logic, serving only as a placeholder to ensure a clean reprogramming of the device. Figure~\ref{fig:menu-blank&dpr-error}(b) illustrates the error that occurs when applying \gls{dpr} without resetting \gls{semip} after a \gls{pr} has been executed. This behavior is discussed in detail in Section~\ref{sec:cap4}, particularly in Item~\ref{itemized-actions-for-dpr&sem}.
+Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \gls{dpr} and the application of the blank bitstream. The blanking configuration corresponds to a partial bitstream that contains no logic, serving only as a placeholder to ensure a clean reprogramming of the device. Figure~\ref{fig:menu-blank&dpr-error}(b) illustrates the error that occurs when applying \gls{dpr} without resetting \gls{semip} after a \gls{pr} has been executed. This behavior is discussed in detail in Section~\ref{sec:cap4}, particularly in Item~\ref{itemized-actions-for-dpr&sem}.
 
 \begin{figure}[H]
     \centering
@@ -67,7 +67,7 @@ Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \
     \label{fig:menu-blank&dpr-error}
 \end{figure}
 
-Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into a multiplier using the \gls{dpr}. This demonstrates that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue operating normally. Figure~\ref{fig:menu-mult&mult-ok}(b) presents the correct results obtained from both \gls{hw} and \gls{sw} multiplication.
+Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region as a multiplier using \gls{dpr}. This shows that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue to operate normally. Figure~\ref{fig:menu-mult&mult-ok}(b) presents the correct results obtained from both multiplications, in \gls{hw} and \gls{sw}.
 
 \begin{figure}[H]
     \centering
@@ -77,7 +77,7 @@ Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceler
     \label{fig:menu-mult&mult-ok}
 \end{figure}
 
-Figure~\ref{fig:menu-mult-error-fi}(a) shows that the \gls{hw} multiplication produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:menu-mult-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
+Figure~\ref{fig:menu-mult-error-fi}(a) shows that the multiplication, executed on \gls{hw}, produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:menu-mult-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
 
 \begin{figure}[H]
     \centering
@@ -87,7 +87,7 @@ Figure~\ref{fig:menu-mult-error-fi}(a) shows that the \gls{hw} multiplication pr
     \label{fig:menu-mult-error-fi}
 \end{figure}
 
-Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into an adder using the \gls{dpr}. This demonstrates that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue operating normally. Figure~\ref{fig:menu-add&add-ok}(b) presents the correct results obtained from both \gls{hw} and \gls{sw} addition.
+Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into an adder using the \gls{dpr}. This shows that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue to operate normally. Figure~\ref{fig:menu-add&add-ok}(b) presents the correct results obtained from both additions, in \gls{hw} and \gls{sw}.
 
 \begin{figure}[H]
     \centering
@@ -97,7 +97,7 @@ Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} accelerat
     \label{fig:menu-add&add-ok}
 \end{figure}
 
-Figure~\ref{fig:add-error-fi}(a) shows that the \gls{hw} addition produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:add-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
+Figure~\ref{fig:add-error-fi}(a) shows that the addition, executed on \gls{hw},  produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:add-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
 
 \begin{figure}[H]
     \centering
@@ -154,9 +154,9 @@ The proposed injection system also presents some limitations compared to other a
 \toprule
 \textbf{Parameter} & \textbf{Value} \\
 \midrule
-Total \gls{fpga} bits (\gls{cram}) & 25.697.632 \\
-Total essential bits in the \gls{fir} region & 31.020 \\
-Total injected bits & 31.020 \\
+Total \gls{fpga} bits (\gls{cram}) & 25,697,632 \\
+Total essential bits in the \gls{fir} region & 31,020 \\
+Total injected bits & 31,020 \\
 Critical bits detected: \gls{fir} error & 34 \\
 Critical bits detected: AXI bus lock & \gls{na} \\
 \bottomrule
@@ -173,9 +173,9 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 \toprule
 \textbf{Parameter} & \textbf{Value} \\
 \midrule
-Total \gls{fpga} bits (\gls{cram}) & 25.697.632 \\
-Total essential bits in the multiplier region & 70.182 \\
-Total injected bits & 70.182 \\
+Total \gls{fpga} bits (\gls{cram}) & 25,697,632 \\
+Total essential bits in the multiplier region & 70,182 \\
+Total injected bits & 70,182 \\
 Critical bits detected: Multiplication error & 29 \\
 Critical bits detected: AXI bus lock & 3 \\
 \bottomrule

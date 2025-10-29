@@ -328,16 +328,16 @@ The main functions of voters include the following:
 Voters play a central role in ensuring reliable outputs in \gls{nmr} systems by mediating between redundant modules. Different voter architectures have been proposed to address specific design constraints and reliability requirements:
 
 \begin{itemize}
-    \item \textbf{Majority or Bit-by-Bit Voters:} The majority voter implements the majority function using standard logic gates, such as AND-OR or NAND structures, to determine the final system output based on the majority of identical input values. In wide data buses, this logic can be applied on a bit-by-bit basis, comparing each bit of the outputs individually. Bit-by-bit majority voters are simple and efficient for small or low-throughput systems but may become less effective in high-bandwidth or complex designs due to the lack of word-level integrity verification.
+    \item \textbf{Majority or Bit-by-Bit Voters:} The majority voter implements the majority function using standard logic gates, such as AND/OR or NAND structures, to determine the final system output based on the majority of identical input values. In wide data buses, this logic can be applied bit-by-bit, comparing each bit of the output individually. Bit-by-bit majority voters are simple and efficient for small or low-throughput systems, but may become less effective in high-bandwidth or complex designs because of the lack of word-level integrity verification.
 
 The Boolean equation for a three-input majority voter can be expressed as:
     \begin{equation}
         Q = AB + AC + BC
         \label{eq:maj_voter}
     \end{equation}
-    where $A$, $B$, and $C$ represent the outputs of the redundant modules, and $Q$ is the resulting voted output.
+    where $A$, $B$, and $C$ represent the output of the redundant modules, and $Q$ is the resulting output voted.
     
-    For a general case with $N$ redundant modules, the majority function can be defined as:
+For a general case with $N$ redundant modules, the majority function can be defined as
     \begin{equation}
         Q =
             \begin{cases}
@@ -348,25 +348,24 @@ The Boolean equation for a three-input majority voter can be expressed as:
     \end{equation}
     where $x_i$ represents the binary output of the $i$-th module, and $Q$ is asserted when the majority of inputs are logical ‘1’.
     
-    \item \textbf{Word Voter:} Proposed by \textcite{Mitra2000}, it is designed to overcome the limitations of bit-by-bit voters in wide memory buses, the word voter incorporates additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This mechanism enhances reliability by revealing inconsistencies that conventional voters may otherwise mask.
-
-   he operation of a three-input word voter can be expressed as:
-\begin{equation}
-\begin{aligned}
-W_{\text{out}} &=
-\begin{cases}
-W_1, & \text{if } (W_1 = W_3), \\[4pt]
-W_2, & \text{if } (W_1 \neq W_3), \\[4pt]
-\text{undefined}, & \text{otherwise,}
-\end{cases} \\[6pt]
-E_{\text{flag}} &= 
-\begin{cases}
-1, & \text{if } (W_1 \neq W_2) \lor (W_1 \neq W_3) \lor (W_2 \neq W_3), \\[4pt]
-0, & \text{otherwise.}
-\end{cases}
-\end{aligned}
-\label{eq:word_voter_mitra}
-\end{equation}
+    \item \textbf{Word Voter:} Proposed by \textcite{Mitra2000}, it is designed to overcome the limitations of bit-by-bit voters in wide memory buses, the word voter incorporates additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This mechanism improves reliability by revealing inconsistencies that conventional voters may otherwise mask. The operation of a three-input word voter can be expressed as:
+    
+    \begin{equation}
+    \begin{aligned}
+    W_{\text{out}} &=
+    \begin{cases}
+    W_1, & \text{if } (W_1 = W_3), \\[4pt]
+    W_2, & \text{if } (W_1 \neq W_3), \\[4pt]
+    \text{undefined}, & \text{otherwise,}
+    \end{cases} \\[6pt]
+    E_{\text{flag}} &= 
+    \begin{cases}
+    1, & \text{if } (W_1 \neq W_2) \lor (W_1 \neq W_3) \lor (W_2 \neq W_3), \\[4pt]
+    0, & \text{otherwise.}
+    \end{cases}
+    \end{aligned}
+    \label{eq:word_voter_mitra}
+    \end{equation}
 
 where $W_1$, $W_2$, and $W_3$ are the $m$-bit words from the three redundant modules, $W_{\text{out}}$ is the output word voted and $E_{\text{flag}}$ indicates a mismatch between all outputs of the modules.
 
@@ -397,10 +396,10 @@ C & 000 & 000 & 000 & 010 \\
 \end{tabular}
 \end{table}
 
-In Table~\ref{tab:voter_comparison}, the design and functionality of word and bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
+In Table~\ref{tab:voter_comparison}, the design and functionality of the word and bit-by-bit voter architectures are compared. The \emph{word voter} is specifically developed to address limitations associated with bit-by-bit voters in wide memory buses. Unlike conventional designs, word voters incorporate additional circuitry to generate an error signal when data integrity is compromised, even by a single-bit fault. This enhancement significantly improves reliability by detecting inconsistencies that traditional bit-by-bit voters may fail to expose, thereby increasing the overall robustness of the redundant system.
 
 \subsubsection{Voter Vulnerabilities and Mitigation}
-Voters are inherently critical components, as they introduce a \textit{single point of failure (SPOF)} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For example, in a \gls{tmr} configuration, an omission in the voter logic renders redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. The reliability of the voter directly determines the overall reliability of the system. Enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential to maintain system dependability.
+Voters are inherently critical components, as they introduce a \gls{spof} within redundant systems \cite{Tarrillo2014,leipnitz2015,Yaman2022,Oliveira2017}. A fault in the voter can compromise the entire redundancy scheme by propagating erroneous results to the system output. For example, in a \gls{tmr} configuration, an omission in the voter logic renders redundancy ineffective \cite{Kastensmidt2006}, allowing faulty data to dominate the output. The reliability of the voter directly determines the overall reliability of the system. Enhancing voter robustness through techniques such as redundancy within the voter, temporal voting, or error detection mechanisms is essential to maintain system dependability.
 
 \section{Dynamic Partial Reconfiguration (DPR)}
 \gls{dpr} enables the selective reprogramming of specific \gls{fpga} regions during runtime without disrupting the operation of unaffected modules \cite{Bonna2021}. By targeting only the faulty portions of the design, \gls{dpr} reduces downtime and resource waste compared to full device reprogramming. This section describes the internal mechanisms of \gls{dpr}, design partitioning strategies, and how it complements redundancy to achieve self-repairing \gls{fpga} systems.
