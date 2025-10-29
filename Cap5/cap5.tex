@@ -57,6 +57,8 @@ Higher reconfiguration speeds could potentially be achieved using custom reconfi
 
 For comparison, the total size of the full bitstream is 3.9~Mbit, while each partial bitstream corresponding to the math block is 109~kbit, representing around only 2.8\% of the full configuration size. This significant reduction in bitstream size directly impacts the reconfiguration time, allowing partial reconfiguration to be performed considerably faster than a full device reconfiguration.
 
+Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \gls{dpr} and the application of the blanking bitstream. The blanking configuration corresponds to a partial bitstream that contains no logic, serving only as a placeholder to ensure a clean reprogramming of the device. Figure~\ref{fig:menu-blank&dpr-error}(b) illustrates the error that occurs when applying \gls{dpr} without resetting \gls{semip} after a \gls{pr} has been executed. This behavior is discussed in detail in Section~\ref{sec:cap4}, particularly in Item~\ref{itemized-actions-for-dpr&sem}.
+
 \begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-blank.png}} 
@@ -64,6 +66,8 @@ For comparison, the total size of the full bitstream is 3.9~Mbit, while each par
     \caption{(a) Menu Selection of the \acrshort{pr} of the blanking bitstream (b) Menu indication that the \acrshort{pr} failed to set a new bitstream.}
     \label{fig:menu-blank&dpr-error}
 \end{figure}
+
+Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into a multiplier using the \gls{dpr}. This demonstrates that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue operating normally. Figure~\ref{fig:menu-mult&mult-ok}(b) presents the correct results obtained from both \gls{hw} and \gls{sw} multiplication.
 
 \begin{figure}[H]
     \centering
@@ -73,6 +77,18 @@ For comparison, the total size of the full bitstream is 3.9~Mbit, while each par
     \label{fig:menu-mult&mult-ok}
 \end{figure}
 
+Figure~\ref{fig:menu-mult-error-fi}(a) shows that the \gls{hw} multiplication produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:menu-mult-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error2.png}}
+    \caption{(a) \acrshort{hw} multiplication error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the multiplication result with other operands.}
+    \label{fig:menu-mult-error-fi}
+\end{figure}
+
+Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into an adder using the \gls{dpr}. This demonstrates that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue operating normally. Figure~\ref{fig:menu-add&add-ok}(b) presents the correct results obtained from both \gls{hw} and \gls{sw} addition.
+
 \begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-add.png}} 
@@ -81,11 +97,13 @@ For comparison, the total size of the full bitstream is 3.9~Mbit, while each par
     \label{fig:menu-add&add-ok}
 \end{figure}
 
+Figure~\ref{fig:add-error-fi}(a) shows that the \gls{hw} addition produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:add-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
+
 \begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/error_add_after_injection_C0003C440C.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add_error_other_operand.png}}
-    \caption{(a) \acrshort{hw} addition error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the value with other operands for the addition.}
+    \caption{(a) \acrshort{hw} addition error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the addition result with other operands.}
     \label{fig:add-error-fi}
 \end{figure}
 

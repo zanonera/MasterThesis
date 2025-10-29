@@ -142,6 +142,7 @@ If the processor needs to perform a partial reconfiguration in a specific region
 
 When using the \gls{semip} Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
 \begin{itemize}
+\label{itemized-actions-for-dpr&sem}
     \item Set \gls{semip} in \texttt{IDLE} mode.
     \item Send an \texttt{SYNC} command to stop the \gls{semip} frame’s error scanning.
     \item Select the \gls{pcap} port and perform a \gls{dpr}.
