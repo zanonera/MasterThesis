@@ -7,7 +7,7 @@ For easier development and debugging, the entire design was broken down into mod
 
 \section{FPGA Platform and Toolchain}
 \label{sec:cap4-material}
-This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, partial dynamic reconfiguration capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
+This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, \gls{dpr} capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
 
 \begin{table}[ht]
 \caption{\acrlong{sw} development tools used in this work.}
@@ -266,7 +266,7 @@ Another configuration applied to both architectures was the disablement of \gls{
     \end{verbatim}
 \end{itemize}
 
-\section{Partial Dynamic Reconfiguration Flow}
+\section{Dynamic Partial Reconfiguration Flow}
 
 The \gls{dpr} flow is supported by Vivado; however, it is not yet fully integrated into the GUI-based project workflow~\cite{vipin2018dpr}.
 Consequently, the designs are typically implemented using the Vivado \gls{tcl}-based command flow, or through a combination of \gls{tcl} commands and the graphical interface.
