@@ -48,6 +48,15 @@ All others \gls{dpr} & 6 & 21,117 & Disabled \\
 \end{tabular}
 \end{table}
 
+\textcite{Sultana2021} reports that the theoretical throughput of the \gls{pcap} interface is 400~Mb/s when operating on a 32-bit platform, achieving an average throughput of approximately 140~Mb/s. This result is closely aligned with the performance observed for the first \gls{dpr} in this study, as shown in Table~\ref{tab:pr_time}.
+
+According to the results in Table~\ref{tab:pr_time}, during the first \gls{pr}, the achieved throughput approaches the theoretical value. However, from the second reconfiguration onward, certain configurations exhibit unrealistically high speeds. This behavior was identified as a side effect of the small bitstream size used for \gls{pr} and the \gls{ddr} cache present in Zynq device. When the cache is enabled, write speeds of up to 96~Gb/s can be observed. However, if the cache is explicitly invalidated before each \gls{pr} operation, the throughput stabilizes near the average value and remains below the theoretical limit.
+
+This phenomenon occurs because \gls{pcap} is designed to operate via \gls{dma} transfers from Zynq's \gls{ddr} memory, thus utilizing the cache unless it is explicitly disabled or invalidated.
+Higher reconfiguration speeds could potentially be achieved using custom reconfiguration controllers, as demonstrated by ~\textcite{Vipin2014_ZyCAP} on Zynq devices.
+
+For comparison, the total size of the full bitstream is 3.9~Mbit, while each partial bitstream corresponding to the math block is 109~kbit, representing around only 2.8\% of the full configuration size. This significant reduction in bitstream size directly impacts the reconfiguration time, allowing partial reconfiguration to be performed considerably faster than a full device reconfiguration.
+
 \begin{figure}[H]
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-blank.png}} 

@@ -89,7 +89,7 @@ To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd202
 
 It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use an external PC with a script to inject error and check how the platform behaves.
 
-The \gls{semip} was chosen to be the scrubbing methodology due to the fact that it is already disponible in the 7-series device used and to allow the \gls{fi}.
+The \gls{semip} was selected as the scrubbing methodology because it is natively available on the 7-series device used in this work and supports \gls{fi} within the same \gls{ip}. This approach is considered an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of the \gls{fpga}, thereby eliminating the need for an external memory to store the golden bitstream.
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
@@ -187,7 +187,7 @@ Figure~\ref{fig:dut_fir_bird_view} illustrates the design implemented in the \gl
     \label{fig:dut_fir_bird_view}
 \end{figure}
 
-Figure~\ref{fig:detail_fir} presents the \gls{dmr} architecture in detail. It is possible to visualize the \gls{rom} with the data to be inputted in \gls{fir}. The design output is checked with the "checker" block and the result of the comparison is sent through serial communication to be evaluated by the \gls{fi} computer.
+Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. The \gls{rom} contains the input data for the \gls{fir} modules, whose outputs are compared by the checker block. The comparison results are then transmitted via serial communication to the \gls{fi} computer for evaluation.
 
 \begin{figure}[H]
     \centering
@@ -291,7 +291,7 @@ To facilitate the reproduction of results and provide a baseline configuration f
     \item Generate bitstreams.
 \end{itemize}
 
-The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s \gls{ddr} memory, after which a \gls{dma} transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
+The \gls{dpr} process is carried out through the ARM's \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s \gls{ddr} memory, after which a \gls{dma} transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
 
 \begin{landscape}
     \begin{figure}[ht]
@@ -299,9 +299,6 @@ The \gls{dpr} process is carried out through the ARM \gls{pcap} interface. Initi
     \includegraphics[width=1.5\textwidth]{Cap4/pr_math_bd.png}
     \caption{Block Diagram of the implementation in Vivado. In the blue square (center) the area for \acrshort{dpr} of the mathematical function (multiplier or adder), in the red square (left) the check box indicating that this is a \gls{pr} block in the violet square (right) the \acrshort{pr} decoupler for the \acrshort{axi} bus.}\label{vivado-pr-math}
 \end{figure}\end{landscape}
-
-\section{Integration with Processing System (PS)}
-This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
 
 \section{Fault Injection Strategy}
 \label{sec:fi-strategy}
@@ -314,7 +311,7 @@ This subsection describes how faults were emulated in the \gls{fpga} to validate
     \label{error-injection-diagram}
 \end{figure}
 
-As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that allow readback and correction of the 'configuration memory of \gls{fpga} (\gls{cram}). Since the device includes a \gls{ps}, it is utilized both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is employed to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
+As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that allow readback and correction of the configuration memory of \gls{fpga} (\gls{cram}). Since the device includes a \gls{ps}, it is used both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is used to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
 
 As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout the \gls{fpga}, defining the functionality of its internal resources, including the \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
 
@@ -335,7 +332,7 @@ The \emph{\acrfull{ebd}} file acts as a mask for the EBC file, identifying which
 
 In summary, essential bits can potentially cause an error in \gls{dut} when corrupted. To determine which essential bits are actually capable of producing a malfunction, fault injection experiments are performed. The subset of essential bits that, when flipped, result in erroneous behavior of the system are defined as \textit{critical bits}. This is illustrated in Figure~\ref{fig:xilinx-ebd-ebc}, with examples of each file and the number of essential bits.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/xilinx-ebd-ebc.png}
         \caption{Final implementation report from Xilinx, showing how many critical bits the solution has and \acrshort{ebd} and \acrshort{ebc} files in detail.}
@@ -343,6 +340,9 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
 \end{figure}
 
 Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of the \gls{fpga}.
+
+\section{Integration with Processing System (PS)}
+This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
 
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at the simulation level, the emulation level, and on physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
