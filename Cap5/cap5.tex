@@ -165,10 +165,47 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 
 \subsection{DPR, Scrubbing and Fault Injection with Mathematical Functions}
 
+After the successful implementation of scrubbing using \gls{semip} with \gls{dmr} \gls{fir} filters, the next design iteration incorporated \gls{dpr} into the set of functionalities of the system. To fully exploit the resources of \gls{soc}, a \gls{axi} controlled multiplier/adder modules were developed. These hardware functions can be selected through a user menu and dynamically reconfigured within \gls{fpga}.
+
+The same automated \gls{fi} campaign was applied; however, during the first attempt, it was not possible to inject faults into all essential bits of the \gls{pr} region, as some injections caused the \gls{ps} ARM processor to stall.
+
+After 21,809 fault injections, the automated script stopped receiving responses from the \gls{dut}. Since the device ceased sending status feedback, the script was manually terminated.
+
+Figure~\ref{fig:mult-list-wo-reprogram} presents the output of the statistical report script, showing 16,000 configuration frames affected by bit flips that caused the \gls{dut} to stop responding.
+
+Initially, all these faults were assumed to correspond to a critical failure that stopped communication with the \gls{dut}. However, a detailed analysis revealed that a bit flip in the \gls{fpga} \gls{cram} corrupted the \gls{axi} bus, leading to a processor stall. The results of this first \gls{fi} campaign are summarized in Table~\ref{tab:math_fi1_summary}.
+
+Once one of the injected frames caused the ARM processor to stall, all subsequent fault injections were affected, as the \gls{axi} bus stopped working, preventing  further communication with \gls{dut}.
+
+The stalling is caused by the \gls{axi} bus, which operates based on a strict \textit{valid/ready} handshake between the master (e.g., ARM \gls{ps}) and the slave (e.g., custom IP core in the \gls{pl}). If the logic in the \gls{pl} becomes corrupted due to a bit flip—for instance, in the AXI interface registers, finite state machines, or control logic of the reconfigurable region—the \texttt{READY} or \texttt{VALID} signals may become stuck in an asserted or deasserted state. Since the AXI protocol does not implement any form of timeout, when the downstream device fails to complete the transaction, the ARM processor waits indefinitely for a response, effectively freezing software execution.
+
 \begin{table}[H]
 \centering
-\caption{Summary of configuration bits associated with the multiplier region and the critical upsets detected during the \acrlong{fi} campaign.}
-\label{tab:math_fi_summary}
+\caption{Summary of configuration bits associated with the multiplier region and the critical upsets detected during the initial \acrlong{fi} campaign.}
+\label{tab:math_fi1_summary}
+\begin{tabular}{l r}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total \gls{fpga} bits (\gls{cram}) & 25,697,632 \\
+Total essential bits in the multiplier region & 70,182 \\
+Total injected bits & 21,935 \\
+Critical bits detected: Multiplication error & 7 \\
+Critical bits detected: AXI bus lock & 16000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+To overcome this limitation, the automated script was updated so that whenever \gls{dut} stopped responding, the processor was reset and \gls{fpga} was fully reprogrammed. This modification allowed the experiments to continue without manual intervention and resulted in more stable executions, resulting in only three configuration frames causing this type of critical failure that led the ARM processor to stall.
+
+Table~\ref{tab:math_fi2_summary} presents the results obtained with the updated script, in which all essential bits within the \gls{pr} regions were successfully tested against bit flips. The table also summarizes the error statistics and the occurrences of \gls{axi} bus stalls.
+
+Figure~\ref{fig:mult-list-reprogram} show the completion of \gls{fi} all essentials bits of the \gls{pr} region.
+
+\begin{table}[H]
+\centering
+\caption{Summary of configuration bits associated with the multiplier region and the critical upsets detected during the \acrlong{fi} campaign with \acrshort{ps} stall detection.}
+\label{tab:math_fi2_summary}
 \begin{tabular}{l r}
 \toprule
 \textbf{Parameter} & \textbf{Value} \\

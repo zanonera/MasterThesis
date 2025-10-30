@@ -303,7 +303,7 @@ The \gls{dpr} process is carried out through the ARM's \gls{pcap} interface. Ini
 
 \section{Fault Injection Strategy}
 \label{sec:fi-strategy}
-This subsection describes how faults were emulated in the \gls{fpga} to validate system robustness. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
+This subsection describes how the faults were emulated in the \gls{fpga} to validate the robustness of the system. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
 
 \begin{figure}[ht]
     \centering
@@ -312,9 +312,9 @@ This subsection describes how faults were emulated in the \gls{fpga} to validate
     \label{error-injection-diagram}
 \end{figure}
 
-As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that allow readback and correction of the configuration memory of \gls{fpga} (\gls{cram}). Since the device includes a \gls{ps}, it is used both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is used to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
+As illustrated in Figure~\ref{error-injection-diagram}, the mitigation core employed in this study is based on the \gls{semip} and AMD/Xilinx primitives that allow read-back and correction of the \gls{fpga}'s \gls{cram}. Since the device includes a \gls{ps}, it is used both to configure the bitstream and to serve as the \gls{sw} platform for system control. The \gls{dpr} region is used to dynamically switch functionality within the \gls{pl}, in this case, between a multiplier and an adder module.
 
-As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout the \gls{fpga}, defining the functionality of its internal resources, including the \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
+As explained in Section~\ref{sec:cap3}, the configuration memory is distributed throughout \gls{fpga}, defining the functionality of its internal resources, including \glspl{clb}, \glspl{bram}, \glspl{dsp}, and routing interconnections. This memory is organized into frames arranged in rows and columns corresponding to specific configurable resources, with multiple frames per column forming clock regions within the device. To perform \gls{fi}, it is necessary to identify and extract the frame addresses, along with the words and bits within those frames, that correspond to the \gls{dut} \cite{Garcia2020}.
 
 For this purpose, Xilinx provides the \textit{Essential Bits} technology~\cite{Garcia2020,Yang2022_FaultInjectionUltrascale}, which generates, along with the bitstream, a mask file indicating whether each configuration bit is used in the design. This information is stored in the \texttt{.ebd} file. To enable the generation of the \gls{ebd} file, the following constraint must be added to the Vivado project:
 
@@ -340,7 +340,7 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
     \label{fig:xilinx-ebd-ebc}
 \end{figure}
 
-Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of an actual device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of the \gls{fpga}.
+Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of a real device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of \gls{fpga}.
 
 \section{Integration with Processing System (PS)}
 This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.

@@ -443,7 +443,7 @@ Implementing \gls{dpr} requires dedicated configuration flows and access to the 
 Thus, \gls{dpr} provides a foundation for adaptive and fault-tolerant \gls{fpga} systems, enabling the replacement, recovery, or upgrade of hardware modules on demand without system downtime.
 
 \section{Memory Scrubbing Techniques}
-Configuration memory scrubbing is a proactive approach that periodically reads and corrects the \gls{fpga} configuration to prevent error accumulation. This section discusses different scrubbing approaches, including blind scrubbing, readback-and-verify, and adaptive scrubbing. It also analyzes trade-offs between error coverage, bandwidth consumption, and system availability.
+Configuration memory scrubbing is a proactive approach that periodically reads and corrects the \gls{fpga} configuration to prevent error accumulation.
 
 \subsection{Scrubbing in SRAM-Based FPGAs}
 
@@ -455,7 +455,7 @@ Scrubbing can be performed on the entire configuration memory (\emph{full scrubb
 
 As highlighted by \textcite{Adria2023}, \glspl{seu} in \glspl{fpga} may lead to persistent functional errors by altering the architectural configuration of the implemented design. To mitigate such effects and prevent fault accumulation, \gls{cram} scrubbing is a well-established corrective strategy. However, scrubbing does not prevent the occurrence of bit flips, nor can it fully mitigate the consequences of upsets affecting critical bits. Therefore, additional design-level mitigation mechanisms are typically employed to reduce single points of failure and enhance the system’s fault-masking capability.
 
-Several scrubbing architectures have been proposed in the literature, differing mainly in their error detection methods, resource utilization, power consumption, and correction latency~\cite{heiner2008,Brosser2014,tonfat2015,7776929}. Scrubbing strategies are usually classified into two categories:
+Several scrubbing architectures have been proposed in the literature, mainly differing in their error detection methods, resource utilization, power consumption, and correction latency~\cite{heiner2008,Brosser2014,tonfat2015,7776929}. Scrubbing strategies are usually classified into two categories:
 \begin{itemize}
     \item \textbf{Internal scrubbing:} The scrubber engine is implemented within the same \gls{fpga} that it monitors. This approach requires no additional hardware and provides high-speed detection and correction capabilities. An example is the \gls{semip}~\cite{amd2023sem}, which is integrated into most modern Xilinx devices. However, internal scrubbers remain vulnerable to \glspl{seu} that may affect their own logic or communication interfaces. Such upsets may cause the scrubber to become unresponsive, compromising its correction capability, especially in cases involving multiple simultaneous upsets~\cite{berg2008}, as illustrated in Figure~\ref{fig:scrubbing-int-ext}(a).
     \item \textbf{External scrubbing:} The scrubber controller is implemented on an external device. This architecture provides greater robustness and can manage multiple upsets more reliably, as it is isolated from the internal \gls{fpga} logic, as illustrated in Figure~\ref{fig:scrubbing-int-ext}(b).
