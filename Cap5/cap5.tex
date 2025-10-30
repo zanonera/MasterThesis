@@ -10,14 +10,14 @@ The software and hardware used in this research is discussed in \hyperref[sec:ca
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/setup-diagram.png}
-    \caption{Interconnection diagram of the main board and the USB to Serial Interface module.}
+    \caption{Interconnection diagram of the main board and the USB-to-Serial interface module.}
     \label{fig:setup-diagram}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/setup.jpg}
-    \caption{Setup of the main board (center) and the USB to Serial Interface module (up right).}
+    \caption{Experimental setup showing the main board (center) and the USB-to-Serial interface module (upper right).}
     \label{fig:setup-pic}
 \end{figure}
 
@@ -32,7 +32,7 @@ This section discusses the \gls{dpr} results, mainly in the reprogramming speed 
 
 \begin{table}[H]
 \centering
-\caption{\acrlong{pr}.}
+\caption{Summary of \acrlong{pr} throughput and configuration time with different \acrshort{dma} settings}
 \label{tab:pr_time}
 \begin{tabular}{cccc}
 \toprule
@@ -63,7 +63,7 @@ Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-blank.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-dpr-error.png}}
-    \caption{(a) Menu Selection of the \acrshort{pr} of the blanking bitstream (b) Menu indication that the \acrshort{pr} failed to set a new bitstream.}
+    \caption{(a) Menu selection for the \acrshort{pr} of the blanking bitstream. (b) Menu indication showing that the \acrshort{pr} failed to load a new bitstream.}
     \label{fig:menu-blank&dpr-error}
 \end{figure}
 
@@ -73,7 +73,7 @@ Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceler
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-mult.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-ok.png}}
-    \caption{(a) Menu Selection of the multiplier to be applied to the \acrshort{pr} (b) Multiplication check on \acrshort{hw} and \acrshort{sw}.}
+    \caption{(a) Menu selection of the multiplier to be applied to the \acrshort{pr}. (b) Multiplication result verification on \acrshort{hw} and \acrshort{sw}.}
     \label{fig:menu-mult&mult-ok}
 \end{figure}
 
@@ -83,7 +83,7 @@ Figure~\ref{fig:menu-mult-error-fi}(a) shows that the multiplication, executed o
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error2.png}}
-    \caption{(a) \acrshort{hw} multiplication error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the multiplication result with other operands.}
+    \caption{(a) \acrshort{hw} multiplication error after the injection of a bit flip in frame C0003C440C. (b) Multiplication results obtained with different operands.}
     \label{fig:menu-mult-error-fi}
 \end{figure}
 
@@ -93,7 +93,7 @@ Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} accelerat
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/menu-add.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add-ok.png}}
-    \caption{(a) Menu Selection of the adder to be applied to the \acrshort{pr} (b) Addition check on \acrshort{hw} and \acrshort{sw}.}
+    \caption{(a) Menu selection of the adder to be applied through the \acrshort{pr}. (b) Addition result verification on \acrshort{hw} and \acrshort{sw}.}
     \label{fig:menu-add&add-ok}
 \end{figure}
 
@@ -103,7 +103,7 @@ Figure~\ref{fig:add-error-fi}(a) shows that the addition, executed on \gls{hw}, 
     \centering
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/error_add_after_injection_C0003C440C.png}} 
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add_error_other_operand.png}}
-    \caption{(a) \acrshort{hw} addition error after injection of an bit flip in Region \emph{C0003C440C} (b) Showing the addition result with other operands.}
+    \caption{(a) \acrshort{hw} addition error after the injection of a bit flip in frame C0003C440C. (b) Addition results obtained with different operands.}
     \label{fig:add-error-fi}
 \end{figure}
 
@@ -119,28 +119,28 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
-    \caption{Complete automation of the \acrlong{fi} and visualization of the \acrshort{ila} to "debug" the design.}
+    \caption{Representation of the complete automation of the \acrlong{fi} process and the use of the \acrshort{ila} for real-time visualization and debugging of the design behavior during fault injection.}
     \label{fig:automated_design}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
-    \caption{Script and visualization of the progress of \acrshort{fi} campaign.}
+    \caption{Python script and corresponding visualization showing the real-time progress of the \acrshort{fi} campaign}
     \label{fig:error-injection-fir}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
-    \caption{\acrshort{ila} capture, showing correct function of both filters.}
+    \caption{\acrshort{ila} waveform capture demonstrating the correct functionality of both filter modules, confirming synchronized operation and expected output behavior.}
     \label{fig:fir_filter_equal}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
-    \caption{\acrshort{ila} capture, showing a \acrshort{fi} that caused an error in the output of the \acrshort{fir} filter.}
+    \caption{\acrshort{ila} waveform capture illustrating a \acrshort{fi} event that resulted in an erroneous output from the \acrshort{fir} filter, evidencing the effect of a configuration bit upset on functional behavior.}
     \label{fig:fir_filter_error}
 \end{figure}
 
@@ -148,7 +148,7 @@ The proposed injection system also presents some limitations compared to other a
 
 \begin{table}[H]
 \centering
-\caption{Summary of configuration bits and detected critical upsets in the FIR region.}
+\caption{Summary of configuration bits associated with the \acrshort{fir} region and the critical upsets detected during the \acrlong{fi} campaign.}
 \label{tab:fir_fi_summary}
 \begin{tabular}{l r}
 \toprule
@@ -167,7 +167,7 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 
 \begin{table}[H]
 \centering
-\caption{Summary of configuration bits and detected critical upsets in the multiplier region.}
+\caption{Summary of configuration bits associated with the multiplier region and the critical upsets detected during the \acrlong{fi} campaign.}
 \label{tab:math_fi_summary}
 \begin{tabular}{l r}
 \toprule
@@ -185,14 +185,14 @@ Critical bits detected: AXI bus lock & 3 \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/mult/mult_injection_results-wo_reprogram.png}
-    \caption{Automated \acrlong{fi} result without the reprogram ability.}
+    \caption{Automated \acrlong{fi} results obtained without the reprogramming capability.}
     \label{fig:mult-list-wo-reprogram}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/mult/mult-error-reprogram.png}
-    \caption{Automated \acrlong{fi} result with the reprogram ability.}
+    \caption{Automated \acrlong{fi} results obtained with the reprogramming capability enabled.}
     \label{fig:mult-list-reprogram}
 \end{figure}
 
@@ -203,35 +203,35 @@ For a complete list of the addresses that caused error in this \gls{fi} campaign
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/rv_simul/simulation_result_hello_world.png}
-    \caption{Self-check simulation setup, where the processor cores execute test firmware that transmits the message ``Hello World'' through a serial output interface.}
+    \caption{Self-check simulation setup in which the processor cores execute test firmware transmitting the message “Hello World” through the serial output interface.}
     \label{fig:risc-simul-hw-console}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/all_modules_ok.png}
-    \caption{Fault Free \acrshort{tmr}'ed PicoRV32I Write Data to memory signals and serial Output.}
+    \caption{Fault-free operation of the \acrshort{tmr}-protected PicoRV32I processor, showing memory write data signals and corresponding serial output during normal execution.}
     \label{fig:no-riscv-fault}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/1_module_fault.png}
-    \caption{Single Fault, a bit flip in core 1 (A Input in the figure), the output of the serial interface and the memory access remains without faults after the word voter (signal OUT).}
+    \caption{Single fault case showing a bit flip injected in core 1 (A input). Despite the injected error, the serial interface output and memory write signals remain correct due to fault masking by the word voter (signal OUT).}
     \label{fig:1-riscv-fault}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/2_modules_equl_fault.png}
-    \caption{Two faulty, with the same error injected, their output is voted, but as it is incorrect, the system does not boot correctly and does not show the greeting message.}
+    \caption{Double fault scenario: two cores experience the same injected error. The voted output becomes incorrect, preventing the system from booting and displaying the “Hello World” message.}
     \label{fig:2-riscv-fault}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/3_modules_diff_faults.png}
-    \caption{Multiple Faults, in this case all cores are faulty, so no majority is voted and then the ERROR signal shows that all three modules diverges.}
+    \caption{Multiple fault scenario: all cores are affected, preventing a valid majority vote. The ERROR signal indicates divergence among the three modules.}
     \label{fig:3-riscv-fault}
 \end{figure}
 

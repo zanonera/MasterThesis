@@ -61,7 +61,7 @@ As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists o
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{\acrshort{fpga} Structure. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
+\caption{General structure of an \acrshort{fpga}. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
 \end{figure}
 
 As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture has other specialized hardware, AMD's 7-series is totally based on the columnar approach provided by the \gls{asmbl} architecture. The different domains represent the diverse platforms with varying feature mixes optimized for different application domains \cite{AMD_UG474}.
@@ -69,7 +69,7 @@ As illustrated  in Figure~\ref{fpga-column-asmbl}, the \gls{fpga} architecture h
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\textwidth]{Cap3/X30271-ASMBL-Architecture.png}
-\caption{\acrshort{fpga} specialized resources. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
+\caption{Specialized hardware resources present in AMD 7-series \acrshort{fpga} devices. Reproduced from \textcite{AMD_UG474}.}\label{fpga-column-asmbl}
 \end{figure}
 
 \subsection{Configuration and Reprogrammability}
@@ -99,7 +99,7 @@ Before any configuration packet is processed by the \gls{fpga}, the configuratio
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.5\textwidth]{Cap3/simple-bitstream.png}
-\caption{Simple representation of the \acrshort{fpga} bitstream structure.}\label{fpga-simple-bitstream}
+\caption{Simplified representation of the \acrshort{fpga} bitstream structure, illustrating the organization of configuration frames and data fields.}\label{fpga-simple-bitstream}
 \end{figure}
 
 A frame is the smallest unit of configuration data that can be read or written in an \gls{fpga}, identified by a unique 32-bit address divided into five fields: block type, top/bottom position, row address, column address, and minor address \cite{AMD_UG953_IBUF}. Frame addresses are discontinuous due to block cross-distribution, with different blocks corresponding to different frames. These non-contiguous addresses are called physical frame addresses (PFAs), while sequentially arranged PFAs are referred to as linear frame addresses (LFAs) \cite{Xie2023_HybridGrainedScrubbing}. Since bitstream-to-PFA mapping is proprietary, repairing upsets by reconfiguring frames is challenging. Several studies have explored this mapping to infer bitstream structure and address allocation, including \textcite{LeRoux2019,Aranda2019,Xie2023_HybridGrainedScrubbing}.
@@ -161,7 +161,7 @@ Figure~\ref{fig:see_hard_soft} illustrates the classification of the \gls{see} p
 
 \end{tikzpicture}
 \end{adjustbox}
-\caption{Classification of \acrlong{see} subtypes.}
+\caption{Hierarchical classification of \acrlong{see} phenomena affecting electronic devices.}
 \label{fig:see_hard_soft}
 \end{figure}
 
@@ -199,7 +199,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/1-s2.0-S014193312300087X-gr1_lrg.jpg}
-\caption{Illustration of a \acrshort{seu} effect in a \acrshort{lut}'s \acrshort{fpga} . Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
+\caption{Conceptual representation of a \acrshort{seu} occurring in a \acrshort{fpga} \acrshort{lut}, where a single configuration bit upset modifies the truth table and changes the output behavior. Adapted from \textcite{Mousavi2023_MTTR_FPGA_Scrubbing}.}\label{fpga-seu-and}
 \end{figure}
 
 \begin{table}[ht!]
@@ -225,7 +225,7 @@ Figure~\ref{fpga-seu-and}(c) illustrates another possible scenario, where an int
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/seu-sb-mb.png}
-\caption{\acrshort{sbu} and \acrshort{mbu} representations in a \acrshort{fpga} \acrshort{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}.}\label{fpga-seu-and-sbu-mbu}
+\caption{Representations of \acrshort{sbu} and \acrshort{mbu} in the \acrshort{fpga} \acrshort{cram}. Reproduced from \textcite{Aguiar2025_SEE_Space_to_Accelerator}.}\label{fpga-seu-and-sbu-mbu}
 \end{figure}
 
 \begin{figure}[ht]
@@ -243,7 +243,7 @@ The concept of soft error criticality describes the potential of \gls{fpga} bits
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.75\textwidth]{Cap3/fpga-bits-definition.png}
-\caption{Representation of different types of bits in the \acrshort{fpga} \acrshort{cram} due to its criticality. Reproduced from \textcite{Adria2023}.}\label{fpga-bits-definition}
+\caption{Classification of configuration bits in the \acrshort{fpga} \acrshort{cram} based on their criticality. Reproduced from \textcite{Adria2023}.}\label{fpga-bits-definition}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,7 +280,7 @@ Figure~\ref{fig:cgtmr} illustrates an example of a \gls{cgtmr} implementation.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap3/cgtmr.png}
-    \caption{Representation of the \acrlong{cgtmr}}
+    \caption{Structural representation of the \acrlong{cgtmr}}
     \label{fig:cgtmr}
 \end{figure}
 
@@ -305,7 +305,7 @@ Figure~\ref{fig:fgtmr} illustrates an example of a \gls{fdtmr} implementation.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap3/fgtmr.png}
-    \caption{Representation of the \acrlong{fgtmr}}
+    \caption{Structural representation of the \acrlong{fgtmr}}
     \label{fig:fgtmr}
 \end{figure}
 
@@ -377,7 +377,7 @@ This approach enhances data integrity by enabling fault detection at the word le
 \begin{table}[H]
 \centering
 \small
-\caption{Comparison between fault-free and faulty outputs for each module with voter decisions. Adapted from \textcite{Yaman2022}.}
+\caption{Comparison of fault-free and faulty outputs across different modules, including the resulting decisions from both bit-by-bit and word-level voters. Adapted from \textcite{Yaman2022}.}
 \label{tab:voter_comparison}
 \begin{tabular}{p{3cm} p{2.5cm} p{2.5cm} p{2.5cm} p{2.5cm}}
 \toprule
@@ -407,7 +407,7 @@ Voters are inherently critical components, as they introduce a \gls{spof} within
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Cap3/dpr-xilinx.png}
-    \caption{Basic Principle of \acrshort{dpr}.Reproduced from \cite{Xilinx_UG702_PR}.}
+    \caption{Basic principle of \acrshort{dpr} in \acrshort{fpga} devices. Reproduced from \cite{Xilinx_UG909_PR}.}
     \label{fig:dpr-xilinx}
 \end{figure}
 
@@ -464,7 +464,7 @@ Several scrubbing architectures have been proposed in the literature, differing 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap3/scrubbing1.30.png}
-    \caption{Different memory scrubbing techniques, (a) Internal (b) External.}
+    \caption{Different memory scrubbing techniques: (a) internal and (b) external.}
     \label{fig:scrubbing-int-ext}
 \end{figure}
 
@@ -473,7 +473,7 @@ Figure~\ref{fig:scrubbing-soc} illustrates a scrubbing solution based on \gls{so
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Cap3/scrubbing2-30.png}
-    \caption{Scrubbing method available in \acrshort{soc} devices.}
+    \caption{Scrubbing structure implemented using the \acrshort{soc}'s processor.}
     \label{fig:scrubbing-soc}
 \end{figure}
 
@@ -555,6 +555,54 @@ Among the mitigation techniques analyzed, \gls{nmr} emerged as a fundamental red
 
 Configuration-memory scrubbing was discussed as a preventive mechanism that periodically restores the integrity of the \gls{fpga} bitstream. Although effective in avoiding error accumulation, scrubbing alone cannot guarantee functional recovery from faults affecting more than one bit per frame at a given time, like in a \gls{mbu} or in the memories like \gls{bram}. This reinforces the need for a hybrid approach that integrates scrubbing with redundancy and dynamic reconfiguration.
 
-Finally, the principles of \gls{fi} were explored as an experimental means to evaluate the dependability of fault-tolerant designs. \gls{fi} enables the controlled emulation of radiation effects, allowing quantitative analysis of fault coverage, recovery efficiency, and system resilience. In the context of this work, \gls{fi} serves as the primary validation tool for assessing the effectiveness of the proposed mitigation techniques.
+Finally, the principles of \gls{fi} were explored as an experimental means to evaluate the dependability of fault-tolerant designs. \gls{fi} enables the controlled emulation of radiation effects, allowing quantitative analysis of fault coverage, recovery efficiency, and system resilience. In the context of this work, \gls{fi} serves as the primary validation tool for assessing the effectiveness of the proposed mitigation techniques, rather than a corrective mechanism. In other words, \gls{fi} is used for validation, not correction, providing empirical evidence of the robustness of the system without altering its operational behavior or configuration.
 
-In summary, the theoretical elements presented in this chapter converge to support the design strategy adopted in this dissertation: the combination of spatial redundancy (\gls{nmr}), adaptive reconfiguration (\gls{dpr}), and continuous fault detection through scrubbing and \gls{fi}. These complementary techniques form the foundation of the proposed fault-tolerant architecture detailed in the next chapter, where their practical implementation, integration, and experimental validation are described.
+In summary, the theoretical elements presented in this chapter converge to support the design strategy adopted in this dissertation: the combination of spatial redundancy (\gls{nmr}), adaptive reconfiguration (\gls{dpr}), and continuous fault detection through scrubbing and \gls{fi}. These complementary techniques form the foundation of the proposed fault-tolerant architecture, which is detailed in chapter~\ref{sec:cap4}, where their practical implementation, integration, and experimental validation are described.
+
+Figure \ref{fig:nmr-dpr-scrubbing-fi-hierarchy} illustrates how the mitigation techniques discussed complement each other to achieve system dependability. Spatial redundancy ensures fault masking, dynamic partial reconfiguration enables recovery, and scrubbing maintains configuration integrity—together forming a hybrid architecture evaluated through systematic fault-injection experiments.
+
+\usetikzlibrary{calc}
+
+\begin{figure}[ht]
+\centering
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}[
+    every node/.style={font=\small, align=center},
+    process/.style={rectangle, rounded corners, minimum width=6cm, minimum height=1.4cm, draw=black, fill=blue!15, thick, font=\bfseries},
+    result/.style={rectangle, rounded corners, minimum width=6cm, minimum height=1.6cm, draw=black, fill=green!20, thick, font=\bfseries},
+    labeltext/.style={font=\footnotesize, align=center},
+    arrow/.style={thick,->,>=stealth}
+]
+
+% --- Base node (bottom) ---
+\node (fi) [process] {Fault Injection (FI)};
+
+% --- Stack vertically using coordinates ---
+\node (scrub) [process] at ($(fi)+(0,2.8cm)$) {Configuration Memory Scrubbing};
+\node (dpr) [process] at ($(scrub)+(0,2.8cm)$) {Dynamic Partial Reconfiguration (DPR)};
+\node (nmr) [process] at ($(dpr)+(0,2.8cm)$) {N-Modular Redundancy (NMR)};
+\node (system) [result] at ($(nmr)+(0,2.8cm)$) {Reliable FPGA System};
+
+% --- Arrows between layers (right-shifted labels) ---
+\draw[arrow] (fi) -- node[labeltext, right, xshift=2cm]{\textbf{Evaluates and validates}\\fault-tolerance effectiveness} (scrub);
+\draw[arrow] (scrub) -- node[labeltext, right, xshift=2cm]{\textbf{Prevents accumulation}\\of soft errors in configuration} (dpr);
+\draw[arrow] (dpr) -- node[labeltext, right, xshift=2cm]{\textbf{Recovers faulty modules}\\during runtime (self-repair)} (nmr);
+\draw[arrow] (nmr) -- node[labeltext, right, xshift=2cm]{\textbf{Masks transient faults}\\via spatial redundancy} (system);
+
+% --- Left-side conceptual labels ---
+\node[labeltext] (faulttol) at ($(nmr)+(-6.0cm,0)$) {\textbf{Fault Masking}};
+\node[labeltext] (reconf) at ($(dpr)+(-6.0cm,0)$) {\textbf{Fault Recovery}};
+\node[labeltext] (maint) at ($(scrub)+(-6.0cm,0)$) {\textbf{Fault Prevention}};
+\node[labeltext] (eval) at ($(fi)+(-6.0cm,0)$) {\textbf{Fault Evaluation}};
+
+% --- Connect conceptual labels with dashed lines ---
+\draw[dashed, gray] (faulttol.east) -- (nmr.west);
+\draw[dashed, gray] (reconf.east) -- (dpr.west);
+\draw[dashed, gray] (maint.east) -- (scrub.west);
+\draw[dashed, gray] (eval.east) -- (fi.west);
+
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Hierarchical relationship among \acrlong{nmr}, \acrlong{dpr}, scrubbing, and \acrlong{fi}, showing how each layer contributes to the overall dependability of the \acrshort{fpga}-based system.}
+\label{fig:nmr-dpr-scrubbing-fi-hierarchy}
+\end{figure}

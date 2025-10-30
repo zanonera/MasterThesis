@@ -10,7 +10,7 @@ For easier development and debugging, the entire design was broken down into mod
 This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, \gls{dpr} capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
 
 \begin{table}[ht]
-\caption{\acrlong{sw} development tools used in this work.}
+\caption{List of \acrlong{sw} development tools employed in this work}
 \label{tab:sw-tools}
 \centering
 \begin{adjustbox}{max width=\paperwidth}
@@ -39,7 +39,7 @@ Table~\ref{tab:sw-tools} lists the \gls{sw} resources and the \gls{riscv} \texti
 Table~\ref{tab:hw-tools} presents the \gls{hw} development platforms used in this research.
 
 \begin{table}[ht]
-\caption{\acrlong{hw} development tools used in this work.}
+\caption{List of \acrlong{hw} development kits employed in this work}
 \label{tab:hw-tools}
 \centering
 \begin{adjustbox}{max width=\paperwidth}
@@ -78,7 +78,7 @@ The requirements for this architecture were established on the basis of the foll
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/architecture.png}
-    \caption{Block diagram representation of the proposed platform.}
+    \caption{Block diagram representation of the proposed fault-tolerant platform, highlighting the integration between the \acrshort{soc} processor, reconfigurable hardware modules, and the supporting infrastructure for \acrshort{fi}, \acrshort{dpr}, and scrubbing operations.}
     \label{zynq-paper-arch}
 \end{figure}
 
@@ -100,7 +100,7 @@ The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figu
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{Cap4/dpr-partial-bit.png}
-    \caption{Representation of the "Partial" Bitstreams, responsible for only a small change in \acrshort{fpga} configuration.}
+    \caption{Representation of “partial” bitstreams used in \acrshort{dpr}, which modify only a specific region of the \acrshort{fpga} fabric while preserving the operation of static regions.}
     \label{dpr-partial-diagram}
 \end{figure}
 
@@ -109,7 +109,7 @@ As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{Cap4/dpr-full-bit.png}
-    \caption{Representation of the "Full" Bitstream, responsible for the entire \acrshort{fpga} configuration.}
+    \caption{Representation of the “full” bitstream, which contains the complete configuration data required to program all regions of the \acrshort{fpga}, including static and reconfigurable areas.}
     \label{dpr-full-diagram}
 \end{figure}
 
@@ -130,7 +130,7 @@ The selection of the interface under control of the \gls{fpga} configuration is 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/cram.png}
-    \caption{2:1 mux controlling the \acrshort{fpga} configuration interface between \acrshort{pcap} and \acrshort{icap}.}
+    \caption{Block representation illustrating the data flow and access priorities among the \acrshort{fpga} configuration interfaces, showing how \acrshort{pcap}, \acrshort{icap}, \acrshort{jtag}, and \acrshort{semip} ports interact with the device’s \acrshort{cram}.}
     \label{fig:fpga_mux}
 \end{figure}
 
@@ -175,7 +175,7 @@ Figure~\ref{fig:fir-dmr} illustrates the architecture proposed to evaluate the d
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/fir-dmr.png}
-    \caption{Block diagram representation of the proposed Duplicated \acrshort{fir} filters.}
+    \caption{Block diagram of the proposed duplicated (\acrshort{dmr}) \acrshort{fir} filter architecture.}
     \label{fig:fir-dmr}
 \end{figure}
 
@@ -193,7 +193,7 @@ Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. Th
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/detail_fir.png}
-    \caption{Block Diagram, in detail, of the \gls{fir} implementation in Vivado. The \acrshort{dmr} is presented and the circuit to detect if the modules have the correct outputs.}
+    \caption{Zoomed block diagram of the \acrshort{fir} implementation in Vivado, showing the \acrshort{dmr} architecture and the detection circuit used to verify output correctness between modules.}
     \label{fig:detail_fir}
 \end{figure}
 
@@ -206,7 +206,7 @@ Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture us
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/riscv-tmr-diagram.png}
-    \caption{Block diagram representation of the proposed Triplicated PicoRV32I.}
+    \caption{Block diagram of the proposed triplicated (\acrshort{tmr}) PicoRV32I architecture, showing the three replicated processor cores and the majority voter responsible for fault masking at the output stage.}
     \label{riscv-tmr-diagram}
 \end{figure}
 
@@ -298,7 +298,7 @@ The \gls{dpr} process is carried out through the ARM's \gls{pcap} interface. Ini
     \begin{figure}[ht]
     \centering
     \includegraphics[width=1.5\textwidth]{Cap4/pr_math_bd.png}
-    \caption{Block Diagram of the implementation in Vivado. In the blue square (center) the area for \acrshort{dpr} of the mathematical function (multiplier or adder), in the red square (left) the check box indicating that this is a \gls{pr} block in the violet square (right) the \acrshort{pr} decoupler for the \acrshort{axi} bus.}\label{vivado-pr-math}
+    \caption{Block diagram of the Vivado design implementation. The blue square (center) shows the \acrshort{dpr} region containing the reconfigurable mathematical function (multiplier or adder), the red square (left) identifies the \gls{pr} block designation, and the violet square (right) highlights the \acrshort{pr} decoupler responsible for isolating the \acrshort{axi} bus during reconfiguration.}\label{vivado-pr-math}
 \end{figure}\end{landscape}
 
 \section{Fault Injection Strategy}
@@ -336,7 +336,7 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/xilinx-ebd-ebc.png}
-        \caption{Final implementation report from Xilinx, showing how many critical bits the solution has and \acrshort{ebd} and \acrshort{ebc} files in detail.}
+        \caption{Final implementation report from Xilinx, showing the number of critical bits identified in the design and details from the \acrshort{ebd} and \acrshort{ebc} files.}
     \label{fig:xilinx-ebd-ebc}
 \end{figure}
 
