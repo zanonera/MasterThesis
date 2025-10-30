@@ -29,9 +29,11 @@ Due to the increasing use of \gls{cots} \glspl{fpga} and \glspl{soc} in mission-
 
 Transient faults caused by radiation, interference, or aging can corrupt the \gls{cram} or logic fabric, leading to degradation in performance or complete failure. This work is motivated by the need for a unified approach that combines \gls{nmr} for fault masking, \gls{dpr} and scrubbing for runtime repair, and systematic fault injection for validation, enabling \gls{fpga}-based systems to tolerate and recover from errors adaptively while meeting the performance demands of next-generation critical applications.
 
-Inspired by the framework developed by \textcite{8541452}, this study advances their reconfigurable platform by adding robust error mitigation, fault injection, and analysis capabilities.
+Inspired by the framework developed by \textcite{8541452}, this study advances their reconfigurable platform by adding robust error mitigation, \acrlong{fi}, and analysis capabilities.
 
 By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injection into a unified study, this thesis aims to demonstrate a practical methodology for improving system availability, reducing downtime, and extending the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in dual core processor \gls{soc}, in safety-critical environments.
+
+Although this research primarily targets space applications, the proposed mitigation techniques are also valuable in other radiation-prone environments on Earth. These include high-altitude aeronautic systems, where \gls{cots} components are increasingly used under strict reliability requirements, and particle accelerator facilities such as those in \gls{cern} \cite{Koers2024, Yaman2022}, where \glspl{fpga} operate in intense mixed-radiation fields. In both cases, devices are exposed to energetic particles capable of inducing \glspl{see}, making the evaluation and application of fault-tolerance and mitigation strategies equally relevant beyond the space domain \cite{Balbino2022}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scope and Objectives}
