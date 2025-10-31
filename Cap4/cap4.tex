@@ -342,6 +342,19 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
 
 Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of a real device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of \gls{fpga}.
 
+For this research, the deterministic fault injection method was chosen, as the main objective was to evaluate the mitigation techniques and analyze how bit flips affect the overall functionality of the design.
+
+So the \gls{ebc} and \gls{ebd} files were used in conjunction to the method explained in \textcite{Aranda2019} to calculate the critical frames of the intended region for injection. To calculate these frames, the \gls{dut} is implemented in a specific area of the \gls{fpga}, using the \emph{pblock} design constraint of the Vivado. Pblocks define physical regions during floorplanning, allowing related logic to be grouped and placed within a specific area of the device.
+
+Figure~\ref{fig:pblock-fir-filter} shows the \gls{fir}, the first \gls{dut} used in the \gls{fi} campaign. In this figure, it can be seen that \gls{fir}1 is completely placed within the Pblock named MY\_DUT, which is colored in yellow in the X1Y1 region of the Zynq \gls{fpga}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/pblock-fir-filter.png}
+    \caption{Implementation of the \gls{fir}1 \gls{dut} within a Pblock region of the Zynq \gls{fpga}, highlighted in yellow.}
+    \label{fig:pblock-fir-filter}
+\end{figure}
+
 \section{Integration with Processing System (PS)}
 This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
 

@@ -114,30 +114,30 @@ This section presents the results of the systematic fault-injection experiments.
 
 The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
 
-The idea of using \gls{fir} filters is because they are pure mathematical modules and so they do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
+The idea of using \gls{fir} filters is because they are pure mathematical modules and therefore do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/automated_design.png}
     \caption{Representation of the complete automation of the \acrlong{fi} process and the use of the \acrshort{ila} for real-time visualization and debugging of the design behavior during fault injection.}
     \label{fig:automated_design}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
     \caption{Python script and corresponding visualization showing the real-time progress of the \acrshort{fi} campaign}
     \label{fig:error-injection-fir}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/fir_filter_equal.png}
     \caption{\acrshort{ila} waveform capture demonstrating the correct functionality of both filter modules, confirming synchronized operation and expected output behavior.}
     \label{fig:fir_filter_equal}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
     \caption{\acrshort{ila} waveform capture illustrating a \acrshort{fi} event that resulted in an erroneous output from the \acrshort{fir} filter, evidencing the effect of a configuration bit upset on functional behavior.}
@@ -165,7 +165,7 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 
 \subsection{DPR, Scrubbing and Fault Injection with Mathematical Functions}
 
-After the successful implementation of scrubbing using \gls{semip} with \gls{dmr} \gls{fir} filters, the next design iteration incorporated \gls{dpr} into the set of functionalities of the system. To fully exploit the resources of \gls{soc}, a \gls{axi} controlled multiplier/adder modules were developed. These hardware functions can be selected through a user menu and dynamically reconfigured within \gls{fpga}.
+After the successful implementation of scrubbing using \gls{semip} with \gls{dmr} \gls{fir} filters, the next design iteration incorporated \gls{dpr} into the system functionalities. To fully exploit the resources of \gls{soc}, a \gls{axi} controlled multiplier/adder module was developed. These hardware functions can be selected via a user menu and dynamically reconfigured within \gls{fpga}.
 
 The same automated \gls{fi} campaign was applied; however, during the first attempt, it was not possible to inject faults into all essential bits of the \gls{pr} region, as some injections caused the \gls{ps} ARM processor to stall.
 
@@ -177,7 +177,9 @@ Initially, all these faults were assumed to correspond to a critical failure tha
 
 Once one of the injected frames caused the ARM processor to stall, all subsequent fault injections were affected, as the \gls{axi} bus stopped working, preventing  further communication with \gls{dut}.
 
-The stalling is caused by the \gls{axi} bus, which operates based on a strict \textit{valid/ready} handshake between the master (e.g., ARM \gls{ps}) and the slave (e.g., custom IP core in the \gls{pl}). If the logic in the \gls{pl} becomes corrupted due to a bit flip—for instance, in the AXI interface registers, finite state machines, or control logic of the reconfigurable region—the \texttt{READY} or \texttt{VALID} signals may become stuck in an asserted or deasserted state. Since the AXI protocol does not implement any form of timeout, when the downstream device fails to complete the transaction, the ARM processor waits indefinitely for a response, effectively freezing software execution.
+The processor stalls is caused by the \gls{axi} bus, which operates based on a strict valid/ready signal's handshake between the master (e.g., ARM \gls{ps}) and the slave (e.g., the custom \gls{dpr} \gls{ip} core in the \gls{pl}). If the logic in \gls{pl} becomes corrupted due to a bit flip—for instance, in the AXI interface registers, finite state machines, or control logic of the reconfigurable region—the \texttt{ready} or \texttt{valid} signals may get stuck in an asserted or deasserted state. Since the \gls{axi} protocol does not implement any form of timeout, when the downstream device fails to complete the transaction, the ARM processor waits indefinitely for a response, effectively freezing the execution of the software.
+
+It is important to note that this type of failure cannot be resolved by scrubbing. When the valid or ready signal is not properly asserted toward the \gls{ps}, it becomes necessary to either re-establish these signals or reset the processor, allowing the \gls{axi} bus to restart all transactions from the beginning. A practical mitigation for this issue is the inclusion of a watchdog timer that automatically resets the processor in the event of a stall.
 
 \begin{table}[H]
 \centering
@@ -200,7 +202,7 @@ To overcome this limitation, the automated script was updated so that whenever \
 
 Table~\ref{tab:math_fi2_summary} presents the results obtained with the updated script, in which all essential bits within the \gls{pr} regions were successfully tested against bit flips. The table also summarizes the error statistics and the occurrences of \gls{axi} bus stalls.
 
-Figure~\ref{fig:mult-list-reprogram} show the completion of \gls{fi} all essentials bits of the \gls{pr} region.
+Figure~\ref{fig:mult-list-reprogram} shows the completion of the \gls{fi} campaign for all essential bits in the \gls{pr} region, applying reprogramming whenever a \gls{ps} stall was detected.
 
 \begin{table}[H]
 \centering
@@ -219,6 +221,8 @@ Critical bits detected: AXI bus lock & 3 \\
 \end{tabular}
 \end{table}
 
+As shown in Table~\ref{tab:math_fi2_summary}, all injected faults were single-bit flips, and since the \gls{semip} operates with a \gls{secded} \gls{ecc}, all 29 critical bits that caused errors in the multiplication performed by the \gls{hw} were successfully corrected by scrubbing. However, the three critical bits that caused the \gls{axi} bus to lock were only corrected after resetting the \gls{ps} and performing a full reprogramming of the \gls{fpga}.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/mult/mult_injection_results-wo_reprogram.png}
@@ -233,7 +237,7 @@ Critical bits detected: AXI bus lock & 3 \\
     \label{fig:mult-list-reprogram}
 \end{figure}
 
-For a complete list of the addresses that caused error in this \gls{fi} campaign, consult \hyperref[apeB:mult-list-w-axi-error]{Appendix B - Multiplication SEU AXI Error (ARM stall) List} and \hyperref[apeB:mult-list-w-error]{Appendix B - Multiplication SEU Error List}.
+Figure~\ref{fig:mult-list-reprogram} shows only a subset of the addresses that caused faults. For the complete list of all addresses that produced errors during this \gls{fi} campaign, refer to \hyperref[apeB:mult-list-w-axi-error]{Appendix~B — Multiplication SEU AXI Error (ARM Stall) List} and \hyperref[apeB:mult-list-w-error]{Appendix~B — Multiplication SEU Error List}.
 
 \section{RISC-V with Triple Modular Redundancy}
 
