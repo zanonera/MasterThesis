@@ -344,9 +344,9 @@ Simulation-based \gls{fi} provides high controllability and low cost, as no phys
 
 For this research, the deterministic fault injection method was chosen, as the main objective was to evaluate the mitigation techniques and analyze how bit flips affect the overall functionality of the design.
 
-So the \gls{ebc} and \gls{ebd} files were used in conjunction to the method explained in \textcite{Aranda2019} to calculate the critical frames of the intended region for injection. To calculate these frames, the \gls{dut} is implemented in a specific area of the \gls{fpga}, using the \emph{pblock} design constraint of the Vivado. Pblocks define physical regions during floorplanning, allowing related logic to be grouped and placed within a specific area of the device.
+So the \gls{ebc} and \gls{ebd} files were used in conjunction to the method explained in \textcite{Aranda2019} to calculate the critical frames of the intended region for injection. To calculate these frames, the \gls{dut} is implemented in a specific area of the \gls{fpga}, using the \emph{pblock} design constraint of the Vivado. Pblocks define physical regions during floorplanning, allowing related logic to be grouped and placed within a specific area of the device \cite{Xilinx_UG912_PBLOCK}.
 
-Figure~\ref{fig:pblock-fir-filter} shows the \gls{fir}, the first \gls{dut} used in the \gls{fi} campaign. In this figure, it can be seen that \gls{fir}1 is completely placed within the Pblock named MY\_DUT, which is colored in yellow in the X1Y1 region of the Zynq \gls{fpga}.
+Figure~\ref{fig:pblock-fir-filter} shows the \gls{dmr} \gls{fir} implementation, the first \gls{dut} used in the \gls{fi} campaign. In this figure, it can be seen that \gls{fir}1 is completely placed within the Pblock named MY\_DUT, which is colored in yellow in the X1Y1 region of the Zynq \gls{fpga}.
 
 \begin{figure}[H]
     \centering
