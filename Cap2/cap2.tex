@@ -1,87 +1,17 @@
 %\section{Concepts and Literature Review}
 \label{sec:cap2}
 
-This chapter presents the essential concepts and summarizes the state-of-the-art in FPGA reliability, fault-tolerant architectures, and error mitigation strategies. It provides the foundation upon which this dissertation builds, highlighting key technologies, methods, and prior contributions in the field.
+According to \textcite{Aguiar2025_SEE_Space_to_Accelerator}, the continuous expansion of human activity into extreme environments, such as outer space and experimental physics accelerators, has intensified the need to understand and mitigate radiation effects on electronic components. In addition, the growing use of nanosatellites~\cite{Balbino2022,Rao2023} and the emergence of the New Space paradigm~\cite{9298818} have opened discussions on the adoption of cheaper, faster, and more easily procurable components and systems for deployment in harsh environments.
 
-\section{Fault-Tolerance and Mitigation Techniques}
-Numerous methods have been proposed to enhance the resilience of \gls{fpga} systems. Redundancy-based approaches such as \gls{nmr}, presented in the most common form by \gls{tmr}, memory scrubbing, and configuration repair are among the most widely used. This section surveys existing techniques, comparing their error coverage, resource overhead, and suitability for different applications.
-
-Recent studies have also demonstrated the combination of fault injection and dynamic partial reconfiguration as an effective methodology for evaluating and improving fault-tolerant systems. \textcite{wilson2020} implemented a fault injection framework targeting Triple Modular Redundancy (TMR) RISC-V processors using \gls{dpr} on \glspl{sram}-based \glspl{fpga}. Their work employed emulation-based fault injection to analyze the behavior of open-source soft processors under radiation-induced faults and to validate recovery mechanisms through dynamic reconfiguration. This approach highlights the potential of integrating \gls{fi} with \gls{dpr} to enable in-field repair and adaptive fault mitigation in reconfigurable architectures~\cite{wilson2020}.
-
-\subsection{\glsentrytext{dpr} in Fault Mitigation}
-
-\gls{dpr} allows \textit{run-time} modification of specific regions of the FPGA without interrupting the operation of the application layer. 
-
-However, this technique alone cannot detect configuration errors and therefore must be combined with other fault detection mechanisms, such as those based on redundancy. 
-These error correction methods take advantage of the subdivision of \gls{cram} into \textit{frames}, each containing information related to the configuration of specific portions of the hardware design \cite{vipin2018dpr}.
-
-\subsection{Fault Injection as an Evaluation Methodology}
-Fault injection is widely employed to test and validate fault-tolerant \gls{fpga} designs. By introducing controlled errors in either simulation or hardware, researchers can characterize system behavior under fault conditions. This section examines different fault injection techniques, such as software-based, emulation-based, and on-chip implementations, as well as their relevance for reliability assessment.
-
-Fault Injection (FI) is an established experimental method defined as the deliberate introduction of faults within a system, aiming primarily to evaluate its dependability, reliability, and to validate fault-tolerance mechanisms (FTMs). 
-This methodology allows designers to systematically analyze the system’s behavior in the presence of anomalies, 
-estimate its failure rate, and determine whether the implemented FTMs fulfill design specifications. 
-FI is crucial for qualifying systems, particularly those designed for safety-critical applications such as aerospace, 
-where components are susceptible to \textit{Single Event Effects (SEEs)}.
-
-A complete fault injection methodology is comprehensively characterized by four key components:
-\begin{itemize}
-    \item The adopted \textbf{fault model};
-    \item The activation patterns (stimuli or workload) used to test the design;
-    \item The readout values collected during the experiment;
-    \item The derived metrics, such as error or failure rate.
-\end{itemize}
-
-Fault models typically represent malfunctions such as transient or permanent faults, 
-often modeling \textit{Single Event Upsets (SEUs)} as bit-flips in memory elements. 
-To evaluate correctness, the system output is compared against the expected output of a fault-free version, commonly referred to as the \textit{golden system} or \textit{golden run}. 
-The results collected enable the classification of fault effects into categories such as:
-\begin{itemize}
-    \item Failure: the system produces incorrect or unexpected behavior;
-    \item Latent error: the fault does not immediately affect functionality but may propagate later;
-    \item Non-effective (benign) fault: the fault produces no observable effect.
-\end{itemize}
-
-\subsubsection{Fault Injection Techniques}
-
-Fault injection techniques are typically classified into three major categories: 
-\textbf{physical}, \textbf{simulation-based}, and \textbf{emulation-based} methods.
-
-\begin{itemize}
-    \item \textbf{Physical Fault Injection:}
-    This method (e.g., heavy-ion or proton testing) disturbs the actual hardware using environmental factors. 
-    It provides high accuracy for real faults but suffers from high cost, limited controllability, 
-    and restricted access to internal nodes.
-
-    \item \textbf{Simulation-based Fault Injection:}
-    This approach employs high-level models, often described in Hardware Description Languages (HDLs) such as VHDL or Verilog, 
-    to reproduce faults in a software environment. 
-    It is invaluable during early design phases because it provides high observability and controllability. 
-    Common techniques include:
-    \begin{itemize}
-        \item Simulator commands, 
-        \item Saboteurs: additional components that intercept and alter signals,
-        \item Mutants: modified versions of existing components.
-    \end{itemize}
-    However, simulation can become prohibitively slow when evaluating complex systems or conducting large fault campaigns.
-
-    \item \textbf{Emulation-based Fault Injection:}
-    This method leverages reconfigurable devices, primarily SRAM-based FPGAs, 
-    to perform rapid prototyping and fault injection at run-time. 
-    It often involves manipulating the configuration memory (CRAM) 
-    through mechanisms such as \textit{Dynamic Partial Reconfiguration (DPR)} 
-    or by accessing internal configuration ports (e.g., \textit{\gls{icap}} or \textit{\gls{jtag}}) to emulate SEUs. 
-    Emulation offers significantly faster evaluation—potentially orders of magnitude faster than simulation—while maintaining 
-    greater control than physical testing, making it a preferable choice for high-volume fault injection campaigns 
-    aimed at achieving comprehensive fault coverage efficiently.
-\end{itemize}
+Recent studies, such as those presented by \textcite{Aguiar2025_SEE_Space_to_Accelerator}, emphasize that radiation induced phenomena, such as \gls{see}, pose a major challenge to the reliability of modern electronics. Consequently, significant research has focused on analyzing \gls{see}-related failure mechanisms and developing design-level mitigation strategies to improve system resilience under harsh operating conditions.
 
 \section{Summary of Related Works}
-This section consolidates previous research in the field of \gls{fpga} reliability enhancement, highlighting key trends, open challenges, and gaps that motivate this dissertation. A comparative analysis of state-of-the-art methods provides the basis for defining the novel contributions of this work.
+
+This section presents a selection of recent studies referenced throughout this dissertation, focusing on \gls{fpga} fault-tolerance techniques for harsh environments. Table~\ref{tab:related_works} summarizes these key works, highlighting their main methods, evaluation approaches, advantages, and limitations. Together, they provide the basis for the comparison and contextualization of the methodologies and contributions developed in this research.
 
 %%%============== Long Comparison Table =========================================================================
-
-\begin{longtable}{p{3cm} p{3cm} p{3cm} p{3cm} p{3cm}}
+\begin{landscape}
+\begin{longtable}{p{4.5cm} p{4.5cm} p{4.5cm} p{4.5cm} p{4.5cm}}
 \caption{Comparative summary of \acrshort{fpga} fault-tolerance approaches reported in related works.}
 \label{tab:related_works} \\
 \hline
@@ -108,83 +38,90 @@ This section consolidates previous research in the field of \gls{fpga} reliabili
 
 \endlastfoot
 
-\cite{Barbosa2021}
-& Triple Modular Redundancy (TMR) 
-& Simulation-based fault injection 
-& Simple design, high coverage 
-& High area and power overhead \\
-
-\cite{Balbino2022}
+% \textcite{Barbosa2021}
+% & Triple Modular Redundancy (TMR) 
+% & Simulation-based fault injection 
+% & Simple design, high coverage 
+% & High area and power overhead \\
+% \\
+\textcite{Balbino2022}
 & \gls{tmr} 
 & Sabouteur 
 & Less Complex
 & Special Bitstream\\
-
-\cite{Yaman2022}
+\\
+\textcite{Yaman2022}
+& \gls{tmr} 
+& Emulation with fault injection 
+& Scalable reliability, configurable protection 
+& Significant resource usage for large N \\
+\\
+\textcite{Wubs2023}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Wubs2023}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
-
-\cite{Adria2023} 
+\\
+\textcite{Adria2023} 
 & Dynamic Partial Reconfiguration (DPR) repair 
 & On-chip fault injection 
 & Real-time reconfiguration, reduced downtime 
 & Complex controller, reconfiguration latency \\
-
-\cite{Mousavi2023_MTTR_FPGA_Scrubbing}
+\\
+\textcite{Mousavi2023_MTTR_FPGA_Scrubbing}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Koers2024}
+\\
+\textcite{Rao2023}
+& \gls{tmr} \& \acrshort{secded}
+& Emulation with fault injection 
+& Scalable reliability, configurable protection 
+& Significant resource usage for large N \\
+\\
+\textcite{Koers2024}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Garg2024}
+\\
+\textcite{Garg2024}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
+\\
+\textcite{Aguilar2024}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Aguilar2024}
-\cite{Wang2024_SoftErrorReview}
+\\
+\textcite{Wang2024_SoftErrorReview}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Wilson2025}
+\\
+\textcite{Wilson2025}
 & \gls{tmr}
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
-\cite{Cano-Paez2025}
+\\
+\textcite{Cano-Paez2025}
 & N-Modular Redundancy (NMR) voter circuits 
 & Emulation with fault injection 
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
-
+\\
 \textbf{This Work} 
-& \gls{nmr} \& \gls{dpr} \& \gls{fi}
+& \gls{nmr} \& \gls{dpr} \& \gls{ms} \& \gls{fi}
 & On-chip + software-in-the-loop evaluation 
 & Low downtime, redundancy \& adaptive repair 
 & design complexity \\
 \hline
 
 \end{longtable}
+\end{landscape}

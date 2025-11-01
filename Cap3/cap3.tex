@@ -497,10 +497,28 @@ Different techniques can be used to perform fault injection, depending on the le
 \begin{itemize}
     \item \textbf{Physical fault injection:} faults are induced through direct physical means, such as heavy-ion or proton irradiation, laser strikes, or voltage and electromagnetic perturbations. This method offers the highest realism since it reproduces actual radiation effects, but requires specialized facilities and equipment, often resulting in limited controllability and higher cost~\cite{Adria2023,Fibichi2019}.
     
-    \item \textbf{Simulation-based fault injection:} faults are introduced within simulation environments or hardware description language (HDL) models. This approach provides full observability and high controllability, enabling exhaustive testing at the cost of reduced execution speed and limited hardware fidelity~\cite{Adria2023,Fibichi2019}.
+    \item \textbf{Simulation-based fault injection:} faults are introduced within simulation environments or hardware description language (HDL) models. This approach provides full observability and high controllability, enabling exhaustive testing at the cost of reduced execution speed and limited hardware fidelity~\cite{Adria2023,Fibichi2019,585157}.
     
-    \item \textbf{Emulation-based fault injection:} faults are injected directly into a running hardware prototype, typically implemented on an \gls{fpga}. This technique offers a balance between accuracy and performance, allowing real-time experimentation under conditions close to the actual operation. It enables efficient evaluation of mitigation schemes such as redundancy, scrubbing, and dynamic partial reconfiguration (\gls{dpr})~\cite{Adria2023,Fibichi2019}.
+    \item \textbf{Emulation-based fault injection:} faults are injected directly into a running hardware prototype, typically implemented on an \gls{fpga}. This technique offers a balance between accuracy and performance, allowing real-time experimentation under conditions close to the actual operation. It enables efficient evaluation of mitigation schemes such as redundancy, scrubbing, and dynamic partial reconfiguration (\gls{dpr})~\cite{Adria2023,Fibichi2019,585157}.
 \end{itemize}
+
+Fault injection at the \gls{hdl} level can be implemented using different modeling strategies that alter the behavior of the \gls{dut} to simulate faulty conditions during simulation. 
+These techniques operate entirely in the design description domain, without physically altering the hardware, and are useful for verifying the effectiveness of mitigation strategies before synthesis. 
+Although they can be temporarily embedded in the hardware for experimental purposes, both methods modify the original functionality and must be removed prior to generating the final bitstream. 
+Among the most common \gls{hdl}-based fault injection approaches are the use of \textit{saboteurs} and \textit{mutants}:
+
+\begin{itemize}
+    \item Saboteurs are additional \gls{hdl} components inserted into the structural description of the design to intercept and alter specific signals, either by changing their logical value or by introducing timing deviations. 
+    When activated, a saboteur intentionally forces faults such as stuck-at, bit-flip, or delay conditions, reproducing abnormal behavior in the simulated circuit. 
+    They are typically applied to structural descriptions, acting at component interfaces or signal lines, and remain inactive and transparent to the circuit behavior under normal operation \cite{Rimen2003_ValidationFTByFI,Fibichi2019}.
+
+    \item Mutants are modified versions of the original \gls{hdl} description that incorporate intentional alterations to simulate faulty behavior. 
+    Mutants may change internal signal assignments, replace subcomponents, or alter logical expressions and conditional statements (e.g., \texttt{if}/\texttt{else} conditions), thereby emulating permanent design faults. 
+    When inactive, a mutant behaves identically to the nominal design; when activated, it reproduces the predefined faulty response \cite{Rimen2003_ValidationFTByFI,Fibichi2019}.
+\end{itemize}
+
+Both approaches enable systematic, simulation-based fault emulation at the \gls{rtl} level, providing a controlled environment to analyze fault propagation and evaluate the robustness of fault-tolerant mechanisms.
+
 
 Fault injection can also be classified based on the injection controller architecture. Hardware-based injectors use an external module that introduces faults without disturbing the system’s normal operation, while software-based injectors operate within the target device and may temporarily pause its execution to perform the injection~\cite{velazco2000}. The latter are more intrusive but easier to implement, whereas hardware injectors are non-intrusive and provide better temporal precision.
 

@@ -18,7 +18,7 @@ As presented by \textcite{9298818, Adria2023,Rogenmoser2023_HMR,paikowsky2017,Ga
 
 Traditional fault-tolerant techniques, such as static redundancy or periodic device reprogramming, are often insufficient or inefficient in these scenarios. They may incur high area overhead, disrupt system operation during recovery, or fail to respond rapidly to localized failures. \gls{nmr} provides a robust mechanism for masking errors at run-time through majority voting, but its static nature cannot repair defective modules, leading to gradual degradation of resources.
 
-\gls{dpr} and memory scrubbing emerge as a powerful complement to redundancy techniques by allowing the selective repair of faulty modules without interrupting the functionality of the system. When combined with systematic \acrlong{fi}, researchers can accurately evaluate the resilience of \gls{fpga}-based systems and validate mitigation strategies under realistic conditions. 
+\gls{dpr} and \gls{ms} emerge as a powerful complement to redundancy techniques by allowing the selective repair of faulty modules without interrupting the functionality of the system. When combined with systematic \acrlong{fi}, researchers can accurately evaluate the resilience of \gls{fpga}-based systems and validate mitigation strategies under realistic conditions. 
 
 In addition, to address the high demand for computing power, while maintaining high design flexibility, \gls{soc} solutions have gained significant traction. \glspl{soc} integrate, within a single component, a \gls{fpga} fabric, one or more processor cores, multiple communication buses, and a wide variety of peripherals for data input and output. This integration enables efficient implementation of complex reconfigurable systems that can be upgraded or repurposed even after deployment in the field.
 
@@ -31,9 +31,9 @@ Transient faults caused by radiation, interference, or aging can corrupt the \gl
 
 Inspired by the framework developed by \textcite{8541452}, this study advances their reconfigurable platform by adding robust error mitigation, \acrlong{fi}, and analysis capabilities.
 
-By integrating \gls{nmr}, \gls{dpr}, memory scrubbing and \gls{cram} error injection into a unified framework, this thesis aims to demonstrate a practical methodology for improving system availability, reducing downtime, and extending the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in dual core processor \gls{soc}, in safety-critical environments.
+By integrating \gls{nmr}, \gls{dpr}, \gls{ms}, and \gls{cram} error injection into a unified framework, this thesis aims to demonstrate a practical methodology to improve system availability, reduce downtime, and extend the operational lifetime of \gls{sram} based \glspl{fpga}, integrated in dual core processor \gls{soc}, in safety-critical environments.
 
-Although this research primarily targets space applications, the proposed mitigation techniques are also valuable in other radiation-prone environments on Earth. These include high-altitude aeronautic systems, where \gls{cots} components are increasingly used under strict reliability requirements, and particle accelerator facilities such as those in \gls{cern} \cite{Koers2024, Yaman2022}, where \glspl{fpga} operate in intense mixed-radiation fields. In both cases, devices are exposed to energetic particles capable of inducing \glspl{see}, making the evaluation and application of fault-tolerance and mitigation strategies equally relevant beyond the space domain \cite{Balbino2022}.
+Although this research primarily targets space applications, the proposed mitigation techniques are also valuable in other radiation-prone environments on Earth. These include high-altitude aeronautic systems, where \gls{cots} components are increasingly used under strict reliability requirements, and particle accelerator facilities such as those in \gls{cern} \cite{Koers2024, Yaman2022}, where \glspl{fpga} operate in intense mixed-radiation fields. In both cases, devices are exposed to energetic particles capable of inducing \glspl{see}, making evaluation and application of fault-tolerance and mitigation strategies equally relevant beyond the space domain \cite{Balbino2022}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scope and Objectives}
@@ -41,14 +41,14 @@ Although this research primarily targets space applications, the proposed mitiga
 This section defines the scope and primary objectives of the research, describing the boundaries of the study and the specific goals pursued throughout its development. It establishes the foundation for the methodologies and contributions presented in the following chapters.
 
 \subsection{Scope}
-This work focuses on improving the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and memory scrubbing for runtime repair. In addition, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
+This work focuses on improving the reliability of \gls{sram}-based \glspl{fpga} and \glspl{soc} deployed in mission- and safety-critical applications. The research explores the integration of \gls{nmr} for fault masking with \gls{dpr} and \gls{ms} for runtime repair. In addition, a systematic fault injection framework is developed to validate the resilience of the proposed mitigation strategies under realistic fault conditions.
 
 \subsection{Objectives}
 The main objectives of this work are:
 \begin{itemize}
     \item Develop and implement a \gls{nmr} architecture capable of masking faults in real time.
     \item Integrate \gls{dpr} techniques to selectively repair faulty modules without interrupting system operation.
-    \item Apply memory scrubbing to maintain the integrity of the configuration data in \gls{fpga} \gls{cram}.
+    \item Apply \gls{ms} to maintain the integrity of the configuration data in \gls{fpga} \gls{cram}.
     \item Design and execute a fault injection campaign to evaluate system reliability and fault coverage.
     \item Assess the performance, resource utilization, and fault tolerance trade-offs of the proposed solution on \gls{soc} platforms.
 \end{itemize}
@@ -65,12 +65,12 @@ The main contributions of this work can be summarized as follows:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Text Organization}
-This dissertation is structured into six chapters, organized to guide the reader from fundamental concepts to experimental results and conclusions:
+This dissertation is organized into six chapters, structured to guide the reader from the fundamental concepts to the experimental results and final conclusions, as follows:
 
 \begin{itemize}
     \item \hyperref[sec:cap1]{\textbf{Chapter 1 – Introduction:}} Presents the background, motivation, scope, and objectives of the work. Introduces \glspl{fpga} and \glspl{soc}, highlights their susceptibility to transient faults, and outlines the importance of combining \gls{nmr}, \gls{dpr}, and fault injection techniques to enhance the reliability of the system.
     
-    \item \hyperref[sec:cap2]{\textbf{Chapter 2 – Concepts and Literature Review:}} Reviews the state-of-the-art in fault-tolerant \gls{fpga} design, including redundancy schemes, memory scrubbing, \acrlong{dpr}, and \acrlong{fi} methodologies. This chapter provides a foundation for understanding the theoretical and practical aspects of reliability in \gls{sram}-based \gls{fpga} systems.
+    \item \hyperref[sec:cap2]{\textbf{Chapter 2 – Concepts and Literature Review:}} Reviews the state-of-the-art in fault-tolerant \gls{fpga} design, including redundancy schemes, \acrlong{ms}, \acrlong{dpr}, and \acrlong{fi} methodologies. This chapter provides a foundation for understanding the theoretical and practical aspects of reliability in \gls{sram}-based \gls{fpga} systems.
     
     \item \hyperref[sec:cap3]{\textbf{Chapter 3 – Theoretical Introduction:}} This section provides the theoretical background that supports the proposed approach, addressing key topics such as \gls{nmr} principles, fault modeling, reconfiguration techniques, and reliability assessment metrics.
     
