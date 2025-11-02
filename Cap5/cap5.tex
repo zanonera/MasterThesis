@@ -1,11 +1,14 @@
 %\section{Results and Analysis}
 \label{sec:cap5}
 
-This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, fault-injection results, comparison with reference approaches, and an assessment of the reliability improvements achieved.
+This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, \gls{fi} results, comparison with reference approaches, and an assessment of the reliability improvements achieved.
 
 \section{Experimental Setup}
 
-The software and hardware used in this research is discussed in \hyperref[sec:cap4-material]{Section 4 - FPGA Platform and Toolchain}. Figure~\ref{fig:setup-diagram} illustrates the connection diagram to conduct the research. Figure~\ref{fig:setup-pic} illustrates the setup used during this work. The \href{https://ftdichip.com/products/ft2232hq/}{FT-2232 module} is connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} connector of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{Pynq-Z2}.
+The software and hardware environments used in this research are described in \hyperref[sec:cap4-material]{Section~\ref*{sec:cap4-material} -- \textit{FPGA Platform and Toolchain}}. 
+Figure~\ref{fig:setup-diagram} presents the connection diagram of the experimental setup used to conduct the tests, while Figure~\ref{fig:setup-pic} shows the actual laboratory configuration adopted during this work. 
+The \href{https://ftdichip.com/products/ft2232hq/}{FT2232 communication module} was connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} interface of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{PYNQ-Z2} board, providing a dual-channel USB-to-serial bridge between the host computer and the \gls{fpga} system.
+
 
 \begin{figure}[H]
     \centering
@@ -23,8 +26,8 @@ The software and hardware used in this research is discussed in \hyperref[sec:ca
 
 For a detailed explanation of this experimental setup, see \hyperref[sec:ref-design-arch]{Section 4 - Reference Design Architecture}, \hyperref[sec:fi-strategy]{Section 4 - Fault Injection Strategy} and particularly Figure~\ref{zynq-paper-arch} for a detailed block diagram of the implemented design.
 
-\section{Baseline Performance Evaluation}
-Before introducing fault-tolerance mechanisms, the system performance is evaluated under normal conditions. This subsection discusses metrics such as resource utilization, operating frequency, and execution latency to establish a baseline reference.
+% \section{Baseline Performance Evaluation}
+% Before introducing fault-tolerance mechanisms, the system performance is evaluated under normal conditions. This subsection discusses metrics such as resource utilization, operating frequency, and execution latency to establish a baseline reference.
 
 \section{Partial Reconfiguration Results}
 
