@@ -363,7 +363,39 @@ The \gls{ps} is used solely to control the overall operation of the design. A se
 Additionally, \gls{ps} communicates via the \gls{axi} bus with the math block implemented in the \gls{dpr} region of \gls{fpga}.
 
 \section{Verification and Validation Methodology}
-The testing strategy is presented to demonstrate how the design was verified at the simulation level, the emulation level, and on physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
+This section presents the methodology adopted to verify and validate the proposed fault-tolerant platform. The process aimed to ensure both the functional correctness of the developed architectures and the effectiveness of the mitigation strategies under controlled fault conditions. The verification workflow was divided into three complementary stages: functional simulation, emulation with synthetic stimuli, and validation on physical \glspl{fpga}.
+
+\subsection{Functional Verification}
+
+Functional verification was first carried out at the \gls{rtl} level using the simulation environment of the Vivado Design Suite. Behavioral testbenches were created for each module, including the \gls{fir} filters, \gls{tmr} PicoRV32I cores, and the scrubbing controller wrapper. The objective of this stage was to verify correct signal propagation, timing relationships, and overall functional equivalence between redundant instances before synthesis.
+
+To automate and accelerate this process, Python scripts were used to generate stimuli and compare simulation outputs with reference data stored in \gls{rom} memories. Assertions were added in the simulation environment to detect mismatches between module outputs, ensuring that all logic behaved deterministically prior to hardware implementation.
+
+\subsection{Emulation and Hardware-in-the-Loop Verification}
+
+After successful behavioral verification, the system was synthesized and implemented on the PYNQ-Z2 development board for hardware-in-the-loop testing. This stage focused on validating correct communication between the \gls{ps} and the \gls{pl}, including proper configuration of the \gls{axi} interconnect, clock domains, and synchronization signals between the \gls{semip}, the reconfigurable regions, and the processing system.
+
+During this phase, partial bitstreams were reloaded at runtime through the \gls{pcap} interface, verifying the operation of the \gls{pr} decoupler and confirming that the static logic remained operational throughout the reconfiguration. UART communication was continuously monitored to detect any interruptions or unexpected resets during reconfiguration events.  
+
+The same procedure was repeated with the \gls{semip} actively scrubbing the device to confirm that switching between \acrshort{pcap} and \gls{icap} interfaces followed the synchronization sequence defined in Section~\ref{itemized-actions-for-dpr&sem}.
+
+\subsection{Fault Injection Validation}
+
+Once the architecture was functionally stable, validation under fault conditions was conducted using the deterministic \acrshort{fi} approach described in Section~\ref{sec:fi-strategy}. The \gls{semip} was configured in injection mode to emulate single-bit upsets (SEUs) and multi-bit upsets (MBUs) directly in the \gls{cram} of the \gls{fpga}.  
+
+Each injected fault was automatically logged, including the frame address, bit offset, and injection timestamp. The system response was observed via UART to determine whether the error was masked, corrected, or resulted in a system failure. The injected faults were correlated with the essential bits identified in the \acrshort{ebd} file to classify them as either benign or critical.  
+
+The mais metrics extracted from this campaign was Fault coverage, the ratio between detected or masked faults and total injected faults.
+
+\subsection{Performance and Resource Monitoring}
+
+Throughout all verification stages, Vivado reports and the \texttt{report\_utilization} command were used to track the consumption of \glspl{lut}, \glspl{ff}, \glspl{bram}, and \glspl{dsp}. The goal was to quantify the area overhead introduced by \acrshort{nmr} and \acrshort{dpr} features.  
+
+In addition, on-chip sensors accessible through the \acrshort{ps} were used to monitor supply voltages and temperature variations during reconfiguration and fault-injection cycles, ensuring thermal and electrical stability of the device.
+
+\subsection{Summary of Validation Strategy}
+
+The combined use of simulation, emulation, and in-hardware fault injection enabled comprehensive validation of the proposed platform. Functional verification ensured design correctness, emulation confirmed system-level integration, and real fault injection provided empirical evidence of fault-tolerance efficiency.  
 
 \section{Summary}
 This chapter presented the methodology adopted for the design, implementation, and validation of the proposed fault-tolerant platform. It began by introducing the hardware and software environments used throughout development, highlighting the Pynq-Z2 board based on the Zynq 7000 \gls{soc} and the Vivado~2018.3 toolchain complemented by Python automation scripts and the \gls{riscv} GNU toolchain.
