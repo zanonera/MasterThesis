@@ -84,7 +84,7 @@ The requirements for this architecture were established on the basis of the foll
 
 As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
-\subsection{Soft Error Mitigation via \acrlong{ms}}
+\subsection{Soft Error Mitigation via Memory Scrubbing}
 To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd2023sem} is being used in this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
 
 It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use a computer with a script to inject error and check how the platform behaves.
@@ -225,16 +225,16 @@ Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementa
     \label{riscv-tmr-diagram}
 \end{figure}
 
+The \gls{fgtmr} approach was not selected due to its high level of intrusiveness, which increases the complexity of the design and often results in increased use of area and degraded synchronization and timing between modules \cite{Wilson2025,Adria2023}.
+
+As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger number of outputs did not lead to an improvement in the results. Expanding the voting scheme to include more signals increases the utilization of the design area, which may nearly occupy the entire device, and consequently increases the probability of a fault affecting a critical element compared to a smaller and more compact design. In contrast, the voter logic itself occupies only a small portion of the overall architecture, making it statistically less likely that a configuration bit associated with the voter will be affected by a fault.
+
 \begin{landscape}
     \begin{figure}[H]
     \centering
     \includegraphics[width=1.5\textwidth]{Cap4/tmr-vivado.png}
     \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the \acrshort{riscv} instructions (firmware), in the red square (center) the triplicated \acrshort{riscv} cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
 \end{figure}\end{landscape}
-
-The \gls{fgtmr} approach was not selected due to its high level of intrusiveness, which increases the complexity of the design and often results in increased use of area and degraded synchronization and timing between modules \cite{Wilson2025,Adria2023}.
-
-As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger number of outputs did not lead to an improvement in the results. Expanding the voting scheme to include more signals increases the utilization of the design area, which may nearly occupy the entire device and consequently increases the probability of a fault affecting a critical element compared to a smaller, more compact design. In contrast, the voter logic itself occupies only a small portion of the overall architecture, making it statistically less likely that a configuration bit associated with the voter will be affected by a fault.
 
 \subsection{Synthesis control for redundancy}
 
