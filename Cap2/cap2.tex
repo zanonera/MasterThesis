@@ -7,18 +7,43 @@ According to \textcite{Aguiar2025_SEE_Space_to_Accelerator}, the continuous expa
 
 Recent studies, such as those presented by \textcite{Aguiar2025_SEE_Space_to_Accelerator}, emphasize that radiation induced phenomena, such as \gls{see}, pose a major challenge to the reliability of modern electronics. Consequently, significant research has focused on analyzing \gls{see}-related failure mechanisms and developing design-level mitigation strategies to improve system resilience under harsh operating conditions.
 
-The usage of fault mitigations is applicable not only to devices used in outer space regions. There are applications on Earth as well.
+The usage of fault mitigation is applicable not only to devices used in outer space regions. There are also applications on Earth.
 
 As cited in~\textcite{LaGreca2022}, although the Earth's magnetosphere shields the surface from most cosmic radiation, some energetic particles still reach electronic devices, occasionally causing bit flips. A well-known example occurred in Belgium in 2003, when a single bit flip in an electronic voting machine added 4,096 extra votes to a candidate, the error was traced to a spontaneous change in one memory bit, corresponding to the hexadecimal value \texttt{0x1000} ($2^{12}$).
 
 Another important application is in experimental physics, where \glspl{fpga} are used to control, monitor, and acquire data in experiments that are often exposed to high-energy particles. One such example is presented by \textcite{Giordano2019_CustomScrubbingXilinx,Giordano2020_OnTheFlySEUMonitoring}, in which a custom scrubber was developed for use in the \href{https://www.belle2.org/}{\textit{Belle~II}} experiment. This experiment is designed to perform precise measurements of weak-interaction parameters, study exotic hadrons, and search for new phenomena beyond the Standard Model.
 
 \section{Mitigation Strategies in the Literature}
-  
+
+\textcite{Barbosa2021} presents a detailed methodology for selecting the most suitable error mitigation technique to be applied to \glspl{fpga}. The author concludes that the optimal mitigation strategy depends on the specific mission requirements, which must be carefully analyzed in terms of power consumption, area overhead, and reliability constraints. In this study, a carefully designed \gls{cots} mitigation approach proved to be the most effective overall. Nevertheless, partial \gls{tmr} was ultimately selected as the mitigation technique implemented in the project, following a systematic trade-off analysis.
+
+The \emph{Careful COTS} approach, studied in \textcite{Barbosa2021}, relies on the selective use of commercial components that demonstrate adequate reliability for operation in radiation environments while meeting the system-level and mission-specific requirements. Under this philosophy, a radiation-tolerant device is a commercial or industrial component not originally designed for space applications, but characterized and tested to ensure functionality up to a defined radiation dose or particle flux. Unlike space-grade devices, which are manufactured and qualified to resist radiation effects by design, Careful COTS components are screened and validated through batch analysis, radiation testing, and quality control procedures to guarantee consistent behavior under exposure. Without such testing, it becomes impossible to predict the radiation endurance or failure rate of the selected commercial part.
+
+\textcite{Balbino2022} numerically validated the efficiency of the Soft-\gls{tmr} redundancy method to enhance communication reliability in a \gls{fpga}-based satellite payload. The study focused on \gls{cots} components and the concept of Software-Defined Radio (SDR) that operates in environments susceptible to \glspl{seu}. An \gls{hdl}-based \gls{seu} emulator and a testbench applying \gls{tmr} to a Quadrature Phase-Shift Keying (QPSK) receiver were developed to evaluate performance. The results demonstrated that \gls{tmr} improved the Bit Error Rate (BER) under emulated \glspl{seu}, though at the cost of a threefold increase in resource utilization and power consumption—providing a clear trade-off reference for designing fault-tolerant communication systems in space applications.
+
+\textcite{Yaman2022} discuss the application of a \gls{tmr}-protected PicoRV32I soft processor implemented on commercial devices for use in space missions. The study highlights the \gls{nasa} \emph{Ingenuity} helicopter as an example of the increasing adoption of \gls{cots} components in aerospace systems. The main motivation for this trend is the significant reduction in development cost and time, as well as the ability to leverage state-of-the-art commer
+
+\textcite{Wubs2023} evaluated fault-tolerant design techniques for \glspl{fpga} in space-based \gls{dsp} systems, addressing radiation effects such as \glspl{seu}, \glspl{set}, and \glspl{sefi}. The study, applied to the Astrophysical Lunar Observatory (ALO) concept, compared \gls{ms}, \gls{dmr}, \gls{tmr}, \gls{rrtmr} in \gls{fir} and \gls{fft} blocks. The \gls{rrtmr} technique employs one module operating at full precision and two redundant copies running at reduced resolution, in contrast to conventional \gls{tmr}, which replicates three identical full-precision modules. Results showed that \gls{tmr} with scrubbing achieved near-complete fault masking but at the cost of higher resource use, while \gls{rrtmr} offered a more balanced trade-off between protection and hardware efficiency. The work quantified reliability–cost relationships for radiation-tolerant \gls{fpga} designs in space applications.
+
+\textcite{Adria2023} investigated the susceptibility of \gls{cots} \gls{sram}-based \glspl{fpga} to \glspl{see}, a critical concern due to the widespread use of \gls{cots} devices in small satellites and New Space missions. The main objective was to characterize soft-error vulnerability and numerically demonstrate how combined fault-tolerance techniques can significantly improve system reliability, particularly against persistent failures such as \glspl{sefi} and \glspl{sdc} caused by upsets in the \gls{fpga} \gls{cram}. The study focused on open-source \gls{riscv} Rocket and NOEL-V soft processors, employing accelerated ground testing with heavy-ion and proton irradiation, as well as emulation-based \gls{fi} in Xilinx Zynq-7000, Zynq UltraScale+, and Kintex UltraScale devices. The mitigation strategies evaluated included multiple levels of \gls{tmr}, namely \gls{cgtmr} and \gls{fdtmr}, along with the use of an external \gls{fpga} scrubber. The results confirmed the effectiveness of combining these methods to improve reliability and contributed novel \gls{see} characterization data to support the design of future space-grade \glspl{fpga} systems.
+
+\textcite{Mousavi2023_MTTR_FPGA_Scrubbing} focused on reducing the \gls{mttr} of \gls{sram}-based \glspl{fpga} by analyzing their \gls{seu} sensitivity. Although scrubbing remains the most effective technique for repairing \glspl{seu} in \gls{cram}, it is often time-consuming, especially in radiation-prone environments. The study introduced four precision levels—circuit, essential, critical, and highly critical bits—to classify the configuration bits according to their fault impact. Based on this classification, two advanced scrubbing methods were proposed: precision-level-aware scrubbing, which prioritizes criticality to minimize \gls{mttr}, and precision level-aware scatter scrubbing, which employs heuristic optimization to define an optimal non-linear scrubbing sequence. Experimental results using Brent Kung circuits demonstrated that the proposed methods achieved significantly lower \gls{mttr} compared to traditional readback scrubbing, highlighting the effectiveness of sensitivity-based approaches to improve fault recovery in \gls{sram}-based \glspl{fpga}.
+
+\textcite{Rao2023} reinforces the growing demand for low-cost nanosatellites and proposes the use of the PicoRV32I as the processing core of such systems. The objective is to employ a \gls{cots} \gls{fpga} to develop an \gls{obc} for a generic low Earth orbit satellite. It proposes the use of \gls{fgtmr}, and the results show that the \gls{alu} and \gls{rf} are the main components of the \gls{cpu} affected by \glspl{see}.
+
+\textcite{Koers2024} developed test environments based on a Xilinx Zynq \gls{soc} for radiation qualification of \gls{sram}-based \glspl{fpga} at \gls{cern}. The work focused on measuring leakage currents and assessing radiation tolerance in \gls{cots} devices such as the GateMate and Lattice iCE40. Leakage current measurements confirmed the expected exponential dependence on temperature, while radiation tests evaluated \gls{tid} effects and configuration memory sensitivity using ring oscillators and XOR-based designs. The results provided valuable insights into leakage behavior and fault susceptibility, establishing a methodology for qualifying \glspl{fpga} under radiation exposure in high-energy physics environments.
+
+\textcite{Aguilar2024} investigated the hardening of \gls{riscv} soft processors for embedded aerospace applications on \gls{sram}-based \glspl{fpga}. The study implemented \gls{tmr} with different voter configurations on the open-source Steel Core, executed under FreeRTOS on an AMD Xilinx Zynq-7000 device. \gls{cgtmr} and \gls{fdtmr} were compared with the redundancy automatically inserted by a synthesis tool. The injection of faults in \gls{cram} was used to emulate radiation-induced upsets and assess the benefits of combining \gls{tmr} with the native \gls{ecc}-based scrubbing provided by \gls{semip}. The results showed that \gls{ecc} alone offered limited protection, while \gls{tmr} significantly improved reliability. The combined use of \gls{tmr} and \gls{ecc} achieved the best trade-off between fault coverage and resource utilization, demonstrating substantial reliability improvements for \gls{cots} \gls{riscv} processors in aerospace-grade \glspl{fpga}.
+
+\textcite{Wang2024_SoftErrorReview} investigated the improvement in reliability and fault-tolerance of \gls{sram}-based \glspl{fpga} by improving redundancy layouts and scrubbing efficiency. The research demonstrated that the physical placement of components in \gls{tmr} strongly influences the tolerance of a single-event and that the incorporation of soft-error sensitivity analysis enables targeted detection and correction of vulnerable regions. Advanced mitigation approaches, including non-linear and multi-task scrubbing, were also explored to further improve reliability in aerospace applications.
+
+\textcite{Wilson2025} addressed persistent \gls{spof} in \gls{tmr} designs implemented on \gls{sram}-based \glspl{fpga} for mission-critical and space applications. The study proposed a scalable methodology to identify and mitigate residual vulnerabilities in systems protected by \gls{tmr}. Several \gls{riscv} soft processors were tested on Kintex UltraScale devices using \gls{fi} and neutron irradiation. The Bitstream Fault Analysis Tool (BFAT) was used to trace \gls{cram} upsets to logic and routing faults.
+
+\textcite{Cano-Paez2025} proposed a reliable \gls{mpsoc} architecture integrating a hardware Hypervisor in the \gls{pl} to mitigate \glspl{seu} through \gls{dpr}. The Hypervisor manages redundant blocks, detecting faults and autonomously isolating and recovering affected modules. Validated by \gls{fi} and irradiation tests, the design achieved faster error detection, high recovery rates, and improved availability, providing a robust fault-tolerant solution for space-grade \glspl{mpsoc}.
 
 \section{Comparative Analysis of Related Works}
 
-This section presents a selection of recent studies referenced throughout this dissertation, focusing on \gls{fpga} fault-tolerance techniques for harsh environments. Table~\ref{tab:related_works} summarizes these key works, highlighting their main methods, evaluation approaches, advantages, and limitations. Together, they provide the basis for the comparison and contextualization of the methodologies and contributions developed in this research.
+Table~\ref{tab:related_works} presents a comparative summary of the most recent and frequently cited studies addressing \gls{fpga} fault-tolerance techniques. The selected references encompass a broad range of mitigation strategies, including redundancy schemes (e.g., \gls{dmr}, \gls{tmr}, and \gls{nmr}), \gls{ms}, \gls{dpr}, and \gls{fi} methodologies. Each study is analyzed in terms of the adopted technique, the evaluation approach employed (simulation, emulation, or physical testing), and the main advantages and limitations reported by the authors. In general, this comparative analysis outlines the evolution from isolated mitigation methods toward integrated and adaptive reliability frameworks. Building on this foundation, the present dissertation advances the state of the art by unifying \gls{nmr}, \gls{dpr}, \gls{ms}, and \gls{fi} within a reproducible fault-tolerant platform.
 
 %%%============== Long Comparison Table =========================================================================
 \begin{landscape}
@@ -86,7 +111,7 @@ This section presents a selection of recent studies referenced throughout this d
 & Long Times to perform \acrshort{fi} logs \\
 \\
 \textcite{Rao2023} %%OK
-& \acrshort{tmr} \& \acrshort{secded}
+& \acrshort{fgtmr} \& \acrshort{secded}
 & Simulation 
 & Added \acrshort{secded} \gls{ecc} to PicoRV32I 
 & Only Simulation \acrshort{fi} \\
@@ -104,7 +129,7 @@ This section presents a selection of recent studies referenced throughout this d
 % & Significant resource usage for large N \\
 % \\
 \textcite{Aguilar2024} %%OK
-& \acrshort{cgtmr} \& \acrshort{fgtmr} \% \acrshort{ms}
+& \acrshort{cgtmr} \& \acrshort{fgtmr} \& \acrshort{ms}
 & Emulation with \acrshort{fi} 
 & Compares \acrshort{cgtmr} \& \acrshort{fgtmr}
 & No \acrshort{dpr} \\
@@ -122,13 +147,13 @@ This section presents a selection of recent studies referenced throughout this d
 & No \acrshort{dpr} \\
 \\
 \textcite{Cano-Paez2025} %%OK
-& \acrshort{tmr} \& \acrshort{dpr} \& gls{semip} \acrshort{fi}
+& \acrshort{tmr} \& \acrshort{dpr} \& \gls{semip} \acrshort{fi}
 & Emulation and Physical 
 & Campaign with Protons and Neutrons 
 & Design complexity \\
 \\
 \textbf{This Work}  %%OK
-& \acrshort{nmr} \& \acrshort{dpr} \& \acrshort{semip} \& \acrshort{fi}
+& \acrshort{nmr} (Coarse Grain) \& \acrshort{dpr} \& \acrshort{semip} \& \acrshort{fi}
 & Emulation (\acrshort{semip}) \& Simulation with Mutants 
 & Low downtime, redundancy \& adaptive repair 
 & Design complexity \& No Physical test \\
