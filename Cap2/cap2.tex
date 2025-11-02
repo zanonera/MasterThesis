@@ -56,46 +56,46 @@ This section presents a selection of recent studies referenced throughout this d
 % & High area and power overhead \\
 % \\
 \textcite{Balbino2022} %%OK
-& \gls{tmr} \& \gls{fi}
-& Emulation (\gls{fi} by Sabouteurs)
-& Less Complex \gls{fi}
-& Needs to change the \gls{hdl} to \gls{fi} \\
+& \acrshort{tmr} \& \acrshort{fi}
+& Emulation (\acrshort{fi} by Sabouteurs)
+& Less Complex \acrshort{fi}
+& Needs to change the \acrshort{hdl} to \acrshort{fi} \\
 \\
 \textcite{Yaman2022} %%OK
-& \gls{tmr}
-& Simulation (\gls{fi} by Mutants))
+& \acrshort{tmr}
+& Simulation (\acrshort{fi} by Mutants))
 & Uses Word Voter
-& Neither Emulation or Physical \gls{fi}. No \gls{dpr} \\
+& Neither Emulation or Physical \acrshort{fi}. No \acrshort{dpr} \\
 \\
 \textcite{Wubs2023} %%OK
-& \gls{nmr} \& \gls{semip}
-& Emulation (\gls{semip}) 
-& No \gls{dpr} \& No Physical 
+& \acrshort{nmr} \& \acrshort{semip}
+& Emulation (\acrshort{semip}) 
+& No \acrshort{dpr} \& No Physical 
 & Significant resource usage for large N \\
 \\
 \textcite{Adria2023} %%OK
-& \gls{tmr} \& \gls{ms}
+& \acrshort{tmr} \& \acrshort{ms}
 & Emulation and Physical
 & Campaign with Heavy Ions and Protons
-& No \gls{dpr} is used \\
+& No \acrshort{dpr} is used \\
 \\
 \textcite{Mousavi2023_MTTR_FPGA_Scrubbing} %%Parcial
-& \gls{ms} 
+& \acrshort{ms} 
 & Emulation (custom)
 & Scalable reliability, configurable protection 
-& Long Times to perform \gls{fi} logs \\
+& Long Times to perform \acrshort{fi} logs \\
 \\
-\textcite{Rao2023}
-& \gls{tmr} \& \acrshort{secded}
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+\textcite{Rao2023} %%OK
+& \acrshort{tmr} \& \acrshort{secded}
+& Simulation 
+& Added \acrshort{secded} \gls{ecc} to PicoRV32I 
+& Only Simulation \acrshort{fi} \\
 \\
-\textcite{Koers2024}
-& \gls{tmr} \&  
+\textcite{Koers2024} %%OK
+& \acrshort{tmr}
 & Physical 
-& Uses Other \gls{fpga} vendors 
-& Only explores \gls{tmr} \\
+& Uses Other \acrshort{fpga} vendors 
+& Only explores \acrshort{tmr} \\
 \\
 % \textcite{Garg2024}
 % & N-Modular Redundancy (NMR) voter circuits 
@@ -103,33 +103,33 @@ This section presents a selection of recent studies referenced throughout this d
 % & Scalable reliability, configurable protection 
 % & Significant resource usage for large N \\
 % \\
-\textcite{Aguilar2024}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+\textcite{Aguilar2024} %%OK
+& \acrshort{cgtmr} \& \acrshort{fgtmr} \% \acrshort{ms}
+& Emulation with \acrshort{fi} 
+& Compares \acrshort{cgtmr} \& \acrshort{fgtmr}
+& No \acrshort{dpr} \\
 \\
-\textcite{Wang2024_SoftErrorReview}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+\textcite{Wang2024_SoftErrorReview} %%OK
+& \acrshort{ms} \& \acrshort{fi}
+& Emulation with \acrshort{fi}
+& Layered \acrshort{ms} and detect the sensitive areas 
+& No \acrshort{dpr} \\
 \\
 \textcite{Wilson2025} %%OK
-& \gls{tmr} \& Memory with \gls{ecc} \& Placement
+& \acrshort{tmr} \& Memory with \acrshort{ecc} \& Placement
 & Emulation and Physical 
 & Evaluates Linux capable Risc-V 32 
-& No \gls{dpr} \\
+& No \acrshort{dpr} \\
 \\
 \textcite{Cano-Paez2025} %%OK
-& \gls{tmr} \& \gls{dpr} \& gls{semip} \gls{fi}
+& \acrshort{tmr} \& \acrshort{dpr} \& gls{semip} \acrshort{fi}
 & Emulation and Physical 
 & Campaign with Protons and Neutrons 
 & Design complexity \\
 \\
 \textbf{This Work}  %%OK
-& \gls{nmr} \& \gls{dpr} \& \gls{semip} \& \gls{fi}
-& Emulation (\gls{semip}) \& Simulation with Mutants 
+& \acrshort{nmr} \& \acrshort{dpr} \& \acrshort{semip} \& \acrshort{fi}
+& Emulation (\acrshort{semip}) \& Simulation with Mutants 
 & Low downtime, redundancy \& adaptive repair 
 & Design complexity \& No Physical test \\
 \hline
