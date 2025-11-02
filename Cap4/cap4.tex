@@ -84,12 +84,16 @@ The requirements for this architecture were established on the basis of the foll
 
 As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is the Xilinx Zynq-7000, a \gls{soc} integrating a dual-core ARM A9 processor with an \gls{fpga} fabric on the same die.
 
-\subsection{Soft Error Mitigation}
+\subsection{Soft Error Mitigation via \acrlong{ms}}
 To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd2023sem} is being used in this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
 
 It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use a computer with a script to inject error and check how the platform behaves.
 
-The \gls{semip} was selected as the scrubbing methodology because it is natively available on the 7-series device used in this work and supports \gls{fi} within the same \gls{ip}. This approach is considered an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of the \gls{fpga}, thereby eliminating the need for an external memory to store the golden bitstream. It is configured to operate in the readback scrubbing mode.
+\gls{semip} was selected as the \gls{ms} methodology because it is natively available on the 7-series devices used in this work and supports \gls{fi} within the same \gls{ip}. This approach is classified as an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of \gls{fpga}, thus eliminating the need for external memory to store the golden bitstream. The \gls{ip} was configured to operate in the readback scrubbing mode.
+
+The readback method was chosen because it provides greater reliability compared to blind scrubbing, as it enables the detection and classification of bits affected by \glspl{see}.
+
+Internal scrubbing was also preferred because it does not require the SelectMAP interface, which is more susceptible to \glspl{seu}. Instead, this type of \gls{ms} utilizes the \gls{pcap} or \gls{icap} interfaces, and both are less vulnerable to \glspl{seu} compared to SelectMAP~\cite{Mousavi2023_MTTR_FPGA_Scrubbing}.
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
@@ -188,6 +192,15 @@ Figure~\ref{fig:dut_fir_bird_view} illustrates the design implemented in the \gl
     \label{fig:dut_fir_bird_view}
 \end{figure}
 
+Figure~\ref{fig:setup-fir} show the block diagram with the interconnections of all modules to validate the \gls{dmr} design with two \glspl{fir}. The \gls{semip} is used for \gls{ms} and \gls{fi}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap5//dut_fir/setup-fir.png}
+    \caption{Block Diagram of the \acrshort{dmr} evaluation in fpga and the \acrshort{fi} campaign.}
+    \label{fig:setup-fir}
+\end{figure}
+
 Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. The \gls{rom} contains the input data for the \gls{fir} modules, whose outputs are compared by the checker block. The comparison results are then transmitted via serial communication to the \gls{fi} computer for evaluation.
 
 \begin{figure}[H]
@@ -203,14 +216,14 @@ For the \gls{tmr} evaluation conducted in this study, the \gls{cgtmr} method wit
 
 Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using PicoRV32I. The redundancy is applied in the module level, replicating the entire soft core processor.
 
+Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementation in Vivado. It is possible to observe the triplicated \gls{riscv} cores, as well as the voters inserted into each processor output that interfaces with the memory. In this study, the memory was neither triplicated nor equipped with any form of \gls{ecc} protection.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/riscv-tmr-diagram.png}
     \caption{Block diagram of the proposed triplicated (\acrshort{tmr}) PicoRV32I architecture, showing the three replicated processor cores and the majority voter responsible for fault masking at the output stage.}
     \label{riscv-tmr-diagram}
 \end{figure}
-
-Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementation in Vivado. It is possible to observe the triplicated \gls{riscv} cores, as well as the voters inserted into each processor output that interfaces with the memory. In this study, the memory was neither triplicated nor equipped with any form of \gls{ecc} protection.
 
 \begin{landscape}
     \begin{figure}[H]
@@ -220,6 +233,8 @@ Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementa
 \end{figure}\end{landscape}
 
 The \gls{fgtmr} approach was not selected due to its high level of intrusiveness, which increases the complexity of the design and often results in increased use of area and degraded synchronization and timing between modules \cite{Wilson2025,Adria2023}.
+
+As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger number of outputs did not lead to an improvement in the results. Expanding the voting scheme to include more signals increases the utilization of the design area, which may nearly occupy the entire device and consequently increases the probability of a fault affecting a critical element compared to a smaller, more compact design. In contrast, the voter logic itself occupies only a small portion of the overall architecture, making it statistically less likely that a configuration bit associated with the voter will be affected by a fault.
 
 \subsection{Synthesis control for redundancy}
 

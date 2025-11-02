@@ -44,35 +44,35 @@ This section presents a selection of recent studies referenced throughout this d
 % & Simple design, high coverage 
 % & High area and power overhead \\
 % \\
-\textcite{Balbino2022}
-& \gls{tmr} 
-& Sabouteur 
-& Less Complex
-& Special Bitstream\\
+\textcite{Balbino2022} %%OK
+& \gls{tmr} \& \gls{fi}
+& Emulation (\gls{fi} by Sabouteurs)
+& Less Complex \gls{fi}
+& Needs to change the \gls{hdl} \\
 \\
-\textcite{Yaman2022}
-& \gls{tmr} 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
+\textcite{Yaman2022} %%OK
+& \gls{tmr}
+& Simulation (\gls{fi} by Mutants))
+& Uses Word Voter
+& Neither Emulation Emulation and Physical. No \gls{dpr} \\
+\\
+\textcite{Wubs2023} %%OK
+& \gls{nmr} \& \gls{semip}
+& Emulation (\gls{semip}) 
+& No \gls{dpr} \& No Physical 
 & Significant resource usage for large N \\
 \\
-\textcite{Wubs2023}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+\textcite{Adria2023} %%OK
+& \gls{tmr} \& \gls{ms} 
+& Emulation and Physical 
+& Campaign with Heavy Ions and Protons 
+& No \gls{dpr} is used \\
 \\
-\textcite{Adria2023} 
-& Dynamic Partial Reconfiguration (DPR) repair 
-& On-chip fault injection 
-& Real-time reconfiguration, reduced downtime 
-& Complex controller, reconfiguration latency \\
-\\
-\textcite{Mousavi2023_MTTR_FPGA_Scrubbing}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
+\textcite{Mousavi2023_MTTR_FPGA_Scrubbing} %%Parcial
+& \gls{ms} 
+& Emulation (custom)
 & Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+& Long Times to perform \gls{fi} logs \\
 \\
 \textcite{Rao2023}
 & \gls{tmr} \& \acrshort{secded}
@@ -81,10 +81,10 @@ This section presents a selection of recent studies referenced throughout this d
 & Significant resource usage for large N \\
 \\
 \textcite{Koers2024}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+& \gls{tmr} \&  
+& Physical 
+& Uses Other \gls{fpga} vendors 
+& Only explores \gls{tmr} \\
 \\
 \textcite{Garg2024}
 & N-Modular Redundancy (NMR) voter circuits 
@@ -110,17 +110,17 @@ This section presents a selection of recent studies referenced throughout this d
 & Scalable reliability, configurable protection 
 & Significant resource usage for large N \\
 \\
-\textcite{Cano-Paez2025}
-& N-Modular Redundancy (NMR) voter circuits 
-& Emulation with fault injection 
-& Scalable reliability, configurable protection 
-& Significant resource usage for large N \\
+\textcite{Cano-Paez2025} %%OK
+& \gls{tmr} \& \gls{dpr} \& gls{semip} \gls{fi}
+& Emulation and Physical 
+& Campaign with Protons and Neutrons 
+& Design complexity \\
 \\
-\textbf{This Work} 
-& \gls{nmr} \& \gls{dpr} \& \gls{ms} \& \gls{fi}
-& On-chip + software-in-the-loop evaluation 
+\textbf{This Work}  %%OK
+& \gls{nmr} \& \gls{dpr} \& \gls{semip} \& \gls{fi}
+& Emulation (\gls{semip}) + Software-in-the-loop evaluation 
 & Low downtime, redundancy \& adaptive repair 
-& design complexity \\
+& Design complexity \& No Physical test \\
 \hline
 
 \end{longtable}
