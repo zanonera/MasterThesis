@@ -21,7 +21,7 @@ This section presents the selected \gls{fpga} device, development board, and sof
 \href{https://www.xilinx.com/products/design-tools/vivado.html}{Vivado 2018.3} &
 Xilinx \gls{fpga} design suite used for \gls{hdl} synthesis, implementation, and bitstream generation. Provides Tcl scripting support for automation. \\
 
-\href{https://www.python.org/}{Python} &
+\href{https://www.python.org/}{Python 3.6.9} &
 High-level programming language for automation, scripting, and testbench development. Widely used to coordinate \gls{fpga} workflows and fault injection experiments. \\
 
 \href{https://github.com/riscv-collab/riscv-gnu-toolchain}{RISC-V Toolchain} &
@@ -35,8 +35,6 @@ Compact and configurable RISC-V soft processor core optimized for \gls{fpga}, of
 \end{table}
 
 Table~\ref{tab:sw-tools} lists the \gls{sw} resources and the \gls{riscv} \textit{soft-core} utilized in this work. The development environment was based on the \href{https://releases.ubuntu.com/18.04/}{Linux Ubuntu 18.04} operating system, which provided stability and compatibility with the required toolchain.
-
-Table~\ref{tab:hw-tools} presents the \gls{hw} development platforms used in this research.
 
 \begin{table}[ht]
 \caption{List of \acrlong{hw} development kits employed in this work}
@@ -58,21 +56,23 @@ It is widely used for bridging USB connections to various serial and parallel pr
 \end{adjustbox}
 \end{table}
 
+Table~\ref{tab:hw-tools} presents the \gls{hw} development platforms used in this research.
+
 \section{Reference Design Architecture}
 \label{sec:ref-design-arch}
-To acquire the necessary knowledge to implement the final solution, the first step consisted of developing an initial architecture containing all the required components.
+To acquire the knowledge necessary to implement the final solution, the first step consisted in developing a preliminary architecture containing all the required components.
 
 The requirements for this architecture were established on the basis of the following key assumptions:
 
 \begin{itemize}
-    \item \textbf{Configuration Memory Scrubbing (CRAM Scrubbing):}  
-    Periodic correction of configuration memory upsets to maintain system integrity and prevent fault accumulation.
+    \item \textbf{\acrlong{ms}:}  
+    Periodic correction of configuration memory upsets to maintain system integrity and prevent accumulation of faults.
 
-    \item \textbf{Dynamic Partial Reconfiguration (DPR):}  
-    Ability to reconfigure specific regions of the \gls{fpga} at runtime without interrupting the operation of the static logic.
+    \item \textbf{\acrlong{dpr}:}  
+    Ability to reconfigure specific regions of \gls{fpga} at runtime without interrupting the operation of the static logic.
 
-    \item \textbf{Fault Injection Capability:}  
-    Implementation of controlled fault injection mechanisms to evaluate the system’s fault tolerance and recovery strategies.
+    \item \textbf{\acrlong{fi}:}  
+    Implementation of controlled fault injection mechanisms to evaluate system fault tolerance and recovery strategies.
 \end{itemize}
 
 \begin{figure}[ht]
@@ -87,15 +87,15 @@ As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is
 \subsection{Soft Error Mitigation}
 To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd2023sem} is being used in this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
 
-It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use an external PC with a script to inject error and check how the platform behaves.
+It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use a computer with a script to inject error and check how the platform behaves.
 
-The \gls{semip} was selected as the scrubbing methodology because it is natively available on the 7-series device used in this work and supports \gls{fi} within the same \gls{ip}. This approach is considered an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of the \gls{fpga}, thereby eliminating the need for an external memory to store the golden bitstream.
+The \gls{semip} was selected as the scrubbing methodology because it is natively available on the 7-series device used in this work and supports \gls{fi} within the same \gls{ip}. This approach is considered an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of the \gls{fpga}, thereby eliminating the need for an external memory to store the golden bitstream. It is configured to operate in the readback scrubbing mode.
 
 \subsection{Dynamic Partial Reconfiguration}
 Dynamic partial reconfiguration is performed through the ARM´s \gls{pcap} port.
-The full or partial bitstream can be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in the \gls{ddr}, the file is transferred to the PL configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is directly loaded into the \gls{fpga} \gls{cram} without processing interruption.
+The full or partial bitstream can be loaded from an external memory, for example, the ARM processor's \gls{ddr} memory or SD-Card. With the bitstream stored in \gls{ddr}, the file is transferred to the \gls{pl} configuration memory using the \gls{pcap} port using \gls{dma}. This setup frees the processor, and the bitstream is loaded directly into the \gls{fpga} \gls{cram} without processing interruption.
 
-The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application, being able to reprogram this area accordingly to the need circuit or function needed at that time, giving the system some sort of hardware redundancy in time.
+The main idea of the \gls{dpr} region, denoted by the \emph{"HW Accel."} in Figure~\ref{zynq-paper-arch}, is to perform any kind of hardware acceleration needed by the application. It is possible to reprogram this area accordingly to the function needed at a given time, enabling some sort of hardware redundancy over time.
 
 \begin{figure}[ht]
     \centering
@@ -115,7 +115,7 @@ As illustrated in Figure~\ref{dpr-partial-diagram}, it is possible to create any
 
 As illustrated in Figure~\ref{dpr-full-diagram}, the full bitstream reconfigures the entire \gls{fpga} \gls{cram}, so the entire circuit needs to be shut off and will only return to function when the complete reprogram is complete.
 
-The size of the bitstreams, illustrated by the squares in Figures ~\ref{dpr-partial-diagram} and~\ref{dpr-full-diagram}, gives the exact notion of the time needed to reprogram \gls{fpga} \gls{cram}. As the partial bitstream only reprograms a small portion of the device, the full bitstream will reprogram the entire device. So, this translates into the difference in the size of files and the time needed for reconfiguration. 
+The size of the bitstreams, illustrated by the squares in Figures ~\ref{dpr-partial-diagram} and~\ref{dpr-full-diagram}, gives the exact notion of the time needed to reprogram \gls{fpga}'s \gls{cram}. Partial bitstream only reprograms a small portion of the device and full bitstream will reprogram the entire device. This is directly proportional to the difference in the size of the files and the time needed for reconfiguration.
 
 \subsection{Integration of \glsentrytext{dpr} and \glsentrytext{sem} in the same project}
 
@@ -136,7 +136,7 @@ The selection of the interface under control of the \gls{fpga} configuration is 
 
 After initial configuration (or at any time), the processor may set the control bit to switch the configuration interface to be accessed internally to the \gls{fpga} fabric; then \gls{icap} becomes active.
 
-As illustrated  in Figure~\ref{fig:fpga_mux}, the \gls{semip} controller uses the port \gls{icap} to perform the scrubbing \gls{cram}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the \gls{semip} controller to monitor, detect, and correct radiation-induced errors.
+As illustrated  in Figure~\ref{fig:fpga_mux}, the \gls{semip} controller uses the port \gls{icap} to perform the \gls{cram} \gls{ms}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the \gls{semip} controller to monitor, detect and correct radiation-induced errors.
 
 If the processor needs to perform a partial reconfiguration in a specific region of the fabric, control must be handed back to the \gls{pcap}.
 
@@ -269,9 +269,7 @@ Another configuration applied to both architectures was the disablement of \gls{
 
 \section{Dynamic Partial Reconfiguration Flow}
 
-The \gls{dpr} flow is supported by Vivado; however, it is not yet fully integrated into the GUI-based project workflow~\cite{vipin2018dpr}.
-Consequently, the designs are typically implemented using the Vivado \gls{tcl}-based command flow, or through a combination of \gls{tcl} commands and the graphical interface.
-To facilitate the reproduction of results and provide a baseline configuration for future studies employing this architecture, a set of scripts were developed to automatically generate a project with two modules \gls{pr}, executing the following steps:
+The \gls{dpr} flow is supported by Vivado; however, it is not yet fully integrated into the GUI-based project workflow~\cite{vipin2018dpr}. Consequently, the designs was implemented using the Vivado \gls{tcl}-based command flow. To facilitate the reproduction of results and provide a baseline configuration for future studies employing this architecture, a set of scripts were developed to automatically generate a project with two \gls{pr} modules, executing the following steps:
 
 \begin{itemize}
     \item Create the project and block design.
@@ -294,6 +292,8 @@ To facilitate the reproduction of results and provide a baseline configuration f
 
 The \gls{dpr} process is carried out through the ARM's \gls{pcap} interface. Initially, the full or partial bitstream is stored in the processor’s \gls{ddr} memory, after which a \gls{dma} transfer sends it to the configuration memory of the programmable logic (PL) via the \gls{pcap} port.
 
+Figure~ref{vivado-pr-math} shows the implementation of the \gls{dpr} architecture presented in Figure~\ref{zynq-paper-arch}. It shows the \gls{pr} instance of the mathematical module, using the \gls{axi} bus.
+
 \begin{landscape}
     \begin{figure}[ht]
     \centering
@@ -303,7 +303,7 @@ The \gls{dpr} process is carried out through the ARM's \gls{pcap} interface. Ini
 
 \section{Fault Injection Strategy}
 \label{sec:fi-strategy}
-This subsection describes how the faults were emulated in the \gls{fpga} to validate the robustness of the system. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (single-event upsets, multiple-bit upsets) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
+This subsection describes how the faults were emulated in the \gls{fpga} to validate the robustness of the system. Both hardware-based and software-assisted fault injection approaches are explained, along with fault models (\gls{see} and \gls{mbu}) and their mapping to the \gls{fpga} fabric. The methodology ensures repeatability and coverage of critical failure modes.
 
 \begin{figure}[ht]
     \centering
@@ -342,11 +342,13 @@ In summary, essential bits can potentially cause an error in \gls{dut} when corr
 
 Simulation-based \gls{fi} provides high controllability and low cost, as no physical device is required. However, it suffers from long simulation times, particularly for complex systems, and may fail to capture intricate faulty behaviors, especially when performed at high levels of abstraction. When the objective is to evaluate the effects of faults in the \gls{fpga} bitstream, the use of a real device becomes essential~\cite{NazarCarro_DFT_FastSingleFPGA, Antoni2003}. In this context, this research employs \gls{cram} \gls{fi} through \gls{semip} to test the effects of bit-flips directly in the \gls{cram} of \gls{fpga}.
 
+This approach represents an intermediate solution for exposing the \gls{fpga} to radiation effects, as it can be performed in standard laboratory environments at a significantly lower cost than physical radiation-based \gls{fi} testing.
+
 For this research, the deterministic fault injection method was chosen, as the main objective was to evaluate the mitigation techniques and analyze how bit flips affect the overall functionality of the design.
 
-So the \gls{ebc} and \gls{ebd} files were used in conjunction to the method explained in \textcite{Aranda2019} to calculate the critical frames of the intended region for injection. To calculate these frames, the \gls{dut} is implemented in a specific area of the \gls{fpga}, using the \emph{pblock} design constraint of the Vivado. Pblocks define physical regions during floorplanning, allowing related logic to be grouped and placed within a specific area of the device \cite{Xilinx_UG912_PBLOCK}.
+So the \gls{ebc} and \gls{ebd} files were used in conjunction to the method explained in \textcite{Aranda2019} to calculate the critical frames of the intended region for injection. To calculate these frames, the \gls{dut} is implemented in a specific area of \gls{fpga}, using the \emph{pblock} design constraint of the Vivado. Pblocks define physical regions during floorplanning, allowing related logic to be grouped and placed within a specific area of the device \cite{Xilinx_UG912_PBLOCK}.
 
-Figure~\ref{fig:pblock-fir-filter} shows the \gls{dmr} \gls{fir} implementation, the first \gls{dut} used in the \gls{fi} campaign. In this figure, it can be seen that \gls{fir}1 is completely placed within the Pblock named MY\_DUT, which is colored in yellow in the X1Y1 region of the Zynq \gls{fpga}.
+Figure~\ref{fig:pblock-fir-filter} shows the \gls{dmr} \gls{fir} implementation, the first \gls{dut} used in the \gls{fi} campaign. In this figure, it can be seen that \gls{fir}1 is completely placed within the Pblock named MY\_DUT, which is colored in yellow in the X1Y1 region of Zynq \gls{fpga}.
 
 \begin{figure}[H]
     \centering
@@ -356,12 +358,20 @@ Figure~\ref{fig:pblock-fir-filter} shows the \gls{dmr} \gls{fir} implementation,
 \end{figure}
 
 \section{Integration with Processing System (PS)}
-This section discusses how the ARM processing system in the \gls{soc} was used to monitor and control the fault-tolerant logic. Mitigation strategies were partially moved to the PS side to balance the workload and reduce logic overhead in the programmable fabric.
+The \gls{ps} is used solely to control the overall operation of the design. A selection menu was developed to allow interaction through the serial interface, allowing control of the system’s behavior, reconfiguration of the \gls{pr} region with a new bitstream, and monitoring of the device’s voltage rails.
+
+Additionally, \gls{ps} communicates via the \gls{axi} bus with the math block implemented in the \gls{dpr} region of \gls{fpga}.
 
 \section{Verification and Validation Methodology}
 The testing strategy is presented to demonstrate how the design was verified at the simulation level, the emulation level, and on physical \gls{fpga} hardware. Metrics such as fault coverage, error latency, and resource usage were systematically measured to evaluate the effectiveness of the proposed solution.
 
 \section{Summary}
-This section summarizes the methodology chapter, highlighting the major design decisions and how they lay the groundwork for the results presented in the next chapter.
+This chapter presented the methodology adopted for the design, implementation, and validation of the proposed fault-tolerant platform. It began by introducing the hardware and software environments used throughout development, highlighting the Pynq-Z2 board based on the Zynq 7000 \gls{soc} and the Vivado~2018.3 toolchain complemented by Python automation scripts and the \gls{riscv} GNU toolchain.
 
-These added capabilities make the platform suitable for deployment in harsh environments, particularly for non-critical instrumentation and communication systems, as \gls{sram}-based \glspl{fpga} provide a cost- and area-efficient solution \cite{Brosser2014}.
+The reference design architecture was defined to integrate three key mechanisms: the \gls{semip} controller for \gls{ms}, \gls{dpr} for runtime reconfiguration of specific hardware regions, and \gls{fi} for controlled evaluation of reliability. The interaction between the \gls{semip} and the \gls{dpr} flows was carefully managed through \gls{pcap}/\gls{icap} switching, ensuring proper coordination between scrubbing operations and partial reconfiguration events.
+
+Next, the implementation of \acrshort{nmr} was detailed, focusing on \gls{dmr} and \gls{tmr} configurations applied to \acrshort{fir} filters and \gls{riscv} processor cores. Special attention was given to synthesis constraints and placement strategies to prevent optimization of redundant modules and guarantee physical separation of replicas.
+
+The chapter also described the \gls{tcl}-based \gls{dpr} automation flow, designed to streamline the generation of partial bitstreams and their verification. The \gls{fi} methodology was then explained, including the use of Xilinx’s \textit{Essential Bits} technology (\gls{ebd}/\gls{ebc} files) to target configuration frames within the \gls{dut}. The resulting deterministic fault-injection campaign enabled systematic evaluation of the system’s response to configuration upsets.
+
+Finally, the integration of the programmable logic with the \gls{ps} was addressed, showing how the \gls{ps} ARM cores coordinate system operation, reconfiguration control, and serial communication for monitoring. The chapter concluded with the definition of the verification and validation strategy, establishing the experimental basis for the performance and reliability results discussed in the next chapter.
