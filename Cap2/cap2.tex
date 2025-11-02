@@ -1,11 +1,22 @@
 %\section{Concepts and Literature Review}
 \label{sec:cap2}
 
+\section{Applications}
+
 According to \textcite{Aguiar2025_SEE_Space_to_Accelerator}, the continuous expansion of human activity into extreme environments, such as outer space and experimental physics accelerators, has intensified the need to understand and mitigate radiation effects on electronic components. In addition, the growing use of nanosatellites~\cite{Balbino2022,Rao2023} and the emergence of the New Space paradigm~\cite{9298818} have opened discussions on the adoption of cheaper, faster, and more easily procurable components and systems for deployment in harsh environments.
 
 Recent studies, such as those presented by \textcite{Aguiar2025_SEE_Space_to_Accelerator}, emphasize that radiation induced phenomena, such as \gls{see}, pose a major challenge to the reliability of modern electronics. Consequently, significant research has focused on analyzing \gls{see}-related failure mechanisms and developing design-level mitigation strategies to improve system resilience under harsh operating conditions.
 
-\section{Summary of Related Works}
+The usage of fault mitigations is applicable not only to devices used in outer space regions. There are applications on Earth as well.
+
+As cited in~\textcite{LaGreca2022}, although the Earth's magnetosphere shields the surface from most cosmic radiation, some energetic particles still reach electronic devices, occasionally causing bit flips. A well-known example occurred in Belgium in 2003, when a single bit flip in an electronic voting machine added 4,096 extra votes to a candidate, the error was traced to a spontaneous change in one memory bit, corresponding to the hexadecimal value \texttt{0x1000} ($2^{12}$).
+
+Another important application is in experimental physics, where \glspl{fpga} are used to control, monitor, and acquire data in experiments that are often exposed to high-energy particles. One such example is presented by \textcite{Giordano2019_CustomScrubbingXilinx,Giordano2020_OnTheFlySEUMonitoring}, in which a custom scrubber was developed for use in the \href{https://www.belle2.org/}{\textit{Belle~II}} experiment. This experiment is designed to perform precise measurements of weak-interaction parameters, study exotic hadrons, and search for new phenomena beyond the Standard Model.
+
+\section{Mitigation Strategies in the Literature}
+  
+
+\section{Comparative Analysis of Related Works}
 
 This section presents a selection of recent studies referenced throughout this dissertation, focusing on \gls{fpga} fault-tolerance techniques for harsh environments. Table~\ref{tab:related_works} summarizes these key works, highlighting their main methods, evaluation approaches, advantages, and limitations. Together, they provide the basis for the comparison and contextualization of the methodologies and contributions developed in this research.
 
@@ -48,13 +59,13 @@ This section presents a selection of recent studies referenced throughout this d
 & \gls{tmr} \& \gls{fi}
 & Emulation (\gls{fi} by Sabouteurs)
 & Less Complex \gls{fi}
-& Needs to change the \gls{hdl} \\
+& Needs to change the \gls{hdl} to \gls{fi} \\
 \\
 \textcite{Yaman2022} %%OK
 & \gls{tmr}
 & Simulation (\gls{fi} by Mutants))
 & Uses Word Voter
-& Neither Emulation Emulation and Physical. No \gls{dpr} \\
+& Neither Emulation or Physical \gls{fi}. No \gls{dpr} \\
 \\
 \textcite{Wubs2023} %%OK
 & \gls{nmr} \& \gls{semip}
@@ -63,9 +74,9 @@ This section presents a selection of recent studies referenced throughout this d
 & Significant resource usage for large N \\
 \\
 \textcite{Adria2023} %%OK
-& \gls{tmr} \& \gls{ms} 
-& Emulation and Physical 
-& Campaign with Heavy Ions and Protons 
+& \gls{tmr} \& \gls{ms}
+& Emulation and Physical
+& Campaign with Heavy Ions and Protons
 & No \gls{dpr} is used \\
 \\
 \textcite{Mousavi2023_MTTR_FPGA_Scrubbing} %%Parcial
@@ -118,10 +129,26 @@ This section presents a selection of recent studies referenced throughout this d
 \\
 \textbf{This Work}  %%OK
 & \gls{nmr} \& \gls{dpr} \& \gls{semip} \& \gls{fi}
-& Emulation (\gls{semip}) + Software-in-the-loop evaluation 
+& Emulation (\gls{semip}) \& Simulation with Mutants 
 & Low downtime, redundancy \& adaptive repair 
 & Design complexity \& No Physical test \\
 \hline
 
 \end{longtable}
 \end{landscape}
+
+\section{Identified Gaps, Motivation, and Scope}
+\label{sec:cap2-gaps}
+
+From the reviewed literature, several open challenges remain unaddressed. Most existing studies focus on isolated mitigation strategies or rely on proprietary or closed implementations that hinder reproducibility. This work is motivated by the need for a comprehensive and open methodology capable of integrating fault-masking and self-repair mechanisms within a single platform.
+
+Specifically, this study addresses the following gaps:
+\begin{itemize}
+    \item Limited integration of multiple mitigation techniques (\gls{nmr}, \gls{ms}, \gls{dpr}) within a unified fault-tolerant architecture;
+    \item Lack of openly available implementations, datasets, and scripts to enable reproducible research and lower the entry barrier in this field;
+    \item Few studies have evaluated \gls{sram}-based \gls{fpga} reliability in heterogeneous \gls{soc} devices, particularly those that employ the \gls{axi} communication protocol.
+\end{itemize}
+
+Building on the motivations and objectives established in Chapter~\ref{sec:cap1}, this dissertation proposes an integrated framework that combines \gls{nmr} for fault masking, \gls{ms} and \gls{dpr} for runtime repair and systematic \gls{fi} for validation and analysis. The proposed methodology enables an empirical evaluation of the fault tolerance and recovery mechanisms under realistic operating conditions.
+
+All implemented scripts and developed design files are openly available in the \href{https://github.com/zanonera/}{GitHub repository} of the project, encouraging reproducibility, transparency, and future extensions by the research community.
