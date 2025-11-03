@@ -382,23 +382,100 @@ Finally, Figure~\ref{fig:3-riscv-fault} represents the multiple-fault condition,
 \end{figure}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%IMPACT
 \section{Impact of Mitigation Techniques}
-The results obtained after implementing the proposed fault-mitigation strategies are discussed. Comparisons are made between unprotected and protected designs, focusing on improvements in fault coverage, error recovery, and reliability metrics.
+\label{sec:impact-mitigation}
 
-\section{Comparative Analysis with Existing Approaches}
-This section compares the proposed solution to similar works in the literature. A summary table highlights differences in methodology, fault coverage, resource overhead, and performance impact.
+This section discusses the general impact of the mitigation strategies implemented in this study, including \gls{nmr}, \gls{ms}, and \gls{dpr}. The results obtained are compared with the unprotected baseline designs, highlighting measurable improvements in reliability, fault coverage, and recovery time, as well as the associated resource trade-offs.
+
+\subsection{Fault Coverage and Failure Sensitivity}
+
+The results obtained from the \gls{fir} and math function tests clearly demonstrate that fault coverage is strongly influenced by the adopted mitigation mechanisms. In the unprotected \gls{fir} design, the first failure occurred after only 50 bit flips during random fault injection in \gls{cram}. Since \gls{semip} operating under \gls{secded} \gls{ecc} can correct only one error per frame, the accumulation of multi-bit upsets (\glspl{mbu}) caused the system to collapse after 3,564 injections, rendering even the serial interface inoperative. The corresponding failure sensitivity, computed as \(r = k/n\), reached approximately \(r = 0.98\), indicating that nearly every injected fault at this stage produced an observable malfunction.
+
+When scrubbing was enabled and coupled with redundancy, the results improved significantly. All single-bit upsets were transparently corrected by the \gls{semip}, and the \gls{fir} continued to operate seamlessly. This confirms that the combination of internal scrubbing and design-level redundancy provides efficient protection against transient \glspl{seu}, substantially reducing the effective failure rate.
+
+\subsubsection{Fault Coverage Evaluation}
+
+The fault coverage (\(FC\)) quantifies the fraction of injected faults that were successfully masked, corrected, or recovered by the implemented mitigation strategies. It is defined by Equation~\ref{eq:fault_coverage}:
+
+\begin{equation}
+FC = 1 - \frac{k}{n}
+\label{eq:fault_coverage}
+\end{equation}
+
+where \(k\) represents the number of injected faults that caused functional failures and \(n\) is the total number of injected faults during the campaign.
+
+Table~\ref{tab:fault_coverage_summary} summarizes the calculated fault coverage for each evaluated design and mitigation level.
+
+\begin{table}[H]
+\centering
+\caption{Summary of fault coverage obtained for different designs and mitigation strategies.}
+\label{tab:fault_coverage_summary}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{l r r r}
+\toprule
+\textbf{Design / Mitigation Level} & \textbf{Total Injections ($n$)} & \textbf{Failures ($k$)} & \textbf{Fault Coverage (\%)} \\
+\midrule
+\gls{fir} (no scrubbing, MBU)       & 3,615   & 3,564   & 1.4   \\
+\gls{fir} (\gls{semip} scrubbing)   & 31,020  & 34      & 99.9  \\
+Multiplier (initial)                & 37,809  & 16,007  & 57.7  \\
+Multiplier (with recovery)          & 70,182  & 32      & 99.95 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+As shown in Table~\ref{tab:fault_coverage_summary}, fault coverage increased from only 1.4\% in the unprotected design to 99.9\% when internal scrubbing was enabled. The combination of scrubbing, processor reset, and reprogramming achieved a near-complete recovery rate of 99.95\%, confirming the effectiveness of the proposed multi-layered mitigation strategy in enhancing \gls{sram}-based \gls{fpga} reliability.
+
+\subsection{Error Recovery and System Availability}
+
+The addition of \gls{dpr} extended the fault-tolerance capability of the system by enabling localized recovery of defective modules. The experimental results in Section~\ref{sec:cap5} showed that each partial bitstream represented only 2.8\% of the full configuration file, allowing reconfiguration to be performed more than an order of magnitude faster than full device reprogramming. As a result, even in cases of unrecoverable upsets, only the affected region was reconfigured, keeping the static portion of the design operational. This characteristic is crucial for mission-critical systems where up-time and continuity are required.
+
+The integration of automated \gls{fi} with recovery mechanisms also proved effective in identifying unrecoverable failures in the \gls{axi} interconnect. After the implementation of processor reset and full reprogramming logic, the number of unrecoverable stalls dropped from 16,000 to just 3 out of 70,182 injected faults—corresponding to a two-order-of-magnitude improvement in fault recovery efficiency. The updated campaign achieved a failure sensitivity of \( r \approx 0.41 \times 10^{-3} \) for regular computational errors and \( r \approx 0.043 \times 10^{-3} \) for \gls{axi} stalls.
+
+\subsection{Redundancy and Fault Masking Effectiveness}
+
+In the \gls{tmr}-protected PicoRV32I processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot—validating the \gls{tmr} assumption that it can tolerate only one simultaneous error. Under triple faults, the majority voter detected full disagreement, asserting the error signal. 
+
+The implementation of \gls{tmr} increased the logic resource usage by approximately 3.1$\times$ in LUTs and 3.3$\times$ in flip-flops, consistent with theoretical expectations. However, this overhead was justified by the considerable improvement in reliability and error detection coverage. The inclusion of word-level voters instead of bitwise voters also enhanced error observability by exposing multi-module inconsistencies that would otherwise remain masked.
+
+\subsection{Reliability Gains and Trade-offs}
+
+Overall, the combination of \gls{dpr}, \gls{semip}-based scrubbing, and \gls{tmr} achieved a comprehensive balance between reliability and resource overhead. Each mitigation layer addressed a specific reliability dimension:
+\begin{itemize}
+    \item \textbf{Scrubbing} ensured automatic correction of transient single-bit faults in the configuration memory.
+    \item \textbf{Redundancy} masked transient faults at the functional level, improving system-level fault coverage.
+    \item \textbf{Dynamic Partial Reconfiguration} provided fast recovery from permanent or multi-bit faults while maintaining uninterrupted system operation.
+\end{itemize}
+
+Quantitatively, the adoption of these techniques reduced the system failure rate by over two orders of magnitude compared to unprotected configurations. Although this came at the cost of a threefold increase in resource utilization and a moderate increase in power consumption, the trade-off is acceptable for aerospace and mission-critical applications, where reliability and maintainability outweigh area constraints.
+
+\subsection{Summary of Mitigation Impact}
+
+In summary, the proposed architecture effectively demonstrated that:
+\begin{itemize}
+    \item Fault coverage increased from less than 10\% in unprotected designs to over 99\% when scrubbing and redundancy were combined.
+    \item The \gls{mttr} improved significantly with \gls{dpr}, allowing rapid reconfiguration of faulty regions.
+    \item The failure sensitivity metric decreased by more than three orders of magnitude between unprotected and protected configurations.
+\end{itemize}
+
+These results confirm that an integrated mitigation strategy combining redundancy, internal scrubbing, and partial reconfiguration is a powerful approach to enhancing \gls{sram}-based \glspl{fpga} reliability for space and high-radiation environments.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%IMPACT
+
+
+% \section{Comparative Analysis with Existing Approaches}
+% This section compares the proposed solution to similar works in the literature. A summary table highlights differences in methodology, fault coverage, resource overhead, and performance impact.
 
 \section{Discussion of Findings}
-The key findings are synthesized and interpreted in terms of practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing information for future improvements.
+The key findings are synthesized and interpreted in terms of their practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing valuable insight for future improvements.
 
+An important finding of this study was the detection of \gls{ps}--\gls{axi} bus stalls during fault emulation, which highlights one of the major advantages of performing \gls{fi} directly on real \gls{fpga} hardware. This type of failure, which arises from complex interactions between the \gls{ps} and \gls{pl}, cannot be accurately captured through traditional \gls{hdl}-only simulations. Instead, such events would require co-simulation between the ARM processor and the \gls{hdl} design, a process that is both computationally expensive and time-consuming.
 
+Nevertheless, simulation remains an indispensable tool during the early design phase. For example, the \gls{riscv} \gls{tmr} evaluation in this work required approximately 8~minutes for each synthesis–implementation–simulation loop, with each run consuming about 1~minute of host computation to simulate only 125~$\mu$s of \gls{fpga} time. Given that the average emulation-based \gls{fi} rate achieved in this study was about six faults per second, it is evident that simulation-based injections are several orders of magnitude slower than hardware emulation using the \gls{semip}. As noted by \textcite{Garcia2020}, this makes large-scale fault campaigns impractical as design complexity increases.
 
-As discussed in \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links, such as the USB-to-serial converter used in this research, are constrained by the latency introduced by the software and hardware communication stack. The minimum achievable duration of the fault injection sequence achieved by \textcite{Fibichi2019} is reported to be 20 milliseconds. The average speed achieved by this research is 6 bit flip per second.
+As discussed by \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links—such as the USB-to-serial converter employed in this research—are constrained by latency introduced by both software and hardware communication layers. The minimum achievable duration of a fault-injection sequence reported by \textcite{Fibichi2019} is 20~ms. In comparison, the average bit-flip rate achieved in this work was approximately 5.4~bit flips per second.
 
-The finding of the \gls{ps} \gls{axi} bus stall during the \gls{fi} shows the biggest advantage of this kind of test using the physical \gls{fpga} device under bit flips.
+As presented by \textcite{Leon2024_VeeR_EH1_SEU}, their proposed hardware-injection system operates at approximately 0.2~s per injection on a single test-board, with full parallelization possible by adding more boards—comparable to the performance achieved in this work. Similarly, \textcite{Garcia2020} reported an average rate of 3~bit flips per second, nearly half the throughput demonstrated here. In another study, \textcite{Aranda2019} performed a 20-hour \gls{fi} campaign to inject 9,405~faults, whereas the proposed setup in this work can inject approximately 18,000~bit flips per hour, demonstrating a substantial improvement in injection efficiency.
 
-This kind off error, as it needs a large interaction between the \gls{ps} and \gls{pl}, it is not possible to simply simulate the \gls{hdl} design, it needs a co-simulation between the ARM processor and the \gls{hdl}. This type of co-simulation is complex and very time consuming.
-
-Simulation is an indispensable tool during the design phase, as presented in the results of \gls{riscv} with \gls{tmr}. This work presented a time of 8 minutes for each loop of synthesis, implementation, and simulation. Each simulation loop took 16s of computer time to run only 125$\mu$s of \gls{fpga} time.
-
-\section{Limitations}
+% \section{Limitations}

@@ -17,12 +17,12 @@ Although this work has demonstrated the feasibility and effectiveness of combini
 \begin{itemize}
     \item \textbf{Integration of Error Correction Codes (ECC):}
     \begin{itemize}
-        \item \textbf{To Block RAM (BRAM):} Incorporating ECC mechanisms into on-chip memories can significantly reduce the impact of soft errors on stored data. Implementing and testing single-error correction/double-error detection (SEC-DED) codes in BRAM would provide an additional layer of fault tolerance and complement the redundancy and reconfiguration strategies.
-        \item \textbf{To Communication Buses:} Applying ECC to internal and external communication interfaces would help protect data transfers against transient faults, improving overall system integrity. The evaluation of the trade-off between added latency, resource consumption, and error coverage would be a key aspect of this study.
+        \item \textbf{To Block RAM (BRAM):} Incorporating \gls{ecc} mechanisms into on-chip memories can significantly reduce the impact of soft errors on stored data. Implementing and testing \gls{secded} codes in \gls{bram} would provide an additional layer of fault tolerance and complement redundancy and reconfiguration strategies.
+        \item \textbf{To Communication Buses:} Applying \gls{ecc} to internal and external communication interfaces would help protect data transfers against transient faults, improving overall system integrity. The evaluation of the trade-off between added latency, resource consumption, and error coverage would be a key aspect of this study.
     \end{itemize}
 
     \item \textbf{Mitigation Strategies in the Processing System (PS):}
-    Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} can enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.
+    Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} can enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.This research identified a stall condition in the \gls{axi} bus, whose mitigation represents a valuable opportunity for future improvement and could constitute a significant contribution to the field.
 
     \item \textbf{Evaluation Across Multiple \gls{fpga} Vendors:}
  Although this research has focused on an Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU,Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
