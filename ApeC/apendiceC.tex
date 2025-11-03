@@ -1,0 +1,29 @@
+%\section{SEM IP Logic Utilization}
+\label{apeC}
+
+Figure~\ref{fig:semip-logic} shows the overall logic utilization of the \gls{semip} in the final design, highlighting the proportion of FPGA resources occupied by the configuration memory scrubbing and monitoring module.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{ApeC/sem_ip_logic.png}
+    \caption{Overall logic utilization of the \acrshort{semip} in the final design, showing the amount of FPGA resources occupied, such as \acrshort{lut}, \acrshort{ff}, and internal control blocks.}
+    \label{fig:semip-logic}
+\end{figure}
+
+Figure~\ref{fig:semip-logic2} provides a detailed breakdown of the logic utilization of the \gls{semip}, separated by slice type and \gls{lut} element. It can be observed that the majority of resources correspond to combinational logic, which is characteristic of control and error-correction functions rather than sequential storage elements.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{ApeC/sem_ip_logic2.png}
+    \caption{Detailed breakdown of the \acrshort{semip} logic utilization by slice type and \acrshort{lut} element.}
+    \label{fig:semip-logic2}
+\end{figure}
+
+Finally, Figure~\ref{fig:semip-specific} presents the specific \gls{fpga} primitives required by the \gls{semip}. These include essential building blocks such as FRAME\textunderscore ECCE2 and ICAPE2.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{ApeC/sem_ip_specific.png}
+    \caption{Specific \acrshort{fpga} primitives used by the \acrshort{semip}.}
+    \label{fig:semip-specific}
+\end{figure}
