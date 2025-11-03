@@ -142,7 +142,7 @@ After initial configuration (or at any time), the processor may set the control 
 
 As illustrated  in Figure~\ref{fig:fpga_mux}, the \gls{semip} controller uses the port \gls{icap} to perform the \gls{cram} \gls{ms}. So, after the initial configuration, the processor should release \gls{pcap} and pass the control to \gls{icap}, allowing the \gls{semip} controller to monitor, detect and correct radiation-induced errors.
 
-If the processor needs to perform a partial reconfiguration in a specific region of the fabric, control must be handed back to the \gls{pcap}.
+If the processor needs to perform a partial reconfiguration in a specific region of the fabric, control must be handed over to \gls{pcap}.
 
 When using the \gls{semip} Controller, this action is not as simple as changing the mux~\cite{Ayer_XAPP517_2011,Xilinx_ICAP_PCAP_2016,Xilinx_XAPP517} configuration. The following actions should take place \cite{ZanoneSaotome2023}:
 \begin{itemize}
@@ -209,6 +209,8 @@ Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. Th
     \caption{Zoomed block diagram of the \acrshort{fir} implementation in Vivado, showing the \acrshort{dmr} architecture and the detection circuit used to verify output correctness between modules.}
     \label{fig:detail_fir}
 \end{figure}
+
+The \gls{fir} filter was chosen to validate the \gls{dmr} , because it is a widely used block in \gls{dsp} and \gls{sdr} designs. 
 
 \subsection{TMR}
 

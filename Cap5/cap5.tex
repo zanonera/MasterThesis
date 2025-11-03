@@ -60,6 +60,8 @@ Higher reconfiguration speeds could potentially be achieved using custom reconfi
 
 For comparison, the total size of the full bitstream is 3.9~Mbit, while each partial bitstream corresponding to the math block is 109~kbit, representing around only 2.8\% of the full configuration size. This significant reduction in bitstream size directly impacts the reconfiguration time, allowing partial reconfiguration to be performed considerably faster than a full device reconfiguration.
 
+This size difference makes \gls{dpr} particularly attractive as a fault-mitigation approach. If a fault is detected in any region of \gls{fpga} and is deemed uncorrectable, a partial reconfiguration can be issued while the static region remains operational. Since \gls{dpr} does not interfere with the execution of other regions, only a small portion of \gls{fpga} needs to be reprogrammed, allowing the system to recover functionality with minimal interruption.
+
 Figure~\ref{fig:menu-blank&dpr-error}(a) shows the time required for the first \gls{dpr} and the application of the blank bitstream. The blanking configuration corresponds to a partial bitstream that contains no logic, serving only as a placeholder to ensure a clean reprogramming of the device. Figure~\ref{fig:menu-blank&dpr-error}(b) illustrates the error that occurs when applying \gls{dpr} without resetting \gls{semip} after a \gls{pr} has been executed. This behavior is discussed in detail in Section~\ref{sec:cap4}, particularly in Item~\ref{itemized-actions-for-dpr&sem}.
 
 \begin{figure}[H]
@@ -80,16 +82,6 @@ Figure~\ref{fig:menu-mult&mult-ok}(a) shows the \gls{pr} of the \gls{hw} acceler
     \label{fig:menu-mult&mult-ok}
 \end{figure}
 
-Figure~\ref{fig:menu-mult-error-fi}(a) shows that the multiplication, executed on \gls{hw}, produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:menu-mult-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
-
-\begin{figure}[H]
-    \centering
-    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error.png}} 
-    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error2.png}}
-    \caption{(a) \acrshort{hw} multiplication error after the injection of a bit flip in frame C0003C440C. (b) Multiplication results obtained with different operands.}
-    \label{fig:menu-mult-error-fi}
-\end{figure}
-
 Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} acceleration region into an adder using the \gls{dpr}. This shows that the \gls{pr} process does not affect other areas of the \gls{fpga}, allowing the system to continue to operate normally. Figure~\ref{fig:menu-add&add-ok}(b) presents the correct results obtained from both additions, in \gls{hw} and \gls{sw}.
 
 \begin{figure}[H]
@@ -98,6 +90,20 @@ Figure~\ref{fig:menu-add&add-ok}(a) shows the \gls{pr} of the \gls{hw} accelerat
     \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/add-ok.png}}
     \caption{(a) Menu selection of the adder to be applied through the \acrshort{pr}. (b) Addition result verification on \acrshort{hw} and \acrshort{sw}.}
     \label{fig:menu-add&add-ok}
+\end{figure}
+
+\subsection{Manual Fault Injection}
+
+After performing the \gls{dpr}, it is possible to manually inject faults using the \gls{semip} to emulate \glspl{see}. For this purpose, the \gls{semip} is commanded via the serial interface to enter injection mode (``I''). Then, the target frame address is sent using the syntax ``N'' followed by the frame address, for example: \texttt{N C0003C440C}.
+
+Figure~\ref{fig:menu-mult-error-fi}(a) shows that the multiplication, executed on \gls{hw}, produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:menu-mult-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error.png}} 
+    \subfigure[]{\includegraphics[width=0.4\textwidth]{Cap5/menu/mult-error2.png}}
+    \caption{(a) \acrshort{hw} multiplication error after the injection of a bit flip in frame C0003C440C. (b) Multiplication results obtained with different operands.}
+    \label{fig:menu-mult-error-fi}
 \end{figure}
 
 Figure~\ref{fig:add-error-fi}(a) shows that the addition, executed on \gls{hw},  produces completely incorrect results due to a \gls{fi} targeting a critical bit in frame \texttt{C0003C440C}. It is evident that the output differs from the corresponding \gls{sw} operation and does not match the expected result based on the input operands. Figure~\ref{fig:add-error-fi}(b) presents another example using different operands, demonstrating that although the output values vary, they remain incorrect.
@@ -110,14 +116,14 @@ Figure~\ref{fig:add-error-fi}(a) shows that the addition, executed on \gls{hw}, 
     \label{fig:add-error-fi}
 \end{figure}
 
-\section{Fault-Injection Campaign Results}
-This section presents the results of the systematic fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
+\section{Automated Fault-Injection Campaign Results}
+This section presents the results of the automated fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
 
 \subsection{Scrubbing and Fault Injection with a FIR Filter}
 
 The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
 
-The idea of using \gls{fir} filters is because they are pure mathematical modules and therefore do not need any kind of reset or resynchronization after a \gls{fi} and a repair 
+Figure~\ref{fig:automated_design} illustrates the automated \gls{fi} process. In the Linux terminal, the Python script is executed with a progress bar indicating the percentage of configuration frames already tested. The red square in the figure highlights the \gls{ila} trigger. During execution of \gls{fi}, the design can be monitored through this interface, allowing verification of the internal signals and whether they are affected by the injected bit flip. It is important to note that the monitoring via \gls{ila} is optional and serves only to visual inspect the faults. The design automatically transmits the test results over the serial interface, while the script handles fault injection, output verification, and logging of the frame address and the corresponding results.
 
 \begin{figure}[H]
     \centering
@@ -126,12 +132,16 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
     \label{fig:automated_design}
 \end{figure}
 
+Figure~\ref{fig:error-injection-fir} shows in detail the interface of the automation script. On the left side of the screen, it is possible to observe that the iteration speed is 63.57~iterations/s. This value must be divided by twelve to obtain the actual injection speed. The reason for this is the number of characters in each line of the input file used for fault injection. Each frame address consists of ten characters (e.g., \texttt{C0003C440C}), and each line in the file includes a line feed and a carriage return symbol, totaling twelve characters per injection command.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-injection.png}
     \caption{Python script and corresponding visualization showing the real-time progress of the \acrshort{fi} campaign}
     \label{fig:error-injection-fir}
 \end{figure}
+
+Figure~\ref{fig:fir_filter_equal} shows an example of a correct visualization of both filters. The error output is equal to zero, since both filters produce exactly the same values for each sample.
 
 \begin{figure}[H]
     \centering
@@ -140,6 +150,8 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
     \label{fig:fir_filter_equal}
 \end{figure}
 
+Figure~\ref{fig:fir_filter_error} shows an example of an incorrect visualization of both filters. The error output is equal to one, as one of the filters produces a high-peaked response, resulting in different values for each sample.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/dut_fir/error-fir-filter.png}
@@ -147,7 +159,14 @@ The idea of using \gls{fir} filters is because they are pure mathematical module
     \label{fig:fir_filter_error}
 \end{figure}
 
-The proposed injection system also presents some limitations compared to other approaches. Running at about 0.2 s per injection in a single test-board environment (fully parallel execution is possible by adding more boards), it is slower than non fine-grain software simulators, such as GEM5 [32], virtual platforms like SOFIA [34] and, potentially, RTL-modified based testing [22] on \gls{fpga}. However, equivalent state-of-the-art fine-grain software RTL simulators run at as low as 1 KHz on modern CPUs [49,50] making simulation at this granularity much slower than the proposed one \cite{Leon2024_VeeR_EH1_SEU}.
+In a fault injection experiment, the failure sensitivity \( r \) is defined as the ratio between the number of resulting design failures \( k \) and the total number of injected faults \( n \), as expressed in Equation~\ref{eq:failure_sensitivity} \cite{Wilson2025}.
+
+\begin{equation}
+r = \frac{k}{n}
+\label{eq:failure_sensitivity}
+\end{equation}
+
+Table~\ref{tab:fir_fi_summary} presents the general fault injection results for the \gls{fir} \gls{dut}. It shows the total number of essential bits within the Pblock region where the \gls{dut} was implemented. Using Equation~\ref{eq:failure_sensitivity}, the failure sensitivity \( r \) obtained is approximately \( 1.1 \times 10^{-3} \).
 
 \begin{table}[H]
 \centering
@@ -166,21 +185,56 @@ Critical bits detected: AXI bus lock & \gls{na} \\
 \end{tabular}
 \end{table}
 
+It is important to note that the \gls{semip} operates with \gls{secded} \gls{ecc}. As shown in Table~\ref{tab:fir_fi_summary}, all single-bit faults injected were successfully corrected, allowing the \gls{fir} to continue operating seamlessly.
+
+To further assess the system’s resilience, a set of \gls{mbu} campaigns was conducted to evaluate how long the design could sustain operation under random fault injection in the \gls{fpga} \gls{cram}. After only 50 bit flips, the \gls{fir} exhibited its first error. Since the \gls{semip} can correct only one error per frame, multiple upsets began to accumulate, eventually leading to system failure. After 3,564 injections, the design ceased functioning entirely—even the serial communication signal was corrupted, rendering the system completely inoperative.
+
+\begin{table}[H]
+\centering
+\caption{Summary of \gls{mbu} fault injection campaign results for the \gls{fir} design.}
+\label{tab:fir_fi_summary3}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{l r}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total \gls{fpga} configuration bits (\gls{cram}) & 25,697,632 \\
+Total essential bits in the \gls{fir} region & \gls{na} \\
+Total injected bits & 3,615 \\
+Injections without error & 50 \\
+Injections with error & 3,564 \\
+Injections without response & 1 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Cap5/dut_fir/total-collapse-fir.png}
+    \caption{Random \acrlong{fi} campaign on the \gls{fir} design showing progressive error accumulation with \acrlong{ms} disabled.}
+    \label{fig:total-collapse-fir}
+\end{figure}
+
+Table~\ref{tab:fir_fi_summary3} summarizes the results obtained from the random fault injection campaign until the system became nonfunctional. Figure~\ref{fig:total-collapse-fir} illustrates the resulting build-up of errors, where the entire design becomes defective. The signals shown can be compared with those in Figure~\ref{fig:fir_filter_equal} to observe how far the defective outputs deviate from the correct reference behavior.
+
+Using Equation~\ref{eq:failure_sensitivity}, the failure sensitivity \( r \) obtained is approximately \( 0.98\).
+
 \subsection{DPR, Scrubbing and Fault Injection with Mathematical Functions}
 
 After the successful implementation of scrubbing using \gls{semip} with \gls{dmr} \gls{fir} filters, the next design iteration incorporated \gls{dpr} into the system functionalities. To fully exploit the resources of \gls{soc}, a \gls{axi} controlled multiplier/adder module was developed. These hardware functions can be selected via a user menu and dynamically reconfigured within \gls{fpga}.
 
 The same automated \gls{fi} campaign was applied; however, during the first attempt, it was not possible to inject faults into all essential bits of the \gls{pr} region, as some injections caused the \gls{ps} ARM processor to stall.
 
-After 21,809 fault injections, the automated script stopped receiving responses from the \gls{dut}. Since the device ceased sending status feedback, the script was manually terminated.
+As presented in Table~\ref{tab:math_fi1_summary}, after 21,809 fault injections, the automated script stopped receiving responses from \gls{dut}. Since the device ceased sending status feedback, the script was manually terminated.
 
-Figure~\ref{fig:mult-list-wo-reprogram} presents the output of the statistical report script, showing 16,000 configuration frames affected by bit flips that caused the \gls{dut} to stop responding.
+Figure~\ref{fig:mult-list-wo-reprogram} and Table~\ref{tab:math_fi1_summary} presents the output of the statistical report script, showing 16,000 configuration frames affected by bit flips that caused \gls{dut} to stop responding.
 
 Initially, all these faults were assumed to correspond to a critical failure that stopped communication with the \gls{dut}. However, a detailed analysis revealed that a bit flip in the \gls{fpga} \gls{cram} corrupted the \gls{axi} bus, leading to a processor stall. The results of this first \gls{fi} campaign are summarized in Table~\ref{tab:math_fi1_summary}.
 
-Once one of the injected frames caused the ARM processor to stall, all subsequent fault injections were affected, as the \gls{axi} bus stopped working, preventing  further communication with \gls{dut}.
+Once one of the injected frames caused the ARM processor to stall, all subsequent fault injections were affected, as the \gls{axi} bus stopped working, preventing  further communication with \gls{dut}. In other words, 16,000 error were flagged as unresponsive, but since the first one stalled the processor, the other 15,999 injection are meaningless.
 
-The processor stalls is caused by the \gls{axi} bus, which operates based on a strict valid/ready signal's handshake between the master (e.g., ARM \gls{ps}) and the slave (e.g., the custom \gls{dpr} \gls{ip} core in the \gls{pl}). If the logic in \gls{pl} becomes corrupted due to a bit flip—for instance, in the AXI interface registers, finite state machines, or control logic of the reconfigurable region—the \texttt{ready} or \texttt{valid} signals may get stuck in an asserted or deasserted state. Since the \gls{axi} protocol does not implement any form of timeout, when the downstream device fails to complete the transaction, the ARM processor waits indefinitely for a response, effectively freezing the execution of the software.
+The processor stalls is caused by the \gls{axi} bus, which operates based on a strict valid/ready signal's handshake between the master (e.g., ARM \gls{ps}) and the slave (e.g., the custom \gls{dpr} \gls{ip} core in the \gls{pl}). If the logic in \gls{pl} becomes corrupted due to a bit flip, for instance, in the AXI interface registers, finite state machines, or control logic of the reconfigurable region—the \texttt{ready} or \texttt{valid} signals may get stuck in an asserted or deasserted state. Since the \gls{axi} protocol does not implement any form of timeout, when the downstream device fails to complete the transaction, the ARM processor waits indefinitely for a response, effectively freezing the execution of the software.
 
 It is important to note that this type of failure cannot be resolved by scrubbing. When the valid or ready signal is not properly asserted toward the \gls{ps}, it becomes necessary to either re-establish these signals or reset the processor, allowing the \gls{axi} bus to restart all transactions from the beginning. A practical mitigation for this issue is the inclusion of a watchdog timer that automatically resets the processor in the event of a stall.
 
@@ -224,7 +278,9 @@ Critical bits detected: AXI bus lock & 3 \\
 \end{tabular}
 \end{table}
 
-As shown in Table~\ref{tab:math_fi2_summary}, all injected faults were single-bit flips, and since the \gls{semip} operates with a \gls{secded} \gls{ecc}, all 29 critical bits that caused errors in the multiplication performed by the \gls{hw} were successfully corrected by scrubbing. However, the three critical bits that caused the \gls{axi} bus to lock were only corrected after resetting the \gls{ps} and performing a full reprogramming of the \gls{fpga}.
+As shown in Table~\ref{tab:math_fi2_summary}, all injected faults were single-bit flips, and since \gls{semip} operates with a \gls{secded} \gls{ecc}, all 29 critical bits that caused errors in multiplication performed by \gls{hw} were successfully corrected by scrubbing. However, the three critical bits that caused the \gls{axi} bus to lock were only corrected after resetting \gls{ps} and performing a full reprogramming of \gls{fpga}.
+
+Using Equation~\ref{eq:failure_sensitivity}, the failure sensitivity \( r \) obtained for this second experiment is approximately \( 0.41 \times 10^{-3} \) for multiplication error and \( 0.043 \times 10^{-3} \) for \gls{axi} stall.
 
 \begin{figure}[H]
     \centering
@@ -244,12 +300,43 @@ Figure~\ref{fig:mult-list-reprogram} shows only a subset of the addresses that c
 
 \section{RISC-V with Triple Modular Redundancy}
 
+Continuing the evaluation of \gls{nmr}, the \gls{dmr} configuration was extended to a \gls{tmr} scheme. For this purpose, a different \gls{dut} was selected: the \gls{riscv} processor. The chosen implementation of the \gls{cpu} was the open-source PicoRV32I core.
+
+Table~\ref{tab:tmr_resource_comparison} presents the resource utilization results comparing the simplex and \gls{tmr} implementations of the PicoRV32I \gls{cpu}. The triplication of the processor and inclusion of word voters resulted in increased resource consumption relative to the baseline design. Synthesis performed in Vivado~2018.3 reported a 3.09$\times$ increase in Slice LUT usage and a 3.35$\times$ increase in Slice Flip-Flops.
+
+\begin{table}[H]
+\centering
+\caption{Resource utilization comparison between simplex and \gls{tmr} implementations of the PicoRV32I \gls{cpu}.}
+\label{tab:tmr_resource_comparison}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lccc}
+\hline
+\textbf{Resource} & \textbf{Simplex (1 Core)} & \textbf{\gls{tmr} (3 Cores)} & \textbf{Increase Ratio} \\
+\hline
+Slice LUTs & 887 & 2,737 & 3.09 \\
+Slice Flip-Flops (FFs) & 517 & 1,731 & 3.35 \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Simulated Fault Injection}
+
+In this case, the \gls{fi} method was performed through simulation using the mutant-based approach. This method was selected to evaluate the fault injection time and to compare the results with those obtained from hardware-based emulation.
+
+Figure~\ref{fig:risc-simul-hw-console} shows the simulation results of the \gls{dut}. The console output displays the greeting message generated by a simple C-written firmware, executed by each \gls{cpu} core. The message output is word-voted, and since this is a \gls{tmr} implementation, the system can mask a fault in up to one of the modules.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Cap5/rv_simul/simulation_result_hello_world.png}
     \caption{Self-check simulation setup in which the processor cores execute test firmware transmitting the message “Hello World” through the serial output interface.}
     \label{fig:risc-simul-hw-console}
 \end{figure}
+
+% ===========================
+% No Fault Case
+% ===========================
+Figure~\ref{fig:no-riscv-fault} illustrates the state of the simulation without injection of faults. In this scenario, all three cores execute the same firmware, producing identical outputs. The voter therefore outputs the correct value, and no fault condition is observed.
 
 \begin{figure}[H]
     \centering
@@ -258,12 +345,22 @@ Figure~\ref{fig:mult-list-reprogram} shows only a subset of the addresses that c
     \label{fig:no-riscv-fault}
 \end{figure}
 
+% ===========================
+% Single Fault Case
+% ===========================
+Figure~\ref{fig:1-riscv-fault} presents the case where a single bit flip was injected into core~1. Even though one core produces an incorrect result, the majority voter successfully masks the fault, and the overall system output remains correct. The serial interface output and memory write signals confirm proper operation, demonstrating the effectiveness of the \gls{tmr} scheme in tolerating single faults.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/1_module_fault.png}
     \caption{Single fault case showing a bit flip injected in core 1 (A input). Despite the injected error, the serial interface output and memory write signals remain correct due to fault masking by the word voter (signal OUT).}
     \label{fig:1-riscv-fault}
 \end{figure}
+
+% ===========================
+% Double Fault Case
+% ===========================
+Figure~\ref{fig:2-riscv-fault} shows the scenario in which two cores experience the same injected error. In this case, the voted output becomes incorrect, preventing the system from booting properly and generating the expected “Hello World” message. This shows that when more than one module is affected simultaneously, the \gls{tmr} architecture cannot maintain functional correctness.
 
 \begin{figure}[H]
     \centering
@@ -272,12 +369,18 @@ Figure~\ref{fig:mult-list-reprogram} shows only a subset of the addresses that c
     \label{fig:2-riscv-fault}
 \end{figure}
 
+% ===========================
+% Multiple Fault Case
+% ===========================
+Finally, Figure~\ref{fig:3-riscv-fault} represents the multiple-fault condition, where all three processor cores exhibit different faulty outputs. As a result, no valid majority can be established, and the ERROR signal is asserted, indicating a complete divergence among the redundant modules.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/3_modules_diff_faults.png}
     \caption{Multiple fault scenario: all cores are affected, preventing a valid majority vote. The ERROR signal indicates divergence among the three modules.}
     \label{fig:3-riscv-fault}
 \end{figure}
+
 
 \section{Impact of Mitigation Techniques}
 The results obtained after implementing the proposed fault-mitigation strategies are discussed. Comparisons are made between unprotected and protected designs, focusing on improvements in fault coverage, error recovery, and reliability metrics.
@@ -287,6 +390,8 @@ This section compares the proposed solution to similar works in the literature. 
 
 \section{Discussion of Findings}
 The key findings are synthesized and interpreted in terms of practical implications. The trade-offs between reliability, performance, and resource consumption are critically assessed, providing information for future improvements.
+
+
 
 As discussed in \textcite{Fibichi2019}, \gls{fi} systems that interface through slower serial communication links, such as the USB-to-serial converter used in this research, are constrained by the latency introduced by the software and hardware communication stack. The minimum achievable duration of the fault injection sequence achieved by \textcite{Fibichi2019} is reported to be 20 milliseconds. The average speed achieved by this research is 6 bit flip per second.
 
