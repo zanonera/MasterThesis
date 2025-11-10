@@ -473,9 +473,9 @@ This section discusses the general impact of the mitigation strategies implement
 
 \subsection{Fault Coverage and Failure Sensitivity}
 
-The results obtained from the \gls{fir} and math function tests clearly demonstrate that fault coverage is strongly influenced by the adopted mitigation mechanisms. In the unprotected \gls{fir} design, the first failure occurred after only 50 bit flips during random fault injection in \gls{cram}. Since \gls{semip} operating under \gls{secded} \gls{ecc} can correct only one error per frame, the accumulation of multi-bit upsets (\glspl{mbu}) caused the system to collapse after 3,564 injections, rendering even the serial interface inoperative. The corresponding failure sensitivity, computed as \(r = k/n\), reached approximately \(r = 0.98\), indicating that nearly every injected fault at this stage produced an observable malfunction.
+The results obtained from the \gls{fir} and math function tests clearly demonstrate that fault coverage is strongly influenced by the mitigation mechanisms adopted. In the unprotected \gls{fir} design, the first failure occurred after only 50 bit flips during random fault injection in \gls{cram}. Since \gls{semip} operating under \gls{secded} \gls{ecc} can correct only one error per frame, the accumulation of multi-bit upsets (\glspl{mbu}) caused the system to collapse after 3,564 injections, rendering even the serial interface inoperative. The corresponding failure sensitivity, computed as \(r = k/n\), reached approximately \(r = 0.98\), indicating that nearly every injected fault at this stage produced an observable malfunction.
 
-When scrubbing was enabled and coupled with redundancy, the results improved significantly. All single-bit upsets were transparently corrected by the \gls{semip}, and the \gls{fir} continued to operate seamlessly. This confirms that the combination of internal scrubbing and design-level redundancy provides efficient protection against transient \glspl{seu}, substantially reducing the effective failure rate.
+When scrubbing was enabled and coupled with redundancy, the results improved significantly. All single-bit upsets were transparently corrected by \gls{semip}, and \gls{fir} continued to operate seamlessly. This confirms that the combination of internal scrubbing and design-level redundancy provides efficient protection against transient \glspl{seu}, substantially reducing the effective failure rate.
 
 \subsubsection{Fault Coverage Evaluation}
 
@@ -499,7 +499,7 @@ Table~\ref{tab:fault_coverage_summary} summarizes the calculated fault coverage 
 \toprule
 \textbf{Design / Mitigation Level} & \textbf{Total Injections ($n$)} & \textbf{Failures ($k$)} & \textbf{Fault Coverage (\%)} \\
 \midrule
-\gls{fir} (no scrubbing, MBU)       & 3,615   & 3,564   & 1.4   \\
+\gls{fir} (no scrubbing, \gls{mbu}) & 3,615   & 3,564   & 1.4   \\
 \gls{fir} (\gls{semip} scrubbing)   & 31,020  & 34      & 99.9  \\
 Multiplier (initial)                & 37,809  & 16,007  & 57.7  \\
 Multiplier (with recovery)          & 70,182  & 32      & 99.95 \\
