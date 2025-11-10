@@ -1,18 +1,20 @@
 %\section{Conclusions}
 \label{sec:cap6}
 
-This work presented a comprehensive investigation into the reliability of \gls{sram}-based \glspl{fpga} subjected to fault-prone environments, with an emphasis on experimental \acrlong{fi} and dynamic fault recovery. A benchmark circuit was implemented and evaluated under controlled fault injection campaigns, allowing the assessment of fault susceptibility, detection efficiency, and recovery mechanisms. The experimental results demonstrated that integrating redundancy-based fault masking with runtime reconfiguration strategies can significantly improve system availability and fault coverage without requiring full system shutdown.
+This work presented a comprehensive investigation of the reliability of \gls{sram}-based \glspl{fpga} subjected to fault-prone environments, with an emphasis on experimental \acrlong{fi} and dynamic fault recovery. A benchmark circuit was implemented and evaluated under controlled \gls{fi} campaigns, allowing the assessment of fault susceptibility, detection efficiency, and recovery mechanisms. The experimental results demonstrated that integrating redundancy-based fault masking with runtime reconfiguration strategies can significantly improve system availability and fault coverage without requiring full system shutdown.
 
 The results indicate that \gls{nmr}, especially the triplicated \gls{riscv} implemented with \gls{cgtmr}, can effectively mask faulty modules through hardware redundancy; however, complementary techniques such as memory scrubbing or \gls{dpr} are required to prevent error accumulation and correct faults as they arise.
 
 The proposed methodology proved to be effective for systematically evaluating \gls{fpga} reliability, offering a reproducible approach for both academic research and industrial validation. In addition, the study confirmed that \acrlong{dpr} is a viable solution to mitigate the effects of faults in critical modules while minimizing downtime and resource overhead.
 
-Although the results were promising, the research also revealed limitations regarding reconfiguration latency, hardware resource usage, and the scalability of the proposed approach to more complex systems. Future work can explore adaptive redundancy schemes, machine-learning-based fault prediction, and the application of the proposed methodology to heterogeneous \gls{fpga}-\gls{soc} platforms.
+Although the results were promising, the research also revealed limitations in terms of reconfiguration latency, hardware resource usage, and the scalability of the proposed approach to more complex systems. Future work can explore adaptive redundancy schemes, machine-learning-based fault prediction, and the application of the proposed methodology to heterogeneous \gls{fpga}-\gls{soc} platforms.
 
-Ultimately, this dissertation contributes to advancing the understanding of fault behavior in \gls{sram}-based \glspl{fpga} and demonstrates practical pathways to improving their reliability in safety-critical and high-availability applications.
+Ultimately, this dissertation contributes to advancing the understanding of fault behavior in \gls{sram}-based \glspl{fpga} and demonstrates practical paths to improve their reliability in high-availability and safety-critical applications.
 
 \section{Future works}
 Although this work has demonstrated the feasibility and effectiveness of combining N-Modular Redundancy (NMR), Dynamic Partial Reconfiguration (DPR), and fault injection to enhance the reliability of \gls{sram}-based \glspl{fpga}, several research directions remain open for further exploration:
+
+%Example of BRAM Scrubbing: https://www.adiuvoengineering.com/post/microzed-chronicles-memory-scrubbing
 
 \begin{itemize}
     \item \textbf{Integration of Error Correction Codes (ECC):}
@@ -24,14 +26,21 @@ Although this work has demonstrated the feasibility and effectiveness of combini
     \item \textbf{Mitigation Strategies in the Processing System (PS):}
     Extending fault-tolerant techniques to embedded \gls{ps} (e.g., ARM cores in \gls{soc} \gls{fpga} can enhance end-to-end reliability. Potential approaches include software-level redundancy, checkpoint/restart mechanisms, or selective hardening of critical software components \cite{8088400,7948063}.This research identified a stall condition in the \gls{axi} bus, whose mitigation represents a valuable opportunity for future improvement and could constitute a significant contribution to the field.
 
-    \item \textbf{Evaluation Across Multiple \gls{fpga} Vendors:}
+    \item \textbf{Evaluation among Multiple \gls{fpga} Vendors:}
  Although this research has focused on an Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU,Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
 
     \item \textbf{Scalability and Resource Optimization:}
-    As the \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work can explore automated design-space exploration to optimize the balance between fault coverage, resource consumption and system performance.
+    As \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work can explore automated design-space exploration to optimize the balance between fault coverage, resource consumption, and system performance.
 
     \item \textbf{In-Field Deployment and Long-Term Testing:}
     Extending the methodology to real operational environments, such as radiation test facilities \cite{Wilson2019Neutron} or mission-critical field deployments, would allow validation of laboratory results under practical conditions \cite{Adria2023}.
+
+    \item \textbf{Integration of External Scrubbing Mechanisms:}  
+    Future implementations should explore external scrubbing architectures that operate independently of the internal configuration ports of \gls{fpga}. Such systems, implemented through dedicated microcontrollers or companion \gls{fpga}, can continuously monitor, correct, and reprogram configuration frames without interfering with user logic. This approach would increase resilience against configuration upsets, eliminate \gls{spof}, and complement the internal strategy based on \gls{semip} used in this study.
+
+    \item \textbf{Secure Storage of the Golden Bitstream:}
+    Given that the golden bitstream is essential for system recovery, future work should investigate secure, redundant, and tamper-proof storage solutions. Possible strategies include the use of \gls{otp} memories, radiation-tolerant \gls{rom} or redundant flash devices equipped with integrity verification schemes (e.g., CRC, hash or digital signatures). Ensuring the integrity and accessibility of this reference image is crucial for the long-term reliability of the mission.
+
 \end{itemize}
 
 \section{Publications}

@@ -35,15 +35,21 @@ The \glspl{lut} can also be configured for other structures, including the so-ca
 
 \begin{figure}[ht]
 \centering
+\includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
+\caption{General structure of an \acrshort{fpga}. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
 \includegraphics[width=0.75\textwidth]{Cap3/Arrangement-of-Slices-within-the-CLB.png}
 \caption{Structure of a \acrshort{clb} in an AMD's 7-series \acrshort{fpga}. Reproduced from \textcite{AMD_UG474}.}\label{fpga-arch-clb-slice-amd}
 \end{figure}
 
 \subsubsection{Routing and Interconnect Resources}
-These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks and embedded resources to implement complex systems.
+These resources, including \glspl{sb}, \glspl{cb}, and \glspl{pip}, form a network that electrically interconnects the \glspl{clb}, I/O blocks and embedded resources to implement complex systems, as shown in Figure~\ref{fpga-arch}.
 
 \subsubsection{Input/Output Blocks (IOBs)}
-These blocks are positioned around the logic core to interface the internal logic with the external environment, handling input and output data.
+These blocks are positioned around the logic core to interface the internal logic with the external environment, handling input and output data, as shown in Figure~\ref{fpga-arch}.
 
 \subsubsection{Specialized Heterogeneous Resources}
 Modern \glspl{fpga} also includes various specialized resources beyond the basic structure, such as:
@@ -56,13 +62,7 @@ Modern \glspl{fpga} also includes various specialized resources beyond the basic
 
 As illustrated in Figure~\ref{fpga-arch}, the \gls{fpga} architecture consists of configurable logic blocks, routing resources, and \gls{io} blocks.
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.75\textwidth]{Cap3/fpga-structure.png}
-\caption{General structure of an \acrshort{fpga}. Adapted from \textcite{Marioli2010}.}\label{fpga-arch}
-\end{figure}
-
-As illustrated in Figure~\ref{fpga-column-asmbl}, depending on the device family, the \gls{fpga} architecture may include specialized hardware resources. The different domains represent the various device families, each optimized for specific applications and offering distinct architectural features~\cite{AMD_UG474}. The figure also shows that AMD’s 7-series devices are entirely based on the columnar layout provided by the \gls{asmbl} architecture.
+As illustrated in Figure~\ref{fpga-column-asmbl}, depending on the device family, the \gls{fpga} architecture may include specialized hardware resources. The different domains represent the various families of devices, each optimized for specific applications and offering distinct architectural features~\cite{AMD_UG474}. The figure also shows that AMD’s 7-series devices are entirely based on the columnar layout provided by the \gls{asmbl} architecture.
 
 \begin{figure}[H]
 \centering
@@ -553,7 +553,7 @@ A modern design-flow-level mitigation approach, proposed by \textcite{Wilson2025
     \item It also enables \textit{domain striping}, the physical separation of redundant modules, and prevents optimization tools from merging triplicated elements such as global clock buffers, thereby maintaining redundancy integrity.
 \end{itemize}
 
-Physical protection and mitigation strategies, such as shielding and material hardening, are commonly employed to reduce radiation-induced effects at the device level by attenuating or blocking incident particles, thereby minimizing the probability of single-event phenomena. Although these techniques play an important role in improving the resilience of devices, this research does not focus on such approaches. Mitigations based on external barriers or material hardening are beyond the scope of this work, which instead emphasizes architectural and logic-level strategies, particularly those involving \gls{nmr} and \gls{dpr}.
+Physical protection and mitigation strategies, such as shielding and material hardening, are commonly employed to reduce radiation-induced effects at the device level by attenuating or blocking incident particles, thereby minimizing the probability of single-event phenomena. Although these techniques play an important role in improving the resilience of devices, this research does not focus on such approaches. Mitigation based on external barriers or material hardening is beyond the scope of this work, which instead emphasizes architectural and logic-level strategies, particularly those involving \gls{nmr} and \gls{dpr}.
 
 \section{Summary and Relevance to This Work}
 \label{sec:cap3-summary}
@@ -566,13 +566,13 @@ Among the mitigation techniques analyzed, \gls{nmr} emerged as a fundamental red
 
 \gls{dpr} was therefore introduced as a dynamic reconfiguration strategy that enables the repair of faulty modules in the system without interrupting the operation of unaffected regions. By isolating reconfigurable partitions and managing partial bitstreams, \gls{dpr} provides a foundation for self-healing hardware architectures. Its integration with redundancy allows faulty replicas to be reprogrammed on demand, effectively combining fault masking with fault recovery.
 
-\gls{ms} was discussed as a preventive mechanism that periodically restores the integrity of the \gls{fpga} bitstream. Although effective in avoiding error accumulation, scrubbing alone cannot guarantee functional recovery from faults affecting more than one bit per frame at a given time, such as in a \gls{mbu} or in memories such as \gls{bram}. This reinforces the need for a hybrid approach that integrates scrubbing with redundancy and dynamic reconfiguration.
+\gls{ms} was discussed as a preventive mechanism that periodically restores the integrity of \gls{fpga}'s bitstream. Although effective in avoiding error accumulation, scrubbing alone cannot guarantee functional recovery from faults affecting more than one bit per frame at a given time, such as in a \gls{mbu} or in memories such as \gls{bram}. This reinforces the need for a hybrid approach that integrates scrubbing with redundancy and dynamic reconfiguration.
 
 Finally, the principles of \gls{fi} were explored as an experimental means to evaluate the dependability of fault-tolerant designs. \gls{fi} enables the controlled emulation of radiation effects, allowing quantitative analysis of fault coverage, recovery efficiency, and system resilience. In the context of this work, \gls{fi} serves as the primary validation tool for assessing the effectiveness of the proposed mitigation techniques, rather than a corrective mechanism. In other words, \gls{fi} is used for validation, not correction, providing empirical evidence of the robustness of the system without altering its operational behavior or configuration.
 
-In summary, the theoretical elements presented in this chapter converge to support the design strategy adopted in this dissertation: the combination of spatial redundancy (\gls{nmr}), adaptive reconfiguration (\gls{dpr}), and continuous fault detection through scrubbing and \gls{fi}. These complementary techniques form the foundation of the proposed fault-tolerant architecture, which is detailed in chapter~\ref{sec:cap4}, where their practical implementation, integration, and experimental validation are described.
+In summary, the theoretical elements presented in this chapter converge to support the design strategy adopted in this dissertation: the combination of spatial redundancy (\gls{nmr}), adaptive reconfiguration (\gls{dpr}), and continuous fault detection through \gls{ms} and \gls{fi}. These complementary techniques form the foundation of the proposed fault-tolerant architecture, which is detailed in chapter~\ref{sec:cap4}, where their practical implementation, integration, and experimental validation are described.
 
-Figure \ref{fig:nmr-dpr-scrubbing-fi-hierarchy} illustrates how the mitigation techniques discussed complement each other to achieve system dependability. Spatial redundancy ensures fault masking, dynamic partial reconfiguration enables recovery, and scrubbing maintains configuration integrity—together forming a hybrid architecture evaluated through systematic fault-injection experiments.
+Figure~\ref{fig:nmr-dpr-scrubbing-fi-hierarchy} illustrates how the mitigation techniques discussed complement each other to enhance the general dependability of the system. Spatial redundancy provides fault masking, \acrlong{dpr} enables rapid recovery of faulty regions, and \acrlong{ms} preserves the integrity of \gls{cram} through continuous monitoring of frame's \gls{ecc}. When combined, these mechanisms form a hybrid fault-tolerant architecture, experimentally evaluated through systematic \acrlong{fi} campaigns.
 
 \usetikzlibrary{calc}
 

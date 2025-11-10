@@ -3,11 +3,11 @@
 
 This chapter details the methodology adopted to design, implement and validate the proposed fault-tolerance approach. Describes the workflow, design tools, experimental setup, and evaluation strategies applied throughout development.
 
-For easier development and debugging, the entire design was broken down into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested independently and, ultimately, all mitigations were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
+For easier development and debugging, the entire design was divided into modules and developed independently before integrating it all together into one final architecture. For this, each mitigation was developed and tested independently and, ultimately, all mitigation were implemented in a final solution with a \gls{tmr} \gls{riscv} 32I.
 
 \section{FPGA Platform and Toolchain}
 \label{sec:cap4-material}
-This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, \gls{dpr} capabilities, and compatibility with on-chip fault injection tools. The toolchain description includes synthesis tools, placement-and-routing strategies, and configuration methods.
+This section presents the selected \gls{fpga} device, development board, and software toolchain. The hardware platform was chosen considering resource availability, \gls{dpr} capabilities, and compatibility with on-chip fault injection tools. The description of the toolchain includes synthesis tools, placement-and-routing strategies, and configuration methods.
 
 \begin{table}[ht]
 \caption{List of \acrlong{sw} development tools employed in this work}
