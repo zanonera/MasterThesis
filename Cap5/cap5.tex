@@ -395,7 +395,7 @@ Finally, Figure~\ref{fig:3-riscv-fault} represents the multiple-fault condition,
 The emulated \gls{fi} campaign using the \gls{semip} was performed on the \gls{tmr}-protected \gls{riscv} architecture. 
 
 The \gls{fi} process targeted the configuration frames corresponding to the region where Core~\#1 was implemented. 
-The design was physically divided into three \textit{pblocks}: one dedicated to the serial interface (UART), another shared between Cores~\#2 \&~\#3, and one exclusively reserved for Core~\#1, as shown in Figure~\ref{fig:2pblocks}.
+The design was physically divided into three \textit{pblocks}: one dedicated to the serial interface (UART), another shared between Cores~\#2 \&~\#3, and one exclusively reserved for Core~\#1 (My \acrshort{dut} pblock in region X1Y0), as shown in Figure~\ref{fig:2pblocks}.
 
 \begin{figure}[H]
     \centering
@@ -512,7 +512,7 @@ Multiplier (with recovery)          & 70,182  & 32      & 99.95 \\
 
 As shown in Table~\ref{tab:fault_coverage_summary}, fault coverage increased from only 1.4\% in the unprotected design to 99.9\% when internal scrubbing was enabled. The combination of scrubbing, processor reset, and reprogramming achieved a near-complete recovery rate of 99.95\%, confirming the effectiveness of the proposed multi-layered mitigation strategy to enhance the reliability based on \gls{sram}-based \gls{fpga}.
 
-The results presented for the \gls{riscv} system presented in Table~\ref{tab:fault_coverage_summary} show that when faults were injected exclusively into the \gls{cpu} Core~\#1 region, all detected errors in the voters were successfully masked, allowing the system to continue operating without functional failure. However, when random \gls{fi} campaigns were performed throughout the \gls{cram}, the system experienced a failure after approximately 1,235 injected bit flips.
+The results presented for the \gls{riscv} system in Table~\ref{tab:fault_coverage_summary} show that when faults were injected exclusively into the \gls{cpu} Core~\#1 region, all detected errors in voters were successfully masked, allowing the system to continue operating without functional failure. However, when random \gls{fi} campaigns were carried out throughout \gls{cram}, the system experienced a failure after approximately 1,235 injected bit flips.
 
 \subsection{Error Recovery and System Availability}
 
