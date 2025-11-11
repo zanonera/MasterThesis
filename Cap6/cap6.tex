@@ -1,7 +1,7 @@
 %\section{Conclusions}
 \label{sec:cap6}
 
-This work presented a comprehensive investigation of the reliability of \gls{sram}-based \glspl{fpga} subjected to fault-prone environments, with an emphasis on experimental \acrlong{fi} and dynamic fault recovery. A benchmark circuit was implemented and evaluated under controlled \gls{fi} campaigns, allowing the assessment of fault susceptibility, detection efficiency, and recovery mechanisms. The experimental results demonstrated that integrating redundancy-based fault masking with runtime reconfiguration strategies can significantly improve system availability and fault coverage without requiring full system shutdown.
+This work presented a comprehensive investigation of the reliability of \gls{sram}-based \glspl{fpga} subjected to fault-prone environments, with an emphasis on experimental \acrlong{fi} and dynamic fault recovery. A benchmark circuit was implemented and evaluated under controlled \gls{fi} campaigns, allowing the assessment of fault susceptibility, detection efficiency, and recovery mechanisms. The experimental results demonstrated that integrating redundancy-based fault masking with runtime reconfiguration strategies can significantly improve system availability and recovery coverage without requiring full system shutdown.
 
 The results indicate that \gls{nmr}, especially the triplicated \gls{riscv} implemented with \gls{cgtmr}, can effectively mask faulty modules through hardware redundancy; however, complementary techniques such as memory scrubbing or \gls{dpr} are required to prevent error accumulation and correct faults as they arise.
 
@@ -30,7 +30,7 @@ Although this work has demonstrated the feasibility and effectiveness of combini
  Although this research has focused on an Xilinx Series 7 Zynq device, reliability characteristics, reconfiguration capabilities, and resource utilization vary between vendors and other device families \cite{Intel_AN866_SEU,Intel_SEU_Support}. A comparative study using devices from different manufacturers would help generalize the proposed methodology, providing broader insights into portability and performance trade-offs.
 
     \item \textbf{Scalability and Resource Optimization:}
-    As \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work can explore automated design-space exploration to optimize the balance between fault coverage, resource consumption, and system performance.
+    As \gls{nmr} and \gls{dpr} techniques introduce additional hardware overhead, future work can explore automated design-space exploration to optimize the balance between recovery coverage, resource consumption, and system performance.
 
     \item \textbf{In-Field Deployment and Long-Term Testing:}
     Extending the methodology to real operational environments, such as radiation test facilities \cite{Wilson2019Neutron} or mission-critical field deployments, would allow validation of laboratory results under practical conditions \cite{Adria2023}.

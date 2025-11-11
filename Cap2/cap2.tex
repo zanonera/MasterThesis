@@ -32,7 +32,7 @@ The \emph{Careful COTS} approach, studied in \textcite{Barbosa2021}, relies on t
 
 \textcite{Mousavi2023_MTTR_FPGA_Scrubbing} focused on reducing the \gls{mttr} of \gls{sram}-based \glspl{fpga} by analyzing their \gls{seu} sensitivity. Although scrubbing remains the most effective technique for repairing \glspl{seu} in \gls{cram}, it is often time-consuming, especially in radiation-prone environments. The study introduced four precision levels, circuit, essential, critical, and highly critical bits, to classify the configuration bits according to their impact on the fault. Based on this classification, two advanced scrubbing methods were proposed: precision level-aware scrubbing, which prioritizes criticality to minimize \gls{mttr}, and precision level-aware scatter scrubbing, which employs heuristic optimization to define an optimal non-linear scrubbing sequence. Experimental results using Brent Kung circuits demonstrated that the proposed methods achieved significantly lower \gls{mttr} compared to traditional readback scrubbing, highlighting the effectiveness of sensitivity-based approaches to improve fault recovery in \gls{sram}-based \glspl{fpga}.
 
-\textcite{Rao2023} reinforces the growing demand for low-cost nanosatellites and proposes the use of the PicoRV32I as the processing core of such systems. The objective is to employ a \gls{cots} \gls{fpga} to develop an \gls{obc} for a generic low Earth orbit satellite. It proposes the use of \gls{fgtmr}, and the results show that \gls{alu} and \gls{rf} are the main components of \glspl{cpu} affected by \glspl{see}.
+\textcite{Rao2023} reinforces the growing demand for low-cost nanosatellites and proposes the use of the PicoRV32 as the processing core of such systems. The objective is to employ a \gls{cots} \gls{fpga} to develop an \gls{obc} for a generic low Earth orbit satellite. It proposes the use of \gls{fgtmr}, and the results show that \gls{alu} and \gls{rf} are the main components of \glspl{cpu} affected by \glspl{see}.
 
 \textcite{Koers2024} developed test environments based on a Xilinx Zynq \gls{soc} for radiation qualification of \gls{sram}-based \glspl{fpga} at \gls{cern}. The work focused on measuring leakage currents and assessing radiation tolerance in \gls{cots} devices such as GateMate and Lattice iCE40. Leakage current measurements confirmed the expected exponential dependence on temperature, while radiation tests evaluated \gls{tid} effects and configuration memory sensitivity using ring oscillators and XOR-based designs. The results provided valuable information on leakage behavior and fault susceptibility, establishing a methodology to qualify \glspl{fpga} under radiation exposure in high-energy physics environments.
 
@@ -116,7 +116,7 @@ Table~\ref{tab:related_works} presents a comparative summary of studies listed i
 \textcite{Rao2023} %%OK
 & \acrshort{fgtmr} \& \acrshort{secded}
 & Simulation 
-& Added \acrshort{secded} \acrshort{ecc} to PicoRV32I 
+& Added \acrshort{secded} \acrshort{ecc} to PicoRV32
 & Only Simulation \acrshort{fi} \\
 \\
 \textcite{Koers2024} %%OK
@@ -168,7 +168,7 @@ Table~\ref{tab:related_works} presents a comparative summary of studies listed i
 \section{Identified Gaps, Motivation, and Scope}
 \label{sec:cap2-gaps}
 
-From the reviewed literature, some open challenges have received limited investigation. Most existing studies focus on isolated mitigation strategies or rely on proprietary or closed implementations that hinder reproducibility. This work is motivated by the need for a comprehensive and open methodology capable of integrating fault-masking and self-repair mechanisms within a single platform.
+From the reviewed literature, some open challenges have received limited investigation. Most existing studies focus on isolated mitigation strategies or rely on proprietary or closed implementations that hinder reproducibility. Another relevant survey was conducted by \textcite{Siecha2025_TDC_SEUEmulation}, which highlights that studies combining multiple \gls{seu} mitigation strategies remain relatively scarce. This work is motivated by the need for a comprehensive and open methodology capable of integrating fault-masking and self-repair mechanisms within a single platform.
 
 Specifically, this study addresses the following gaps:
 \begin{itemize}
@@ -179,4 +179,4 @@ Specifically, this study addresses the following gaps:
 
 Building on the motivations and objectives established in Chapter~\ref{sec:cap1}, this dissertation proposes an integrated framework that combines \gls{nmr} for fault masking, \gls{ms} and \gls{dpr} for runtime repair and systematic \gls{fi} for validation and analysis. The proposed methodology enables an empirical evaluation of the fault tolerance and recovery mechanisms under realistic operating conditions.
 
-All implemented scripts and developed design files are openly available in the \href{https://github.com/zanonera/}{GitHub repository} of the project, encouraging reproducibility, transparency, and future extensions by the research community.
+All scripts implemented and developed design files are openly available in the \href{https://github.com/zanonera/}{GitHub repository} of the project, encouraging reproducibility, transparency, and future extensions by the research community.

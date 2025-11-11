@@ -87,7 +87,7 @@ As illustrated  in Figure~\ref{zynq-paper-arch}, the core of the architecture is
 \subsection{Soft Error Mitigation via Memory Scrubbing}
 To protect the \gls{sram}-based \gls{fpga}, Xilinx’s \gls{semip}, \cite{amd2023sem} is being used in this platform. The controller can be accessed from a serial console and provides the status of the configuration memory, injection of errors and operational status.
 
-It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external UART was attached to the design, providing an easy way to use a computer with a script to inject error and check how the platform behaves.
+It is possible to communicate with the controller using the AXI Bus of the processor, but for this study an external \gls{uart} was attached to the design, providing an easy way to use a computer with a script to inject error and check how the platform behaves.
 
 \gls{semip} was selected as the \gls{ms} methodology because it is natively available on the 7-series devices used in this work and supports \gls{fi} within the same \gls{ip}. This approach is classified as an internal scrubbing technique, as it leverages the embedded \gls{ecc} present in each configuration frame of \gls{fpga}, thus eliminating the need for external memory to store the golden bitstream. The \gls{ip} was configured to operate in the readback scrubbing mode.
 
@@ -174,7 +174,7 @@ In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and su
 
 \subsection{DMR}
 
-Figure~\ref{fig:fir-dmr} illustrates the architecture proposed to evaluate the design \gls{dmr} in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on \gls{cram} of \gls{fpga}.
+Figure~\ref{fig:fir-dmr} illustrates the architecture used to evaluate the design \gls{dmr} in this study. The design consists of two \glspl{fir} filters and an output voter, implemented to assess the effects of \gls{fi} on \gls{cram} of \gls{fpga}. This design was based on \textcite{acmeTuto}.
 
 \begin{figure}[H]
     \centering
@@ -210,26 +210,26 @@ Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. Th
     \label{fig:detail_fir}
 \end{figure}
 
-The \gls{fir} filter was chosen to validate the \gls{dmr} , because it is a widely used block in \gls{dsp} and \gls{sdr} designs. 
+The \gls{fir} filter was chosen to validate \gls{dmr} , because it is a widely used block in \gls{dsp} and \gls{sdr} designs. 
 
 \subsection{TMR}
 
 For the \gls{tmr} evaluation conducted in this study, the \gls{cgtmr} method with a single word voter was selected. As discussed in Section~\ref{sec:cap3}, the word voter was chosen because it provides better results when applied to buses and wide data words. In this case, most voters operate on 32-bit signals due to the use of the \gls{riscv} processor.
 
-Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using PicoRV32I. The redundancy is applied in the module level, replicating the entire soft core processor.
+Figure~\ref{riscv-tmr-diagram}, illustrates the \gls{tmr} design architecture using PicoRV32. The redundancy is applied in the module level, replicating the entire soft core processor.
 
-Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected PicoRV32I implementation in Vivado. It is possible to observe the triplicated \gls{riscv} cores, as well as the voters inserted into each processor output that interfaces with the memory. In this study, the memory was neither triplicated nor equipped with any form of \gls{ecc} protection.
+Figure~\ref{vivado-tmr} illustrates the \gls{tmr}-protected implementation \href{https://github.com/YosysHQ/picorv32}{PicoRV32} in Vivado. It is possible to observe the triplicated \gls{riscv} cores, as well as the voters inserted into each processor output that interfaces with the memory. In this study, the memory was neither triplicated nor equipped with any form of \gls{ecc} protection. This architecture was based on the fault-tolerant framework proposed by \textcite{Yaman2022}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{Cap4/riscv-tmr-diagram.png}
-    \caption{Block diagram of the proposed triplicated (\acrshort{tmr}) PicoRV32I architecture, showing the three replicated processor cores and the majority voter responsible for fault masking at the output stage.}
+    \caption{Block diagram of the proposed triplicated (\acrshort{tmr}) PicoRV32 architecture, showing the three replicated processor cores and the majority voter responsible for fault masking at the output stage.}
     \label{riscv-tmr-diagram}
 \end{figure}
 
 The \gls{fgtmr} approach was not selected due to its high level of intrusiveness, which increases the complexity of the design and often results in increased use of area and degraded synchronization and timing between modules \cite{Wilson2025,Adria2023}.
 
-As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger number of outputs did not lead to an improvement in the results. Expanding the voting scheme to include more signals increases the utilization of the design area, which may nearly occupy the entire device, and consequently increases the probability of a fault affecting a critical element compared to a smaller and more compact design. In contrast, the voter logic itself occupies only a small portion of the overall architecture, making it statistically less likely that a configuration bit associated with the voter will be affected by a fault.
+As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger number of outputs did not lead to an improvement in the results, so in this design only one voter per output was used. Expanding the voting scheme to include more signals increases the utilization of the design area, which may nearly occupy the entire device, and consequently increases the probability of a fault affecting a critical element compared to a smaller and more compact design. In contrast, the voter logic itself occupies only a small portion of the overall architecture, making it statistically less likely that a configuration bit associated with the voter will be affected by a fault.
 
 \begin{landscape}
     \begin{figure}[H]
@@ -237,6 +237,15 @@ As discussed in ~\textcite{Koers2024}, the attempt to vote signals from a larger
     \includegraphics[width=1.5\textwidth]{Cap4/tmr-vivado.png}
     \caption{Block Diagram of the implementation in Vivado. In the blue square (left) the memory for the \acrshort{riscv} instructions (firmware), in the red square (center) the triplicated \acrshort{riscv} cores and in the black square (right) the word voters inserted in each output of the PicoRV32 RISC-V core.}\label{vivado-tmr}
 \end{figure}\end{landscape}
+
+Figure~\ref{fig:tmr-riscv-uart} shows the block diagram with the interconnections of all modules to validate the \gls{tmr}-protected \gls{riscv} soft-core with the transmitter block of an \gls{uart} interface, forming a minimal \gls{soc} architecture, the \emph{tinysoc}, for validation and fault monitoring. The communication link allows interaction with the processor and the observation of system status during \gls{fi} experiments.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/setup-picorv.png}
+    \caption{Block diagram of the TMR-protected \acrshort{riscv} soft-core with integrated \acrshort{uart} interface.}
+    \label{fig:tmr-riscv-uart}
+\end{figure}
 
 \subsection{Synthesis control for redundancy}
 
@@ -384,7 +393,7 @@ This section presents the methodology adopted to verify and validate the propose
 
 \subsection{Functional Verification}
 
-Functional verification was first carried out at the \gls{rtl} level using the simulation environment of the Vivado Design Suite. Behavioral testbenches were created for each module, including the \gls{fir} filters, \gls{tmr} PicoRV32I cores, and the scrubbing controller wrapper. The objective of this stage was to verify correct signal propagation, timing relationships, and overall functional equivalence between redundant instances before synthesis.
+Functional verification was first carried out at the \gls{rtl} level using the simulation environment of the Vivado Design Suite. Behavioral testbenches were created for each module, including the \gls{fir} filters, \gls{tmr} PicoRV32 cores, and the scrubbing controller wrapper. The objective of this stage was to verify correct signal propagation, timing relationships, and overall functional equivalence between redundant instances before synthesis.
 
 To automate and accelerate this process, Python scripts were used to generate stimuli and compare simulation outputs with reference data stored in \gls{rom} memories. Assertions were added in the simulation environment to detect mismatches between module outputs, ensuring that all logic behaved deterministically prior to hardware implementation.
 
@@ -392,7 +401,7 @@ To automate and accelerate this process, Python scripts were used to generate st
 
 After successful behavioral verification, the system was synthesized and implemented on the PYNQ-Z2 development board for hardware-in-the-loop testing. This stage focused on validating correct communication between the \gls{ps} and the \gls{pl}, including proper configuration of the \gls{axi} interconnect, clock domains, and synchronization signals between the \gls{semip}, the reconfigurable regions, and the processing system.
 
-During this phase, partial bitstreams were reloaded at runtime through the \gls{pcap} interface, verifying the operation of the \gls{pr} decoupler and confirming that the static logic remained operational throughout the reconfiguration. UART communication was continuously monitored to detect any interruptions or unexpected resets during reconfiguration events.  
+During this phase, partial bitstreams were reloaded at runtime through the \gls{pcap} interface, verifying the operation of the \gls{pr} decoupler and confirming that the static logic remained operational throughout the reconfiguration. \gls{uart} communication was continuously monitored to detect any interruptions or unexpected resets during reconfiguration events.  
 
 The same procedure was repeated with the \gls{semip} actively scrubbing the device to confirm that switching between \acrshort{pcap} and \gls{icap} interfaces followed the synchronization sequence defined in Section~\ref{itemized-actions-for-dpr&sem}.
 
@@ -400,13 +409,13 @@ The same procedure was repeated with the \gls{semip} actively scrubbing the devi
 
 Once the architecture was functionally stable, validation under fault conditions was conducted using the deterministic \acrshort{fi} approach described in Section~\ref{sec:fi-strategy}. The \gls{semip} was configured in injection mode to emulate single-bit upsets (SEUs) and multi-bit upsets (MBUs) directly in the \gls{cram} of the \gls{fpga}.  
 
-Each injected fault was automatically logged, including the frame address, bit offset, and injection timestamp. The system response was observed via UART to determine whether the error was masked, corrected, or resulted in a system failure. The injected faults were correlated with the essential bits identified in the \acrshort{ebd} file to classify them as either benign or critical.  
+Each injection fault was automatically recorded, including frame address, bit offset, and injection timestamp. The system response was observed through \gls{uart} to determine whether the error was masked, corrected, or resulted in a system failure. The injected faults were correlated with the essential bits identified in the \acrshort{ebd} file to classify them as benign or critical.  
 
-The mais metrics extracted from this campaign was Fault coverage, the ratio between detected or masked faults and total injected faults.
+The main metrics extracted from this campaign were recovery coverage, the ratio between detected or masked faults, and total injected faults.
 
 \subsection{Performance and Resource Monitoring}
 
-Throughout all verification stages, Vivado reports and the \texttt{report\_utilization} command were used to track the consumption of \glspl{lut}, \glspl{ff}, \glspl{bram}, and \glspl{dsp}. The goal was to quantify the area overhead introduced by \acrshort{nmr} and \acrshort{dpr} features.  
+Throughout all verification stages, Vivado reports and the \texttt{report\_utilization} command were used to track the consumption of \glspl{lut}, \glspl{ff}, \glspl{bram}, and \glspl{dsp}. The goal was to quantify the overhead area introduced by \acrshort{nmr} and \acrshort{dpr} features.  
 
 In addition, on-chip sensors accessible through the \acrshort{ps} were used to monitor supply voltages and temperature variations during reconfiguration and fault-injection cycles, ensuring thermal and electrical stability of the device.
 
@@ -415,12 +424,12 @@ In addition, on-chip sensors accessible through the \acrshort{ps} were used to m
 The combined use of simulation, emulation, and in-hardware fault injection enabled comprehensive validation of the proposed platform. Functional verification ensured design correctness, emulation confirmed system-level integration, and real fault injection provided empirical evidence of fault-tolerance efficiency.  
 
 \section{Summary}
-This chapter presented the methodology adopted for the design, implementation, and validation of the proposed fault-tolerant platform. It began by introducing the hardware and software environments used throughout development, highlighting the Pynq-Z2 board based on the Zynq 7000 \gls{soc} and the Vivado~2018.3 toolchain complemented by Python automation scripts and the \gls{riscv} GNU toolchain.
+This chapter presents the methodology adopted for the design, implementation, and validation of the proposed fault-tolerant platform. It began by introducing the hardware and software environments used throughout development, highlighting the Pynq-Z2 board based on the Zynq 7000 \gls{soc} and the Vivado~2018.3 toolchain complemented by Python automation scripts and the \gls{riscv} GNU toolchain.
 
-The reference design architecture was defined to integrate three key mechanisms: the \gls{semip} controller for \gls{ms}, \gls{dpr} for runtime reconfiguration of specific hardware regions, and \gls{fi} for controlled evaluation of reliability. The interaction between the \gls{semip} and the \gls{dpr} flows was carefully managed through \gls{pcap}/\gls{icap} switching, ensuring proper coordination between scrubbing operations and partial reconfiguration events.
+The reference design architecture was defined to integrate three key mechanisms: the \gls{semip} controller for \gls{ms}, \gls{dpr} for the reconfiguration of specific hardware regions at runtime and \gls{fi} for the controlled reliability evaluation. The interaction between the \gls{semip} and the \gls{dpr} flows was carefully managed through \gls{pcap}/\gls{icap} switching, ensuring proper coordination between scrubbing operations and partial reconfiguration events.
 
-Next, the implementation of \acrshort{nmr} was detailed, focusing on \gls{dmr} and \gls{tmr} configurations applied to \acrshort{fir} filters and \gls{riscv} processor cores. Special attention was given to synthesis constraints and placement strategies to prevent optimization of redundant modules and guarantee physical separation of replicas.
+Next, the implementation of \acrshort{nmr} was detailed, focusing on \gls{dmr} and \gls{tmr} configurations applied to \acrshort{fir} filters and \gls{riscv} processor cores. Special attention was paid to synthesis constraints and placement strategies to prevent the optimization of redundant modules and to guaranty the physical separation of replicas.
 
-The chapter also described the \gls{tcl}-based \gls{dpr} automation flow, designed to streamline the generation of partial bitstreams and their verification. The \gls{fi} methodology was then explained, including the use of Xilinx’s \textit{Essential Bits} technology (\gls{ebd}/\gls{ebc} files) to target configuration frames within the \gls{dut}. The resulting deterministic fault-injection campaign enabled systematic evaluation of the system’s response to configuration upsets.
+The chapter also described the \gls{tcl}-based \gls{dpr} automation flow, designed to streamline the generation of partial bitstreams and their verification. The \gls{fi} methodology was then explained, including the use of Xilinx’s \textit{Essential Bits} technology (\gls{ebd}/\gls{ebc} files) to target configuration frames within the \gls{dut}. The resulting deterministic fault-injection campaign enabled a systematic evaluation of the system’s response to configuration upsets.
 
-Finally, the integration of the programmable logic with the \gls{ps} was addressed, showing how the \gls{ps} ARM cores coordinate system operation, reconfiguration control, and serial communication for monitoring. The chapter concluded with the definition of the verification and validation strategy, establishing the experimental basis for the performance and reliability results discussed in the next chapter.
+Finally, integration of \gls{pl} with \gls{ps} was addressed, showing how \gls{ps} ARM cores coordinate system operation, reconfiguration control, and serial communication for monitoring. The chapter concluded with the definition of the verification and validation strategy, establishing the experimental basis for the performance and reliability results discussed in the next chapter.

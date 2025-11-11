@@ -302,13 +302,13 @@ The \gls{ms} based on the \gls{semip} demonstrates high efficiency, providing su
 
 \section{RISC-V with Triple Modular Redundancy}
 
-Continuing the evaluation of \gls{nmr}, the \gls{dmr} configuration was extended to a \gls{tmr} scheme. For this purpose, a different \gls{dut} was selected: the \gls{riscv} processor. The chosen implementation of the \gls{cpu} was the open-source PicoRV32I core.
+Continuing the evaluation of \gls{nmr}, the \gls{dmr} configuration was extended to a \gls{tmr} scheme. For this purpose, a different \gls{dut} was selected: the \gls{riscv} processor. The chosen implementation of the \gls{cpu} was the open-source PicoRV32 core.
 
-Table~\ref{tab:tmr_resource_comparison} presents the resource utilization results comparing the simplex and \gls{tmr} implementations of the PicoRV32I \gls{cpu}. The triplication of the processor and inclusion of word voters resulted in increased resource consumption relative to the baseline design. Synthesis performed in Vivado~2018.3 reported a 3.09$\times$ increase in Slice LUT usage and a 3.35$\times$ increase in Slice Flip-Flops.
+Table~\ref{tab:tmr_resource_comparison} presents the resource utilization results comparing the simplex and \gls{tmr} implementations of the PicoRV32 \gls{cpu}. The triplication of the processor and inclusion of word voters resulted in increased resource consumption relative to the baseline design. Synthesis performed in Vivado~2018.3 reported a 3.09$\times$ increase in Slice LUT usage and a 3.35$\times$ increase in Slice Flip-Flops.
 
 \begin{table}[H]
 \centering
-\caption{Resource utilization comparison between simplex and \acrshort{tmr} implementations of the PicoRV32I \acrshort{cpu}.}
+\caption{Resource utilization comparison between simplex and \acrshort{tmr} implementations of the PicoRV32 \acrshort{cpu}.}
 \label{tab:tmr_resource_comparison}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lccc}
@@ -350,7 +350,7 @@ Figure~\ref{fig:no-riscv-fault} illustrates the state of the simulation without 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap5/rv_simul/all_modules_ok.png}
-    \caption{Fault-free operation of the \acrshort{tmr}-protected PicoRV32I processor, showing memory write data signals and corresponding serial output during normal execution.}
+    \caption{Fault-free operation of the \acrshort{tmr}-protected PicoRV32 processor, showing memory write data signals and corresponding serial output during normal execution.}
     \label{fig:no-riscv-fault}
 \end{figure}
 
@@ -395,7 +395,7 @@ Finally, Figure~\ref{fig:3-riscv-fault} represents the multiple-fault condition,
 The emulated \gls{fi} campaign using the \gls{semip} was performed on the \gls{tmr}-protected \gls{riscv} architecture. 
 
 The \gls{fi} process targeted the configuration frames corresponding to the region where Core~\#1 was implemented. 
-The design was physically divided into three \textit{pblocks}: one dedicated to the serial interface (UART), another shared between Cores~\#2 \&~\#3, and one exclusively reserved for Core~\#1 (My \acrshort{dut} pblock in region X1Y0), as shown in Figure~\ref{fig:2pblocks}.
+The design was physically divided into three \textit{pblocks}: one dedicated to the serial interface (\gls{uart}), another shared between Cores~\#2 \&~\#3, and one exclusively reserved for Core~\#1 (My \acrshort{dut} pblock in region X1Y0), as shown in Figure~\ref{fig:2pblocks}.
 
 \begin{figure}[H]
     \centering
@@ -469,35 +469,35 @@ In the first case, all cores operate synchronously, producing identical outputs.
 \section{Impact of Mitigation Techniques}
 \label{sec:impact-mitigation}
 
-This section discusses the general impact of the mitigation strategies implemented in this study, including \gls{nmr}, \gls{ms}, and \gls{dpr}. The results obtained are compared with the unprotected baseline designs, highlighting measurable improvements in reliability, fault coverage, and recovery time, as well as the associated resource trade-offs.
+This section discusses the general impact of the mitigation strategies implemented in this study, including \gls{nmr}, \gls{ms}, and \gls{dpr}. The results obtained are compared with the unprotected baseline designs, highlighting measurable improvements in reliability, recovery coverage, and recovery time, as well as the associated resource trade-offs.
 
-\subsection{Fault Coverage and Failure Sensitivity}
+\subsection{Recovery Coverage and Failure Sensitivity}
 
-The results obtained from the \gls{fir} and math function tests clearly demonstrate that fault coverage is strongly influenced by the mitigation mechanisms adopted. In the unprotected \gls{fir} design, the first failure occurred after only 50 bit flips during random fault injection in \gls{cram}. Since \gls{semip} operating under \gls{secded} \gls{ecc} can correct only one error per frame, the accumulation of multi-bit upsets (\glspl{mbu}) caused the system to collapse after 3,564 injections, rendering even the serial interface inoperative. The corresponding failure sensitivity, computed as \(r = k/n\), reached approximately \(r = 0.98\), indicating that nearly every injected fault at this stage produced an observable malfunction.
+The results obtained from the \gls{fir} and math function tests clearly demonstrate that recovery coverage is strongly influenced by the mitigation mechanisms adopted. In the unprotected \gls{fir} design, the first failure occurred after only 50 bit flips during random fault injection in \gls{cram}. Since \gls{semip} operating under \gls{secded} \gls{ecc} can correct only one error per frame, the accumulation of multi-bit upsets (\glspl{mbu}) caused the system to collapse after 3,564 injections, rendering even the serial interface inoperative. The corresponding failure sensitivity, computed as \(r = k/n\), reached approximately \(r = 0.98\), indicating that nearly every injected fault at this stage produced an observable malfunction.
 
 When scrubbing was enabled and coupled with redundancy, the results improved significantly. All single-bit upsets were transparently corrected by \gls{semip}, and \gls{fir} continued to operate seamlessly. This confirms that the combination of internal scrubbing and design-level redundancy provides efficient protection against transient \glspl{seu}, substantially reducing the effective failure rate.
 
-\subsubsection{Fault Coverage Evaluation}
+\subsubsection{Recovery Coverage Evaluation}
 
-The fault coverage (\(FC\)) quantifies the fraction of injected faults that were successfully masked, corrected, or recovered by the mitigation strategies implemented. It is defined by Equation~\ref{eq:fault_coverage}:
+The recovery coverage (\(RC\)) quantifies the fraction of injected faults that were successfully masked, corrected, or recovered by the mitigation strategies implemented. It is defined by Equation~\ref{eq:fault_coverage}:
 
 \begin{equation}
-FC = 1 - \frac{k}{n}
+RC = 1 - \frac{k}{n}
 \label{eq:fault_coverage}
 \end{equation}
 
 where \(k\) represents the number of injected faults that caused functional failures and \(n\) is the total number of injected faults during the campaign.
 
-Table~\ref{tab:fault_coverage_summary} summarizes the calculated fault coverage for each design and mitigation level evaluated.
+Table~\ref{tab:fault_coverage_summary} summarizes the calculated recovery coverage for each design and mitigation level evaluated.
 
 \begin{table}[H]
 \centering
-\caption{Summary of fault coverage obtained for different designs and mitigation strategies.}
+\caption{Summary of recovery coverage obtained for different designs and mitigation strategies.}
 \label{tab:fault_coverage_summary}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{l r r r}
 \toprule
-\textbf{Design / Mitigation Level} & \textbf{Total Injections ($n$)} & \textbf{Failures ($k$)} & \textbf{Fault Coverage (\%)} \\
+\textbf{Design / Mitigation Level} & \textbf{Total Injections ($n$)} & \textbf{Failures ($k$)} & \textbf{Recovery Coverage (\%)} \\
 \midrule
 \gls{fir} (no scrubbing, \gls{mbu}) & 3,615   & 3,564   & 1.4   \\
 \gls{fir} (\gls{semip} scrubbing)   & 31,020  & 34      & 99.9  \\
@@ -510,7 +510,7 @@ Multiplier (with recovery)          & 70,182  & 32      & 99.95 \\
 \end{adjustbox}
 \end{table}
 
-As shown in Table~\ref{tab:fault_coverage_summary}, fault coverage increased from only 1.4\% in the unprotected design to 99.9\% when internal scrubbing was enabled. The combination of scrubbing, processor reset, and reprogramming achieved a near-complete recovery rate of 99.95\%, confirming the effectiveness of the proposed multi-layered mitigation strategy to enhance the reliability based on \gls{sram}-based \gls{fpga}.
+As shown in Table~\ref{tab:fault_coverage_summary}, recovery coverage increased from only 1.4\% in the unprotected design to 99.9\% when internal scrubbing was enabled. The combination of scrubbing, processor reset, and reprogramming achieved a near-complete recovery rate of 99.95\%, confirming the effectiveness of the proposed multi-layered mitigation strategy to enhance the reliability based on \gls{sram}-based \gls{fpga}.
 
 The results presented for the \gls{riscv} system in Table~\ref{tab:fault_coverage_summary} show that when faults were injected exclusively into the \gls{cpu} Core~\#1 region, all detected errors in voters were successfully masked, allowing the system to continue operating without functional failure. However, when random \gls{fi} campaigns were carried out throughout \gls{cram}, the system experienced a failure after approximately 1,235 injected bit flips.
 
@@ -522,7 +522,7 @@ The integration of automated \gls{fi} with recovery mechanisms also proved effec
 
 \subsection{Redundancy and Fault Masking Effectiveness}
 
-In the \gls{tmr}-protected PicoRV32I processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption that it can tolerate only one simultaneous error. Under triple faults, the majority voter detected the full disagreement, asserting the error signal. 
+In the \gls{tmr}-protected PicoRV32 processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption that it can tolerate only one simultaneous error. Under triple faults, the majority voter detected the full disagreement, asserting the error signal. 
 
 The implementation of \gls{tmr} increased the usage of logic resources by approximately 3.1$\times$ in LUTs and 3.3$\times$ in flip-flops, consistent with theoretical expectations. However, this overhead was justified by the considerable improvement in reliability and error detection coverage. The inclusion of word-level voters instead of bitwise voters also enhanced error observability by exposing multi-module inconsistencies that would otherwise remain masked. The results show, in both the simulation and the emulated \gls{fi} experiments, that the redundancy of the system effectively masks faults and enables error detection and correction before accumulation occurs.
 
@@ -531,7 +531,7 @@ The implementation of \gls{tmr} increased the usage of logic resources by approx
 In general, the combination of \gls{dpr}, \gls{semip}-based scrubbing, and \gls{tmr} achieved a complete balance between reliability and resource overhead. Each mitigation layer addressed a specific reliability dimension:
 \begin{itemize}
     \item \textbf{Scrubbing} ensured automatic correction of transient single-bit faults in the configuration memory.
-    \item \textbf{Redundancy} masked transient faults at the functional level, improving system-level fault coverage.
+    \item \textbf{Redundancy} masked transient faults at the functional level, improving system-level recovery coverage.
     \item \textbf{Dynamic Partial Reconfiguration} provided fast recovery from permanent or multi-bit faults while maintaining uninterrupted system operation.
 \end{itemize}
 
@@ -541,7 +541,7 @@ Quantitatively, the adoption of these techniques reduced the system failure rate
 
 In summary, the proposed architecture effectively demonstrated the following:
 \begin{itemize}
-    \item The fault coverage increased from less than 10\% in unprotected designs to more than 99\% when scrubbing and redundancy were combined.
+    \item The recovery coverage increased from less than 10\% in unprotected designs to more than 99\% when scrubbing and redundancy were combined.
     \item The \gls{mttr} improved significantly with \gls{dpr}, allowing rapid reconfiguration of faulty regions.
     \item The failure sensitivity metric decreased by more than three orders of magnitude between the unprotected and protected configurations.
 \end{itemize}
