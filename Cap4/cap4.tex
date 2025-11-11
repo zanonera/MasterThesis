@@ -168,9 +168,9 @@ If \gls{sem} \gls{ip} is not changed to IDLE mode prior to \gls{dpr}, it will co
 It is important that all \gls{pcap} or \gls{icap} operations are completed before switching control between them. Figure~\ref{fig:fpga_mux} also shows that JTAG has precedence over both ports, so care should be taken when using JTAG together with \gls{pcap} and \gls{icap} to avoid interference between the ports.
 
 \section{Implementation of N-Modular Redundancy}
-In this section, the integration of the NMR scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed. Specific design trade-offs such as latency, area overhead, and power consumption are analyzed to justify the parameters chosen for $N>3$.
+In this section, the integration of the \gls{nmr} scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed.
 
-In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to \acrlong{fi} experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into the redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
+In this work, both \gls{dmr} and \gls{tmr} architectures were implemented and subjected to \acrlong{fi} experiments to assess their fault-masking behavior and validate the proposed evaluation framework. The fault injection process was used to introduce controlled upsets into redundant modules, allowing analysis of how each redundancy scheme reacts to injected faults under similar test conditions.
 
 \subsection{DMR}
 
@@ -183,16 +183,16 @@ Figure~\ref{fig:fir-dmr} illustrates the architecture used to evaluate the desig
     \label{fig:fir-dmr}
 \end{figure}
 
-Figure~\ref{fig:dut_fir_bird_view} illustrates the design implemented in the \gls{dmr} architecture using the Vivado tool. The \gls{semip} is instantiated together with the wrapper that consists of both, the \gls{fir} filters and the \gls{ps}. 
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Cap4/dut_fir_bird_view.png}
-    \caption{Block diagram representation for the Vivado implementation, showing the \acrshort{fir} filter implemented in the \textit{My Design} block and the \acrshort{sem} wrapper containing the scrubber, which integrates the \acrshort{semip} and the ARM processor.}
+    \caption{Block diagram in Vivado showing the \acrshort{dmr} \acrshort{fir}.}
     \label{fig:dut_fir_bird_view}
 \end{figure}
 
-Figure~\ref{fig:setup-fir} show the block diagram with the interconnections of all modules to validate the \gls{dmr} design with two \glspl{fir}. The \gls{semip} is used for \gls{ms} and \gls{fi}.
+Figure~\ref{fig:dut_fir_bird_view} illustrates the design implemented in the \gls{dmr} architecture using the Vivado environment. The \gls{fir} filter is instantiated within the \emph{my\_design} block, while \emph{sem\_bd\_wrapper} contains the scrubbing subsystem, which integrates the \gls{semip} and the ARM processing system.
+
+Figure~\ref{fig:setup-fir} shows the block diagram with the interconnections of all modules to validate the \gls{dmr} design with two \glspl{fir}. The \gls{semip} is used for \gls{ms} and \gls{fi}.
 
 \begin{figure}[H]
     \centering
@@ -210,7 +210,7 @@ Figure~\ref{fig:detail_fir} illustrates the \gls{dmr} architecture in detail. Th
     \label{fig:detail_fir}
 \end{figure}
 
-The \gls{fir} filter was chosen to validate \gls{dmr} , because it is a widely used block in \gls{dsp} and \gls{sdr} designs. 
+The \gls{fir} filter was selected to validate the \gls{dmr} architecture, as it is a widely used component in \gls{dsp} and \gls{sdr} systems.
 
 \subsection{TMR}
 
