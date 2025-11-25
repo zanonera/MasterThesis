@@ -150,7 +150,7 @@ Figure~\ref{fig:fir_filter_equal} shows an example of a correct visualization of
     \label{fig:fir_filter_equal}
 \end{figure}
 
-Figure~\ref{fig:fir_filter_error} shows an example of an incorrect visualization of both filters. The error output is equal to one, as one of the filters produces a high-peaked response, resulting in different values for each sample.
+Figure~\ref{fig:fir_filter_error} shows an example of a visualization of an error in both filters. The error output is equal to one, as one of the filters produces a high-peaked response, resulting in different values for each sample.
 
 \begin{figure}[H]
     \centering
@@ -524,7 +524,7 @@ The integration of automated \gls{fi} with recovery mechanisms also proved effec
 
 \subsection{Redundancy and Fault Masking Effectiveness}
 
-In the \gls{tmr}-protected PicoRV32 processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption that it can tolerate only one simultaneous error. In triple faults, the majority voter detected the full disagreement, asserting the error signal. 
+In the \gls{tmr}-protected PicoRV32 processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption that it can mask the fault up to one module per time. In triple faults, the majority voter detected the full disagreement, asserting the error signal. 
 
 The implementation of \gls{tmr} increased the usage of logic resources by approximately 3.1$\times$ in LUTs and 3.3$\times$ in flip-flops, consistent with theoretical expectations. However, this overhead was justified by the considerable improvement in reliability and error detection coverage. The inclusion of word-level voters instead of bitwise voters also enhanced error observability by exposing multi-module inconsistencies that would otherwise remain masked. The results show, in both the simulation and the emulated \gls{fi} experiments, that the redundancy of the system effectively masks faults and enables error detection and correction before accumulation occurs.
 

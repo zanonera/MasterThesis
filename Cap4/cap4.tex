@@ -421,14 +421,14 @@ In addition, on-chip sensors accessible through the \acrshort{ps} were used to m
 
 \subsection{Summary of Validation Strategy}
 
-The combined use of simulation, emulation, and in-hardware fault injection enabled comprehensive validation of the proposed platform. Functional verification ensured design correctness, emulation confirmed system-level integration, and real fault injection provided empirical evidence of fault-tolerance efficiency.  
+The combined use of simulation and in-hardware \gls{fi} (emulation) enabled comprehensive validation of the proposed platform. Functional verification ensured design correctness, emulation confirmed system-level integration and provided empirical evidence of fault-tolerance efficiency.
 
 \section{Summary}
 This chapter presents the methodology adopted for the design, implementation, and validation of the proposed fault-tolerant platform. It began by introducing the hardware and software environments used throughout development, highlighting the Pynq-Z2 board based on the Zynq 7000 \gls{soc} and the Vivado~2018.3 toolchain complemented by Python automation scripts and the \gls{riscv} GNU toolchain.
 
 The reference design architecture was defined to integrate three key mechanisms: the \gls{semip} controller for \gls{ms}, \gls{dpr} for the reconfiguration of specific hardware regions at runtime and \gls{fi} for the controlled reliability evaluation. The interaction between the \gls{semip} and the \gls{dpr} flows was carefully managed through \gls{pcap}/\gls{icap} switching, ensuring proper coordination between scrubbing operations and partial reconfiguration events.
 
-Next, the implementation of \acrshort{nmr} was detailed, focusing on \gls{dmr} and \gls{tmr} configurations applied to \acrshort{fir} filters and \gls{riscv} processor cores. Special attention was paid to synthesis constraints and placement strategies to prevent the optimization of redundant modules and to guaranty the physical separation of replicas.
+Next, the implementation of \acrshort{nmr} was detailed, focusing on \gls{dmr} and \gls{tmr} configurations applied to \acrshort{fir} filters and \gls{riscv} processor cores. Special attention was paid to synthesis constraints and placement strategies to prevent the optimization of redundant modules and to guarantee the physical separation of replicas.
 
 The chapter also described the \gls{tcl}-based \gls{dpr} automation flow, designed to streamline the generation of partial bitstreams and their verification. The \gls{fi} methodology was then explained, including the use of Xilinx’s \textit{Essential Bits} technology (\gls{ebd}/\gls{ebc} files) to target configuration frames within the \gls{dut}. The resulting deterministic fault-injection campaign enabled a systematic evaluation of the system’s response to configuration upsets.
 
