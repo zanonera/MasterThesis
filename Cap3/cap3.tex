@@ -496,7 +496,7 @@ Different techniques can be used to perform fault injection, depending on the le
     
     \item \textbf{Simulation-based fault injection:} faults are introduced within simulation environments or hardware description language (HDL) models. This approach provides full observability and high controllability, enabling exhaustive testing at the cost of reduced execution speed and limited hardware fidelity~\cite{Adria2023,Fibichi2019,585157}.
     
-    \item \textbf{Emulation-based fault injection:} faults are injected directly into a running hardware prototype, typically implemented on an \gls{fpga}. This technique offers a balance between accuracy and performance, allowing real-time experimentation under conditions close to the actual operation. It enables efficient evaluation of mitigation schemes such as redundancy, \gls{ms} and \gls{dpr}~\cite{Adria2023,Fibichi2019,585157}.
+    \item \textbf{Emulation-based fault injection:} faults are injected directly into a running hardware prototype, typically by modifying the state of the \gls{cram} bits in the \gls{fpga}. This technique offers a balance between accuracy and performance, allowing real-time experimentation under conditions close to the actual operation. It enables efficient evaluation of mitigation schemes such as redundancy, \gls{ms} and \gls{dpr}~\cite{Adria2023,Fibichi2019,585157}.
 \end{itemize}
 
 \gls{fi} at the \gls{hdl} level can be implemented using different modeling strategies that alter the behavior of \gls{dut} to simulate faulty conditions during simulation. These techniques operate entirely in the design description domain, without physically altering the hardware, and are useful for verifying the effectiveness of mitigation strategies before synthesis.

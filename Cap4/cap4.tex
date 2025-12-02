@@ -58,6 +58,25 @@ It is widely used for bridging USB connections to various serial and parallel pr
 
 Table~\ref{tab:hw-tools} presents the \gls{hw} development platforms used in this research.
 
+\section{Experimental Setup}
+
+Figure~\ref{fig:setup-diagram} presents the connection diagram of the experimental setup used to carry out the tests, while Figure~\ref{fig:setup-pic} shows the actual laboratory configuration adopted during this work. 
+The \href{https://ftdichip.com/products/ft2232hq/}{FT2232 communication module} was connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} interface of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{PYNQ-Z2} board, providing a dual-channel USB-to-serial bridge between the host computer and the \gls{fpga} system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/setup-diagram.png}
+    \caption{Interconnection diagram of the main board and the USB-to-Serial interface module.}
+    \label{fig:setup-diagram}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Cap4/setup.jpg}
+    \caption{Experimental setup showing the main board (center) and the USB-to-Serial interface module (upper right).}
+    \label{fig:setup-pic}
+\end{figure}
+
 \section{Reference Design Architecture}
 \label{sec:ref-design-arch}
 To acquire the knowledge necessary to implement the final solution, the first step consisted in developing a preliminary architecture containing all the required components.
@@ -155,7 +174,7 @@ When using the \gls{semip} Controller, this action is not as simple as changing 
     \item Set \gls{semip} to \texttt{OBSERVATION} mode.
 \end{itemize}
 
-Figure~\ref{fig:fpga_mux} shows the interfaces that were developed to decouple \gls{semip} from \gls{icap}, switching the control to \gls{pcap} to perform the partial reconfiguration. The items highlighted in yellow allow steps 2 and 4 of the procedure to be correctly executed.
+Figure~\ref{fig:fpga_mux} shows the interfaces developed to decouple the \gls{semip} from the \gls{icap}, enabling control to be switched to the \gls{pcap} for partial reconfiguration. The multiplexers and the \emph{ICAP Sync Controller} allow the \gls{cram} to be accessed by either the \gls{icap} or the \gls{pcap}, thus providing the means to execute both \gls{dpr} and \gls{ms} within the same design.
 
 To stop \gls{sem} \gls{ip} scanning, the controller should be configured in IDLE mode, and a SYNC word command should be sent through the mux to \gls{icap}. This is accomplished using the output of the \texttt{\gls{icap} Sync controller} block that sends the value \texttt{0x5599AA66}.
 
@@ -165,8 +184,18 @@ After a partial reconfiguration is performed, before \gls{sem} \gls{ip} returns 
 
 If \gls{sem} \gls{ip} is not changed to IDLE mode prior to \gls{dpr}, it will continue in observation mode; then, during partial reconfiguration, the changes in \gls{cram} will be interpreted as \gls{seu}s. The \gls{sem} \gls{ip} will try to correct those bit flips, potentially entering a loop of error correction and reconfiguration, resulting in a failed reprogramming of the area.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Cap4/SemDpr.png}
+    \caption{Sequence Diagram of the integration between \acrshort{semip} and \acrshort{dpr}}
+    \label{fig:sem&dpr}
+\end{figure}
+
+Figure~\ref{fig:sem&dpr} shows a sequence diagram illustrating the steps described above, where the \emph{App} runs on the ARM core of the \gls{ps} and controls the instances and ports of the \gls{pl}, enabling both \gls{dpr} and the \gls{semip} for \gls{ms} to operate together within the same project.
+
 It is important that all \gls{pcap} or \gls{icap} operations are completed before switching control between them. Figure~\ref{fig:fpga_mux} also shows that JTAG has precedence over both ports, so care should be taken when using JTAG together with \gls{pcap} and \gls{icap} to avoid interference between the ports.
 
+\newpage
 \section{Implementation of N-Modular Redundancy}
 In this section, the integration of the \gls{nmr} scheme is detailed. The voter architecture, module replication strategy, and resource allocation are discussed.
 
@@ -293,9 +322,10 @@ Another configuration applied to both architectures was the disablement of \gls{
     \end{verbatim}
 \end{itemize}
 
+\newpage
 \section{Dynamic Partial Reconfiguration Flow}
 
-The \gls{dpr} flow is supported by Vivado; however, it is not yet fully integrated into the GUI-based project workflow~\cite{vipin2018dpr}. Consequently, the designs was implemented using the Vivado \gls{tcl}-based command flow. To facilitate the reproduction of results and provide a baseline configuration for future studies employing this architecture, a set of scripts were developed to automatically generate a project with two \gls{pr} modules, executing the following steps:
+To facilitate the reproduction of results and provide a baseline configuration for future studies employing this architecture, a set of scripts were developed to automatically generate a project with two \gls{pr} modules, executing the following steps:
 
 \begin{itemize}
     \item Create the project and block design.

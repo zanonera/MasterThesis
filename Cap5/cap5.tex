@@ -3,28 +3,9 @@
 
 This chapter presents the experimental results obtained from the proposed methodology and analyzes their significance. The discussion includes performance evaluation, \gls{fi} results, comparison with reference approaches, and an assessment of the reliability improvements achieved.
 
-\section{Experimental Setup}
-
 The software and hardware environments used in this research are described in \hyperref[sec:cap4-material]{Section~\ref*{sec:cap4-material} -- \textit{FPGA Platform and Toolchain}}. 
-Figure~\ref{fig:setup-diagram} presents the connection diagram of the experimental setup used to carry out the tests, while Figure~\ref{fig:setup-pic} shows the actual laboratory configuration adopted during this work. 
-The \href{https://ftdichip.com/products/ft2232hq/}{FT2232 communication module} was connected to the \href{https://pynq.readthedocs.io/en/v2.6.1/pynq_libraries/pmod.html}{\gls{pmod}} interface of the \href{https://www.amd.com/en/corporate/university-program/aup-boards/pynq-z2.html}{PYNQ-Z2} board, providing a dual-channel USB-to-serial bridge between the host computer and the \gls{fpga} system.
 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{Cap5/setup-diagram.png}
-    \caption{Interconnection diagram of the main board and the USB-to-Serial interface module.}
-    \label{fig:setup-diagram}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Cap5/setup.jpg}
-    \caption{Experimental setup showing the main board (center) and the USB-to-Serial interface module (upper right).}
-    \label{fig:setup-pic}
-\end{figure}
-
-For a detailed explanation of this experimental setup, see \hyperref[sec:ref-design-arch]{Section 4 - Reference Design Architecture}, \hyperref[sec:fi-strategy]{Section 4 - Fault Injection Strategy} and particularly Figure~\ref{zynq-paper-arch} for a detailed block diagram of the implemented design.
+For a detailed explanation of the experimental setup, see \hyperref[sec:ref-design-arch]{Section 4 - Reference Design Architecture}, \hyperref[sec:fi-strategy]{Section 4 - Fault Injection Strategy} and particularly Figure~\ref{zynq-paper-arch} for a detailed block diagram of the implemented design.
 
 % \section{Baseline Performance Evaluation}
 % Before introducing fault-tolerance mechanisms, the system performance is evaluated under normal conditions. This subsection discusses metrics such as resource utilization, operating frequency, and execution latency to establish a baseline reference.
@@ -119,7 +100,7 @@ Figure~\ref{fig:add-error-fi}(a) shows that the addition, executed on \gls{hw}, 
 \section{Automated Fault-Injection Campaign Results}
 This section presents the results of the automated fault-injection experiments. The effects of single-event upsets (SEUs) on configuration memory and logic are analyzed, highlighting error rates, propagation patterns, and observed system-level failures.
 
-\subsection{Scrubbing and Fault Injection with a FIR Filter}
+\subsection{Assessment of Scrubbing and Fault Injection Techniques Using a FIR Filter}
 
 The first design done to test the \gls{fi} and the memory scrubbing, using the \gls{semip} was with a \gls{dmr} design, where the replicated modules were two \gls{fir} filters.
 
@@ -220,7 +201,7 @@ r = \frac{k}{n}
 
 Using Equation~\ref{eq:failure_sensitivity}, the failure sensitivity \( r \) obtained for \gls{dmr} \gls{fir} is approximately \( 0.98\).
 
-\subsection{DPR, Scrubbing and Fault Injection with Mathematical Functions}
+\subsection{Assessment of DPR, Scrubbing and Fault Injection Techniques Using Mathematical Functions in HW}
 
 After the successful implementation of scrubbing using \gls{semip} with \gls{dmr} \gls{fir} filters, the next design iteration incorporated \gls{dpr} into the system functionalities. To fully exploit the resources of \gls{soc}, a \gls{axi} controlled multiplier/adder module was developed. These hardware functions can be selected via a user menu and dynamically reconfigured within \gls{fpga}.
 
@@ -524,7 +505,7 @@ The integration of automated \gls{fi} with recovery mechanisms also proved effec
 
 \subsection{Redundancy and Fault Masking Effectiveness}
 
-In the \gls{tmr}-protected PicoRV32 processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption that it can mask the fault up to one module per time. In triple faults, the majority voter detected the full disagreement, asserting the error signal. 
+In the \gls{tmr}-protected PicoRV32 processor, simulated fault injection demonstrated the expected masking behavior. With a single faulty core, the system maintained correct outputs due to the majority voting logic. When two cores were affected simultaneously, the output diverged, and the system failed to boot, validating the \gls{tmr} assumption of masking any single-module/core fault. In triple faults, the majority voter detected the full disagreement, asserting the error signal. 
 
 The implementation of \gls{tmr} increased the usage of logic resources by approximately 3.1$\times$ in LUTs and 3.3$\times$ in flip-flops, consistent with theoretical expectations. However, this overhead was justified by the considerable improvement in reliability and error detection coverage. The inclusion of word-level voters instead of bitwise voters also enhanced error observability by exposing multi-module inconsistencies that would otherwise remain masked. The results show, in both the simulation and the emulated \gls{fi} experiments, that the redundancy of the system effectively masks faults and enables error detection and correction before accumulation occurs.
 
