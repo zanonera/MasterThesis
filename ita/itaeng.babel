@@ -43,7 +43,7 @@
 %--------------------------------------------------------
 %Tese
 %--------------------------------------------------------
-\gdef\itatitletextbabel{\nh{\itaworklevel\ presented to the Instituto Tecnol\'{o}gico de Aeron\'{a}utica, in partial fulfillment of the requirements for the degree of \itaauthortitle\ in the Graduate Program of \itaworkcourse, Field of \itaworkarea}\vspace{12pt}.}
+\gdef\itatitletextbabel{\nh{\itaworklevel\ presented to the Instituto Tecnol\'{o}gico de Aeron\'{a}utica, in partial fulfillment of the requirements for the degree of \itaauthortitle\ in the Program of \itaworkcourse, Field of \itaworkarea}\vspace{12pt}.}
 
 \gdef\itathesisapprovedmembersbabel{\itaworklevel\ approved in its final version by signatories below:}
                                    
@@ -73,7 +73,7 @@
 %Titulos Diversos
 %--------------------------------------------------------
 \gdef\namecover{Cover}
-\gdef\listofabbreviationsname{List of Abbreviations and Acronyms}
+\gdef\listofabbreviationsname{List of Acronyms}
 \gdef\listofsymbolsname{List of Symbols}
 \gdef\nameepigraphe{Epigraph}
 \gdef\namededicatory{Dedication}
@@ -137,7 +137,7 @@
 %--------------------------------------------------------
 %Pagina CIP
 %--------------------------------------------------------
-\gdef\itaciptitlebabel{Cataloging-in Publication Data}
+\gdef\itaciptitlebabel{Cataloging-in-Publication Data}
 \gdef\itacipbibbabel{Documentation and Information Division}
 
 \gdef\itacipdata1babel {\itaworklevel\ of \itaauthortitle\ -- Course of \itaworkcourse. Area of \itaworkarea\ -- Instituto Tecnol\'{o}gico de Aeron\'{a}utica,
@@ -154,7 +154,7 @@
 
 \gdef\itarefbibnamecipbabel{BIBLIOGRAPHIC REFERENCE}
 
-\gdef\itacip2babel {\itaworklevel\ of \itaauthortitle\ -- Instituto Tecnol\'{o}gico de Aeron\'{a}utica, S\~{a}o Jos\'{e} dos Campos.}
+\gdef\itacip2babel {\itaworklevel\ of \itaauthortitle\ in \itaworkarea\ -- Instituto Tecnol\'{o}gico de Aeron\'{a}utica, S\~{a}o Jos\'{e} dos Campos.}
 
 \gdef\itaciptg2babel {Final paper (Undergraduation study) -- Instituto Tecnol\'{o}gico de Aeron\'{a}utica, 
         S\~{a}o Jos\'{e} dos Campos.}
@@ -164,6 +164,6 @@
 \gdef\itacipworktitlebabel{PUBLICATION TITLE:}
 \gdef\itacipworktype{PUBLICATION KIND/YEAR:}
 
-\gdef\itacesdirtextbabel{It is granted to Instituto Tecnol\'{o}gico de Aeron\'{a}utica permission to reproduce copies of this \ifthenelse{\equal{\itaoptionlevel}{quali}}{qualifying exam}{\ifthenelse{\equal{\itaoptionlevel}{msc}}{dissertation}{thesis}} and to only loan or to sell copies for academic and scientific purposes. The author reserves other publication rights and no part of this \ifthenelse{\equal{\itaoptionlevel}{quali}}{qualifying exam}{\ifthenelse{\equal{\itaoptionlevel}{msc}}{dissertation}{thesis}} can be reproduced without the authorization of the author.}
+\gdef\itacesdirtextbabel{It is granted to Instituto Tecnol\'{o}gico de Aeron\'{a}utica permission to reproduce copies of this \ifthenelse{\equal{\itaoptionlevel}{quali}}{qualifying exam}{\ifthenelse{\equal{\itaoptionlevel}{msc}}{dissertation}{thesis}} and to only loan or sell copies for academic and scientific purposes. The author reserves other publication rights and no part of this \ifthenelse{\equal{\itaoptionlevel}{quali}}{qualifying exam}{\ifthenelse{\equal{\itaoptionlevel}{msc}}{dissertation}{thesis}} can be reproduced without his authorization.}
 
 \gdef\itacesdirtgtextbabel{It is granted to Instituto Tecnol\'{o}gico de Aeron\'{a}utica permission to reproduce copies of this final paper and to only loan or to sell copies for academic and scientific purposes. The author reserves other publication rights and no part of this final paper can be reproduced without the authorization of the author.}

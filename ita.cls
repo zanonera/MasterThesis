@@ -225,7 +225,7 @@
     extrayear, % 2012a  in bibliography as well
     bibstyle=biblatex-abnt/abnt,
     citestyle=biblatex-abnt/abnt,
-    maxcitenames=4,
+    maxcitenames=3, %%Manual ITA mais de tres autore et al.
     maxbibnames=99,
     giveninits=true,%abbreviate first name
     sortcites=true,
@@ -511,7 +511,7 @@
 
    \vspace*{\stretch{1}}
 
-   \begin{spacing}{1.2}
+   \begin{spacing}{1.5}
    \itaformatworktitle{\MakeUppercase{\@title}}
    \end{spacing}
 
@@ -522,8 +522,8 @@
 
    \vspace*{\stretch{3}}
 
-   \begin{spacing}{1.5}
-       \@advisor
+   \begin{spacing}{1.0}
+   \large    \@advisor
    \end{spacing}
 
 %    \@ifundefined{@coadvisor}{}{      % Co-advisor eh opcional
@@ -534,7 +534,7 @@
    \@ifundefined{@coadvisor}{}{      % Co-advisor eh opcional
         \vspace*{\stretch{2}}
         \begin{spacing}{1.5}
-        \@coadvisor
+    \large    \@coadvisor
 	\end{spacing}
   }
 
@@ -542,14 +542,16 @@
 
    \vspace*{\stretch{2}}
 
+   \@ifundefined{@boss}{}{      % Boss não esta no manual de confecao
    \begin{spacing}{1.5}
-       \@boss
+   \large    \@boss
    \end{spacing}
+   }
 
    \vspace*{\stretch{2}}
 
    \begin{spacing}{1.0}
-   Campo Montenegro \\ S\~{a}o Jos\'{e} dos Campos, SP - \itacountrybabel \\ \@publyear
+   \large Campo Montenegro \\ S\~{a}o Jos\'{e} dos Campos, SP - \itacountrybabel \\ \@publyear
    \end{spacing}
 
    \@makecippage        % funcao para criar verso da folha de rosto
@@ -637,7 +639,7 @@
  		   \begin{onehalfspacing}
  		    \setlength{\baselineskip}{0.7\baselineskip}
 		    \noindent\@authorlast, \@authorfirst\par
-                    \@title\ / \@authorfirst\ \@authorlast.\\
+                    \quad \@title\ / \@authorfirst\ \@authorlast.\\
                     \noindent São José dos Campos, \@publyear.\par
                     \if@eng
                       \NumPenultimaPagina p.\par
@@ -766,7 +768,8 @@
 			 \end{center}
 
 			 \raggedright{\normalsize{\namepageexaminers}}
-       \vfill
+       %\vfill   %% Removendo para ficar como no Manual de Confecção do ITA
+       \newline  %% Adiciona Linha em Braco entre texto e lista
 
        \raggedright\@memberslist
 
