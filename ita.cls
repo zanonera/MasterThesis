@@ -841,31 +841,31 @@
 %%% Lista de Simbolos e Lista de Abreviaturas ao Sumario
 %==============================================================================
 % Bibliografia
-\renewenvironment{thebibliography}[1]
-     {\chapter*{\bibname
-      \refstepcounter{chapter}
-      \addcontentsline{toc}{chapter}{\bibname}   % Thanks to D.Farfan
-      \@mkboth{\MakeUppercase{\bibname}}%
-              {\MakeUppercase{\bibname}}}%       % Thanks to ffs :-)
-      \singlespacing
-			\flushleft
-			\list{\@biblabel{\@arabic\c@enumiv}}%
-           {\settowidth\labelwidth{\@biblabel{#1}}%
-            \leftmargin\labelwidth
-            \advance\leftmargin\labelsep
-            \@openbib@code
-            \usecounter{enumiv}%
-            \let\p@enumiv\@empty
-            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
-      \sloppy
-      \clubpenalty4000
-      \@clubpenalty \clubpenalty
-      \widowpenalty4000%
-      \sfcode`\.\@m
-}
-     {\def\@noitemerr
-       {\@latex@warning{Empty `thebibliography' environment}}%
-      \endlist}
+% \renewenvironment{thebibliography}[1]
+%      {\chapter*{\bibname
+%       \refstepcounter{chapter}
+%       \addcontentsline{toc}{chapter}{\bibname}   % Thanks to D.Farfan
+%       \@mkboth{\MakeUppercase{\bibname}}%
+%               {\MakeUppercase{\bibname}}}%       % Thanks to ffs :-)
+%       \singlespacing
+% 			\flushleft
+% 			\list{\@biblabel{\@arabic\c@enumiv}}%
+%            {\settowidth\labelwidth{\@biblabel{#1}}%
+%             \leftmargin\labelwidth
+%             \advance\leftmargin\labelsep
+%             \@openbib@code
+%             \usecounter{enumiv}%
+%             \let\p@enumiv\@empty
+%             \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+%       \sloppy
+%       \clubpenalty4000
+%       \@clubpenalty \clubpenalty
+%       \widowpenalty4000%
+%       \sfcode`\.\@m
+% }
+%      {\def\@noitemerr
+%        {\@latex@warning{Empty `thebibliography' environment}}%
+%       \endlist}
 
 
 
@@ -880,7 +880,7 @@
     \chapter*{\listtablename
       \@mkboth{\MakeUppercase{\listtablename}}%
                {\MakeUppercase{\listtablename}}}     % Thanks to Reinaldo Fortes
-%    \addcontentsline{toc}{chapter}{\listtablename}   % Thanks do D.Farfan
+     \addcontentsline{toc}{chapter}{\listtablename}   % Thanks do D.Farfan
 		\pdfbookmark[0]{\listtablename}{listatabelas}
     \@starttoc{lot}%
     \if@restonecol\twocolumn\fi
@@ -914,7 +914,7 @@
     \chapter*{\listfigurename
       \@mkboth{\MakeUppercase{\listfigurename}}%
               {\MakeUppercase{\listfigurename}}}      % Thanks to Reinaldo Fortes
-    %\addcontentsline{toc}{chapter}{\listfigurename}   % Thanks to D.Farfan
+    \addcontentsline{toc}{chapter}{\listfigurename}   % Thanks to D.Farfan
 		\pdfbookmark[0]{\listfigurename}{listafiguras}
     \@starttoc{lof}%
     \if@restonecol\twocolumn\fi

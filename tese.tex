@@ -200,6 +200,10 @@
 % REFERENCIAS BIBLIOGRAFICAS
 \renewcommand\bibname{\itareferencesnamebabel} %renomear título do capítulo referências
 \renewcommand\refname{\itareferencesnamebabel} %renomear título do capítulo referências
+% Add Ref Page to ToC (Summary)
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\itareferencesnamebabel}
 \printbibliography[title={\itareferencesnamebabel}]
 
 % Apendices
