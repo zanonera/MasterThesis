@@ -880,7 +880,7 @@
     \chapter*{\listtablename
       \@mkboth{\MakeUppercase{\listtablename}}%
                {\MakeUppercase{\listtablename}}}     % Thanks to Reinaldo Fortes
-     \addcontentsline{toc}{chapter}{\listtablename}   % Thanks do D.Farfan
+    %\addcontentsline{toc}{chapter}{\listtablename}   % Thanks do D.Farfan
 		\pdfbookmark[0]{\listtablename}{listatabelas}
     \@starttoc{lot}%
     \if@restonecol\twocolumn\fi
@@ -914,7 +914,7 @@
     \chapter*{\listfigurename
       \@mkboth{\MakeUppercase{\listfigurename}}%
               {\MakeUppercase{\listfigurename}}}      % Thanks to Reinaldo Fortes
-    \addcontentsline{toc}{chapter}{\listfigurename}   % Thanks to D.Farfan
+    %\addcontentsline{toc}{chapter}{\listfigurename}   % Thanks to D.Farfan
 		\pdfbookmark[0]{\listfigurename}{listafiguras}
     \@starttoc{lof}%
     \if@restonecol\twocolumn\fi
@@ -932,7 +932,7 @@
     \chapter*{\listofsymbolsname
       \@mkboth{\MakeUppercase{\listofsymbolsname}}%
               {\MakeUppercase{\listofsymbolsname}}}%         Thanks to Reinaldo Fortes
-%    \addcontentsline{toc}{chapter}{\listofsymbolsname}%      Thanks to ffs  :-)
+    %\addcontentsline{toc}{chapter}{\listofsymbolsname}%      Thanks to ffs  :-)
 		\pdfbookmark[0]{\listofsymbolsname}{listasimbolos}
     \@starttoc{los}% If this command is enable list of symbols will appears with othe list (list of table or list of figures)
     \if@restonecol\twocolumn\fi
@@ -951,7 +951,7 @@
     \chapter*{{\listofabbreviationsname}
       \@mkboth{\MakeUppercase{\listofabbreviationsname}}%       Thanks to Reinaldo Fortes
               {\MakeUppercase{\listofabbreviationsname}}}%
-     %\addcontentsline{toc}{chapter}{\listofabbreviationsname}%  Thanks to ffs  :-)
+    %\addcontentsline{toc}{chapter}{\listofabbreviationsname}%  Thanks to ffs  :-)
 		\pdfbookmark[0]{\listofabbreviationsname}{listaabreviaturas}
     \@starttoc{lof}%
     \if@restonecol\twocolumn\fi
