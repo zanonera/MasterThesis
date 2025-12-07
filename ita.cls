@@ -157,7 +157,7 @@
 %==============================================================================
 %%% Glossário
 \RequirePackage{csquotes}
-\RequirePackage[acronym, toc, nogroupskip, sanitizesort]{glossaries}
+\RequirePackage[acronym, nogroupskip, sanitizesort]{glossaries}   % Remove toc to remove List of Acronyms from Contents page
 \RequirePackage{xcolor}
 \glsenablehyper
 \colorlet{currenttext}{.} % get current color with xcolor pkg
@@ -498,7 +498,7 @@
 
    \noindent
 
-   \begin{spacing}{1.2}
+   \begin{spacing}{1.5}
    \noindent \parbox[c]{\textwidth}{\itaformattitletext{\itatitletext}}
    \end{spacing}
 
@@ -511,7 +511,7 @@
 
    \vspace*{\stretch{1}}
 
-   \begin{spacing}{1.5}
+   \begin{spacing}{2.0}  % Espçamento duplo como no MAnual do ITA
    \itaformatworktitle{\MakeUppercase{\@title}}
    \end{spacing}
 
@@ -759,14 +759,16 @@
 
 			 }
 	     {
-	     \begin{spacing}{1.0}
+	     \begin{spacing}{1.5} % Como no Manual do ITA para o Titulo
        \begin{center}
          \itaformatworktitle{\MakeUppercase{\@title}}
          \vfill
          \itaformatauthorname{\@authorfirst\ \@authorlast}
 				 \vfill
 			 \end{center}
+        \end{spacing}
 
+    \begin{spacing}{1.0}
 			 \raggedright{\normalsize{\namepageexaminers}}
        %\vfill   %% Removendo para ficar como no Manual de Confecção do ITA
        \newline  %% Adiciona Linha em Braco entre texto e lista
