@@ -707,7 +707,7 @@
 {
    \newpage
    \pdfbookmark[0]{\namepageexaminersbookmark}{aprovacao}
-   \thispagestyle{empty}
+   \thispagestyle{plain}
 
    \noindent
 
@@ -786,7 +786,7 @@
 %%% Dedicatória...
 %==============================================================================
 \newenvironment{itadedication}
-{\thispagestyle{empty}%
+{\thispagestyle{plain}%
   \pdfbookmark[0]{\namededicatory}{dedication}
   \begin{flushright}%
   \null\vfil \@beginparpenalty\@lowpenalty
@@ -809,6 +809,7 @@
 \newenvironment{itathanks}[1][\nameacknowledgment]
 {
  \chapter*{#1}
+ \thispagestyle{plain}
  \pdfbookmark[0]{\nameacknowledgment}{acknowledgment}
  }
  {\par\vfil\null\newpage}
@@ -831,7 +832,7 @@
 %%% Redefinicao de chapter
 %==============================================================================
 \renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
-                    \thispagestyle{empty}%
+                    \thispagestyle{plain}%
                     \global\@topnum\z@
                     \@afterindenttrue
                     \secdef\@chapter\@schapter}
@@ -1009,12 +1010,23 @@
 %==============================================================================
 %%% Cabecalhos e Rodapés
 %==============================================================================
+
+%ALTERAÇÕES NAT: ACRESCENTEI O TRECHO ENTRE -----
+% -----------------
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \rhead{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+% -----------------
+
 \pagestyle{fancy}
-\lhead{\leftmark}
+\lhead{}
 \chead{}
 \rhead{\thepage}
 \lfoot{}\cfoot{}\rfoot{}
-\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 % Imprimir rodape com versao preliminar?
   \if@dv
