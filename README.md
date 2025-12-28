@@ -1,3 +1,33 @@
+# Master's Dissertation — Enhancing FPGA SRAM Reliability
+
+This repository contains the Latex source code developed as part of the Master's Dissertation by **Ricardo Zanone**, submitted to the **Instituto Tecnológico de Aeronáutica (ITA)**, Graduate Program in Electronics and Computer Engineering.
+
+## Title
+**Enhancing FPGA SRAM Reliability: Comprehensive Error Injection and Fault Mitigation Methods**
+
+## Research Scope
+The dissertation investigates fault-tolerance strategies for SRAM-based FPGAs, focusing on AMD/Xilinx Zynq-7000 devices. The following mitigation techniques are explored and experimentally validated:
+
+- N-Modular Redundancy (DMR, TMR, NMR)
+- Dynamic Partial Reconfiguration (DPR)
+- Automated Fault Injection (hardware-based)
+- Memory Scrubbing using SEM-IP
+
+## Objective
+Provide an open, reproducible platform for evaluating and integrating fault-mitigation mechanisms targeting SRAM-based FPGA configuration memory, applicable to aerospace, CubeSat, radiation-rich, and safety-relevant environments.
+
+## Tools and Hardware
+- Vivado 2018.3
+- Python 3.x
+- RISC-V GCC Toolchain
+- Pynq-Z2 / ZedBoard (Zynq-7000 XC7Z020)
+
+## Citation
+If referencing this work, please cite as:
+
+Zanone, R. (2025). Enhancing FPGA SRAM Reliability: Comprehensive Error Injection and Fault Mitigation Methods. Master’s Dissertation — Instituto Tecnológico de Aeronáutica (ITA).
+
+# Original Template Read-me::
 # Template Thesis ITA
 > Template Thesis ITA ABNT NBR 6023:2018
 > 
